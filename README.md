@@ -1,0 +1,370 @@
+# @imagekit/astro
+
+Astro SDK for [ImageKit.io](https://imagekit.io) — optimized image & video delivery with real-time transformations, responsive images, and automatic format optimization.
+
+[![npm version](https://img.shields.io/npm/v/@imagekit/astro)](https://www.npmjs.com/package/@imagekit/astro)
+[![license](https://img.shields.io/npm/l/@imagekit/astro)](./LICENSE)
+
+## Quick Start
+
+### 1. Install
+
+```bash
+npm install @imagekit/astro
+# or
+pnpm add @imagekit/astro
+# or
+yarn add @imagekit/astro
+```
+
+### 2. Configure
+
+Add your ImageKit URL endpoint to your `.env` file:
+
+```env
+PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
+```
+
+> Get your URL endpoint from the [ImageKit dashboard](https://imagekit.io/dashboard/url-endpoints).
+
+### 3. Use
+
+```astro
+---
+import { IKImage } from '@imagekit/astro';
+---
+
+<IKImage
+  src="/default-image.jpg"
+  alt="A beautiful image"
+  width={800}
+  height={600}
+  transformation={[{ quality: 80 }]}
+/>
+```
+
+---
+
+## Components
+
+### `<IKImage />`
+
+Renders an optimized `<img>` element with automatic responsive `srcSet` generation.
+
+```astro
+---
+import { IKImage } from '@imagekit/astro';
+---
+
+<!-- Basic usage -->
+<IKImage
+  src="/hero.jpg"
+  alt="Hero image"
+  width={1200}
+  height={630}
+/>
+
+<!-- With transformations -->
+<IKImage
+  src="/hero.jpg"
+  alt="Cropped hero"
+  width={600}
+  height={400}
+  transformation={[{ width: 600, height: 400, focus: "auto" }]}
+/>
+
+<!-- Responsive with sizes -->
+<IKImage
+  src="/hero.jpg"
+  alt="Responsive hero"
+  sizes="(max-width: 768px) 100vw, 50vw"
+  width={1200}
+  height={630}
+/>
+
+<!-- Non-responsive (single URL) -->
+<IKImage
+  src="/hero.jpg"
+  alt="Static hero"
+  responsive={false}
+  width={800}
+  height={600}
+/>
+```
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `string` | *required* | Relative path (e.g., `/image.jpg`) or absolute ImageKit URL |
+| `alt` | `string` | *required* | Alt text for accessibility |
+| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
+| `transformation` | `Transformation[]` | `[]` | Array of [ImageKit transformations](https://imagekit.io/docs/transformations) |
+| `queryParameters` | `Record<string, string | number>` | — | Additional URL query parameters |
+| `transformationPosition` | `'path' | 'query'` | `'query'` | Where to place transformations in the URL |
+| `responsive` | `boolean` | `true` | Generate responsive `srcSet` and `sizes` |
+| `sizes` | `string` | — | HTML `sizes` attribute for responsive images |
+| `deviceBreakpoints` | `number[]` | `[640,750,828,1080,1200,1920,2048,3840]` | Custom device-width breakpoints |
+| `imageBreakpoints` | `number[]` | `[16,32,48,64,96,128,256,384]` | Custom image-specific breakpoints |
+| `width` | `number | string` | — | Image width |
+| `height` | `number | string` | — | Image height |
+| `loading` | `'lazy' | 'eager'` | `'lazy'` | Image loading strategy |
+| `class` | `string` | — | CSS class(es) to add |
+
+All standard HTML `<img>` attributes are also supported and passed through.
+
+---
+
+### `<IKVideo />`
+
+Renders a `<video>` element with an ImageKit-optimized source URL.
+
+```astro
+---
+import { IKVideo } from '@imagekit/astro';
+---
+
+<IKVideo
+  src="/sample-video.mp4"
+  width={640}
+  height={360}
+  controls
+  transformation={[{ width: 640, height: 360 }]}
+/>
+```
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `string` | *required* | Relative path or absolute ImageKit URL |
+| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
+| `transformation` | `Transformation[]` | `[]` | Array of ImageKit transformations |
+| `queryParameters` | `Record<string, string | number>` | — | Additional URL query parameters |
+| `transformationPosition` | `'path' | 'query'` | `'query'` | Where to place transformations in the URL |
+| `class` | `string` | — | CSS class(es) to add |
+
+All standard HTML `<video>` attributes (`controls`, `autoplay`, `loop`, `muted`, `poster`, etc.) are supported.
+
+---
+
+### `<IKOgImage />`
+
+Generates OpenGraph and Twitter Card `<meta>` tags with ImageKit-optimized image URLs. Place it inside `<head>`.
+
+```astro
+---
+import { IKOgImage } from '@imagekit/astro';
+---
+
+<html>
+<head>
+  <IKOgImage
+    src="/og-banner.jpg"
+    alt="My page description"
+    twitterTitle="Check out this page!"
+    transformation={[{ width: 1200, height: 630 }]}
+  />
+</head>
+<body>...</body>
+</html>
+```
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `string` | *required* | Relative path or absolute ImageKit URL |
+| `twitterTitle` | `string` | *required* | Title for `twitter:title` meta tag |
+| `alt` | `string` | — | Alt text for `og:image:alt` |
+| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
+| `transformation` | `Transformation[]` | `[]` | Array of ImageKit transformations |
+| `width` | `number | string` | `1200` | OG image width |
+| `height` | `number | string` | `630` | OG image height |
+| `format` | `string` | — | Image format override for Twitter image (default: `webp`) |
+
+#### Generated Meta Tags
+
+```html
+<meta property="og:image" content="..." />
+<meta property="og:image:secure_url" content="..." />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="..." />
+<meta property="twitter:title" content="..." />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="..." />
+```
+
+---
+
+## Helper Functions
+
+For programmatic URL generation outside of components:
+
+```ts
+import { getImagekitUrl } from '@imagekit/astro/helpers';
+
+// Image URL
+const imageUrl = getImagekitUrl({
+  src: '/my-image.jpg',
+  transformation: [{ width: 800, height: 600, quality: 80 }],
+  urlEndpoint: 'https://ik.imagekit.io/your_id', // or use env var
+});
+
+// Video URL (use getImagekitUrl for videos too)
+const videoUrl = getImagekitUrl({
+  src: '/my-video.mp4',
+  transformation: [{ width: 1280, height: 720 }],
+});
+```
+
+---
+
+## Transformations
+
+This SDK supports all [ImageKit transformations](https://imagekit.io/docs/transformations). Transformations are passed as an array of objects:
+
+```typescript
+transformation={[
+  { width: 400, height: 300 },           // Resize
+  { quality: 80 },                       // Compression
+  { format: 'webp' },                    // Format conversion
+  { focus: 'auto' },                     // Smart crop
+  { blur: 10 },                          // Blur effect
+  { grayscale: true },                   // Grayscale
+  { rotation: 90 },                      // Rotation
+  { radius: 'max' },                     // Rounded corners
+  { overlay: { type: 'text', text: 'Hello', transformation: [{ fontSize: 50 }] } },  // Text overlay
+]}
+```
+
+### Chained Transformations
+
+Multiple objects in the array create [chained transformations](https://imagekit.io/docs/transformations#chained-transformations):
+
+```astro
+<IKImage
+  src="/photo.jpg"
+  alt="Chained transformations"
+  transformation={[
+    { width: 400, height: 300 },  // First: resize
+    { rotation: 45 },             // Then: rotate
+  ]}
+  width={400}
+  height={300}
+/>
+```
+
+### Transformation Position
+
+By default, transformations are added as query parameters (`?tr=w-400,h-300`). Set `transformationPosition="path"` to use path-based transformations (`/tr:w-400,h-300/`):
+
+```astro
+<IKImage
+  src="/photo.jpg"
+  alt="Path-based transforms"
+  transformationPosition="path"
+  transformation={[{ width: 400 }]}
+  width={400}
+  height={300}
+/>
+```
+
+---
+
+## TypeScript
+
+All component props and helper types are exported:
+
+```typescript
+import type {
+  IKImageProps,
+  IKVideoProps,
+  IKOgImageProps,
+  Transformation,
+  SrcOptions,
+} from '@imagekit/astro';
+
+import type {
+  GetImagekitUrlOptions
+} from '@imagekit/astro/helpers';
+```
+
+---
+
+## Configuration
+
+### Environment Variable
+
+Set `PUBLIC_IMAGEKIT_URL_ENDPOINT` in your `.env` (or `.env.local`) file. This is used as the default `urlEndpoint` for all components and helpers:
+
+```env
+PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
+```
+
+### Per-Component Override
+
+Pass `urlEndpoint` directly to any component to override the environment variable:
+
+```astro
+<IKImage
+  urlEndpoint="https://ik.imagekit.io/different_account"
+  src="/image.jpg"
+  alt="Different account"
+  width={400}
+  height={300}
+/>
+```
+
+---
+
+## Contributing
+
+### Setup
+
+```bash
+git clone https://github.com/imagekit-developer/imagekit-astro.git
+cd imagekit-astro
+pnpm install
+```
+
+### Development
+
+```bash
+pnpm dev          # Watch mode for the package
+```
+
+### Testing
+
+```bash
+pnpm test:unit    # Run Vitest unit tests
+pnpm test:e2e     # Run Playwright E2E tests
+pnpm test         # Run all tests
+```
+
+### Project Structure
+
+```
+imagekit-astro/
+├── imagekit-astro/          # Publishable @imagekit/astro package
+│   ├── src/
+│   │   ├── components/      # IKImage, IKVideo, IKOgImage (.astro)
+│   │   ├── helpers/         # getImagekitUrl
+│   │   ├── lib/             # Config resolution
+│   │   ├── types/           # TypeScript interfaces
+│   │   └── constants/       # Default values
+│   ├── index.ts             # Package entry point
+│   └── tsup.config.ts       # Build configuration
+│
+└── tests/
+    ├── unit/                # Vitest unit tests
+    ├── e2e/                 # Playwright E2E tests
+    └── fixtures/            # Test Astro app
+```
+
+---
+
+## License
+
+[MIT](./LICENSE)

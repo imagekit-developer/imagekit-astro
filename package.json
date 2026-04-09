@@ -1,0 +1,23 @@
+{
+  "name": "imagekit-astro-monorepo",
+  "private": true,
+  "license": "MIT",
+  "keywords": [
+    "astro-component",
+    "imagekit",
+    "image",
+    "images",
+    "video",
+    "optimization"
+  ],
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "build": "pnpm -r build",
+    "test:e2e": "pnpm --filter test-app run test:e2e",
+    "test:e2e-update": "pnpm --filter test-app run test:e2e-update"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "packageManager": "pnpm@9.5.0"
+}

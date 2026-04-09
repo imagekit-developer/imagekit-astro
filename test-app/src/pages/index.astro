@@ -1,0 +1,54 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@imagekit/astro Test App</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 15px;
+    }
+    a {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #0066cc;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    a:hover {
+      background: #0055aa;
+    }
+    p {
+      color: #666;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>@imagekit/astro Test App</h1>
+  <p>Select a test page:</p>
+  <ul>
+    <li><a href="/images">IKImage Component Tests</a></li>
+    <li><a href="/videos">IKVideo Component Tests</a></li>
+  </ul>
+  <p>These pages are used for E2E testing with Playwright snapshot comparisons.</p>
+</body>
+</html>

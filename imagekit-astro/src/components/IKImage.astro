@@ -1,0 +1,89 @@
+---
+import { buildSrc, getResponsiveImageAttributes } from '@imagekit/javascript';
+import { getImageKitConfig } from '../lib/imagekit.js';
+import type { IKImageProps } from '../types/index.js';
+
+interface Props extends IKImageProps {}
+
+const {
+  src,
+  alt,
+  urlEndpoint,
+  transformation = [],
+  queryParameters,
+  transformationPosition,
+  responsive = true,
+  sizes,
+  deviceBreakpoints,
+  imageBreakpoints,
+  width,
+  height,
+  loading = 'lazy',
+  class: className,
+  ...restProps
+}: Props = Astro.props;
+
+// Resolve ImageKit configuration
+const config = getImageKitConfig({ urlEndpoint, transformationPosition });
+
+// Parse width as integer for responsive calculations
+function getInt(x: unknown): number {
+  if (typeof x === 'undefined') return NaN;
+  if (typeof x === 'number') return Number.isFinite(x) ? x : NaN;
+  if (typeof x === 'string' && /^[0-9]+$/.test(x)) return parseInt(x, 10);
+  return NaN;
+}
+
+const widthInt = getInt(width);
+
+// Build image attributes
+let imgSrc: string;
+let imgSrcSet: string | undefined;
+let imgSizes: string | undefined;
+
+if (!responsive) {
+  // Non-responsive: single URL
+  imgSrc = buildSrc({
+    src,
+    urlEndpoint: config.urlEndpoint,
+    transformation: [...transformation],
+    queryParameters,
+    transformationPosition: config.transformationPosition,
+  });
+} else {
+  // Responsive: generate srcSet and sizes
+  const attrs = getResponsiveImageAttributes({
+    src,
+    urlEndpoint: config.urlEndpoint,
+    transformation: [...transformation],
+    queryParameters,
+    transformationPosition: config.transformationPosition,
+    width: Number.isNaN(widthInt) ? undefined : widthInt,
+    sizes,
+    deviceBreakpoints,
+    imageBreakpoints,
+  });
+
+  imgSrc = attrs.src;
+  imgSrcSet = attrs.srcSet;
+  imgSizes = attrs.sizes;
+}
+
+// Build the class name
+let imageClassName = 'astro-imagekit-ikimage';
+if (className) {
+  imageClassName = `${imageClassName} ${className}`;
+}
+---
+
+<img
+  src={imgSrc}
+  srcset={imgSrcSet}
+  sizes={imgSizes}
+  alt={alt}
+  width={width}
+  height={height}
+  loading={loading}
+  class={imageClassName}
+  {...restProps}
+/>

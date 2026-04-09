@@ -1,0 +1,41 @@
+---
+import { buildSrc } from '@imagekit/javascript';
+import { getImageKitConfig } from '../lib/imagekit.js';
+import type { IKVideoProps } from '../types/index.js';
+
+interface Props extends IKVideoProps {}
+
+const {
+  src,
+  urlEndpoint,
+  transformation = [],
+  queryParameters,
+  transformationPosition,
+  class: className,
+  ...restProps
+}: Props = Astro.props;
+
+// Resolve ImageKit configuration
+const config = getImageKitConfig({ urlEndpoint, transformationPosition });
+
+// Build the video URL
+const videoSrc = buildSrc({
+  src,
+  urlEndpoint: config.urlEndpoint,
+  transformation: [...transformation],
+  queryParameters,
+  transformationPosition: config.transformationPosition,
+});
+
+// Build the class name
+let videoClassName = 'astro-imagekit-ikvideo';
+if (className) {
+  videoClassName = `${videoClassName} ${className}`;
+}
+---
+
+<video
+  src={videoSrc}
+  class={videoClassName}
+  {...restProps}
+/>

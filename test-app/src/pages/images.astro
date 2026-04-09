@@ -1,0 +1,270 @@
+---
+import { IKImage } from '@imagekit/astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKImage Tests</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .example {
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .example h3 {
+      margin-top: 0;
+      color: #555;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>IKImage Component Tests</h1>
+
+    <!-- Basic image with urlEndpoint prop -->
+    <div class="example">
+      <h3>Basic Image with urlEndpoint prop</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="default-image.jpg"
+        alt="Image with urlEndpoint prop"
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Image with leading slash in src -->
+    <div class="example">
+      <h3>Image with leading slash in src</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with leading slash"
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Image with transformation -->
+    <div class="example">
+      <h3>Image with transformation</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="With transformation"
+        transformation={[{ height: 100, width: 100 }]}
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Image with queryParameters -->
+    <div class="example">
+      <h3>Image with queryParameters</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with queryParameters"
+        queryParameters={{
+          version: "v1",
+        }}
+        transformation={[{ height: 100, width: 100 }]}
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Responsive image with sizes -->
+    <div class="example">
+      <h3>Responsive image with sizes</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Responsive image with sizes"
+        sizes="(max-width: 600px) 100vw, 50vw"
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Responsive image with fixed sizes (no vw token) -->
+    <div class="example">
+      <h3>Responsive image with fixed sizes (300px)</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Responsive image with sizes - should have very large srcset for all breakpoints"
+        sizes="300px"
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- urlEndpoint override -->
+    <div class="example">
+      <h3>Image with different urlEndpoint</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo2/"
+        src="/default-image.jpg"
+        alt="Image with urlEndpoint override"
+        transformation={[{ height: 100, width: 100 }]}
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Image with custom class -->
+    <div class="example">
+      <h3>Image with custom className</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with className"
+        class="custom-class"
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Lazy loading eager -->
+    <div class="example">
+      <h3>Image with loading="eager"</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with lazy loading eager"
+        loading="eager"
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Transformation position test -->
+    <div class="example">
+      <h3>Image with transformationPosition="path"</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with path transformation"
+        transformationPosition="path"
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Transformation position test with custom transformations -->
+    <div class="example">
+      <h3>Image with transformationPosition="path" + custom transformations</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with path transformation + custom transformations"
+        transformationPosition="path"
+        transformation={[{ height: 100, width: 100 }]}
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- Path not respected with absolute URL -->
+    <div class="example">
+      <h3>Absolute URL with transformationPosition="path" (path not applied)</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="https://ik.imagekit.io/demo/default-image.jpg"
+        alt="path not respected with absolute url"
+        transformationPosition="path"
+        height={300}
+        width={300}
+      />
+    </div>
+
+    <!-- No width -->
+    <div class="example">
+      <h3>Image without width (natural size)</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="No width"
+      />
+    </div>
+
+    <!-- Custom deviceBreakpoints -->
+    <div class="example">
+      <h3>Image with custom deviceBreakpoints</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Custom deviceBreakpoints"
+        deviceBreakpoints={[200, 400, 800]}
+        imageBreakpoints={[100]}
+      />
+    </div>
+
+    <!-- Responsive off -->
+    <div class="example">
+      <h3>Image with responsive=false</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with responsive off"
+        height={300}
+        width={300}
+        transformation={[{
+          width: 100,
+          height: 100,
+        }]}
+        responsive={false}
+        sizes="(max-width: 600px) 100vw, 50vw"
+      />
+    </div>
+
+    <!-- Named transformation -->
+    <div class="example">
+      <h3>Image with named transformation</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with named transformation"
+        height={300}
+        width={300}
+        transformation={[{
+          named: "thumbnail",
+        }]}
+      />
+    </div>
+
+    <!-- Chained transformations -->
+    <div class="example">
+      <h3>Image with chained transformations</h3>
+      <IKImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with chained transformations"
+        height={300}
+        width={300}
+        transformation={[
+          { width: 200, height: 200 },
+          { rotation: 90 },
+        ]}
+      />
+    </div>
+
+  </div>
+</body>
+</html>

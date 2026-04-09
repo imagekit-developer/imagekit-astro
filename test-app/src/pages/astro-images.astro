@@ -1,0 +1,485 @@
+---
+import { IKAstroImage } from '@imagekit/astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKAstroImage Tests</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .example {
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .example h3 {
+      margin-top: 0;
+      color: #555;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>IKAstroImage Component Tests</h1>
+    <p>IKAstroImage uses Astro's built-in Image component for optimized image delivery with ImageKit transformations.</p>
+
+    <!-- Basic image with urlEndpoint prop -->
+    <div class="example">
+      <h3>1. Basic Image with urlEndpoint prop</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="default-image.jpg"
+        alt="Image with urlEndpoint prop"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with leading slash in src -->
+    <div class="example">
+      <h3>2. Image with leading slash in src</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with leading slash"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with transformation -->
+    <div class="example">
+      <h3>3. Image with transformation</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="With transformation"
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with queryParameters -->
+    <div class="example">
+      <h3>4. Image with queryParameters</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with queryParameters"
+        queryParameters={{
+          version: "v1",
+        }}
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Responsive image with sizes -->
+    <div class="example">
+      <h3>5. Responsive image with sizes</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Responsive image with sizes"
+        sizes="(max-width: 600px) 100vw, 50vw"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Responsive image with fixed sizes -->
+    <div class="example">
+      <h3>6. Responsive image with fixed sizes (300px)</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Responsive image with fixed sizes"
+        sizes="300px"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Non-responsive image -->
+    <div class="example">
+      <h3>7. Non-responsive image (responsive=false)</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Non-responsive image"
+        responsive={false}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with custom class -->
+    <div class="example">
+      <h3>8. Image with custom class</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with custom class"
+        class="custom-class"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Lazy loading eager -->
+    <div class="example">
+      <h3>9. Image with loading="eager"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with loading eager"
+        loading="eager"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Transformation position path -->
+    <div class="example">
+      <h3>10. Image with transformationPosition="path"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with path transformation"
+        transformationPosition="path"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Transformation position path with custom transformations -->
+    <div class="example">
+      <h3>11. Image with transformationPosition="path" + custom transformations</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with path transformation + custom transformations"
+        transformationPosition="path"
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Custom device breakpoints -->
+    <div class="example">
+      <h3>12. Image with custom deviceBreakpoints</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with custom device breakpoints"
+        deviceBreakpoints={[320, 640, 1024]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Custom image breakpoints -->
+    <div class="example">
+      <h3>13. Image with custom imageBreakpoints</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with custom image breakpoints"
+        imageBreakpoints={[200, 400, 600]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with data attributes -->
+    <div class="example">
+      <h3>14. Image with data attributes</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with data attributes"
+        data-testid="test-image"
+        data-custom="value"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with multiple transformations -->
+    <div class="example">
+      <h3>15. Image with multiple chained transformations</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with multiple chained transformations"
+        transformation={[
+          { width: 200, height: 200 },
+          { rotation: 90 },
+          { blur: 5 }
+        ]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- ASTRO IMAGE COMPONENT SPECIFIC PROPS -->
+    <h2>Astro Image Component Props</h2>
+    <p>The following tests verify that Astro's built-in Image component props work correctly with IKAstroImage.</p>
+
+    <!-- Image with format prop -->
+    <div class="example">
+      <h3>16. Image with format="avif"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with AVIF format"
+        format="avif"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with quality prop (preset) -->
+    <div class="example">
+      <h3>17. Image with quality="high"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with high quality preset"
+        quality="high"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with quality prop (number) -->
+    <div class="example">
+      <h3>18. Image with quality=50</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with numeric quality"
+        quality={50}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with decoding prop -->
+    <div class="example">
+      <h3>19. Image with decoding="sync"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with sync decoding"
+        decoding="sync"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with fetchpriority prop -->
+    <div class="example">
+      <h3>20. Image with fetchpriority="high"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with high fetch priority"
+        fetchpriority="high"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with densities prop -->
+    <div class="example">
+      <h3>21. Image with densities=[1.5, 2]</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with density srcset"
+        densities={[1.5, 2]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with widths prop -->
+    <div class="example">
+      <h3>22. Image with widths=[240, 540, 720]</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with specific widths srcset"
+        widths={[240, 540, 720]}
+        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with layout="constrained" -->
+    <div class="example">
+      <h3>23. Image with layout="constrained"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with constrained layout"
+        layout="constrained"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with layout="full-width" -->
+    <div class="example">
+      <h3>24. Image with layout="full-width"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with full-width layout"
+        layout="full-width"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with layout="fixed" -->
+    <div class="example">
+      <h3>25. Image with layout="fixed"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with fixed layout"
+        layout="fixed"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with fit prop -->
+    <div class="example">
+      <h3>26. Image with fit="contain"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with contain fit"
+        layout="constrained"
+        fit="contain"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with position prop -->
+    <div class="example">
+      <h3>27. Image with position="top left"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with top left position"
+        layout="constrained"
+        position="top left"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with priority prop -->
+    <div class="example">
+      <h3>28. Image with priority (eager loading shorthand)</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with priority flag"
+        priority
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with style attribute -->
+    <div class="example">
+      <h3>29. Image with inline style</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with inline style"
+        style="border: 3px solid red; border-radius: 10px;"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with id attribute -->
+    <div class="example">
+      <h3>30. Image with id attribute</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with id"
+        id="my-image-id"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with title attribute -->
+    <div class="example">
+      <h3>31. Image with title attribute</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with title"
+        title="This is the image title tooltip"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with crossorigin attribute -->
+    <div class="example">
+      <h3>32. Image with crossorigin="anonymous"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with crossorigin"
+        crossorigin="anonymous"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with referrerpolicy attribute -->
+    <div class="example">
+      <h3>33. Image with referrerpolicy="no-referrer"</h3>
+      <IKAstroImage
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Image with referrer policy"
+        referrerpolicy="no-referrer"
+        width={300}
+        height={300}
+      />
+    </div>
+
+  </div>
+</body>
+</html>

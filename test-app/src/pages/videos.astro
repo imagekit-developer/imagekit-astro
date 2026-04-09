@@ -1,0 +1,190 @@
+---
+import { IKVideo } from '@imagekit/astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKVideo Tests</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    .example {
+      margin-bottom: 30px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .example h3 {
+      margin-top: 0;
+      color: #555;
+    }
+    video {
+      display: block;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>IKVideo Component Tests</h1>
+
+    <!-- Basic video with urlEndpoint prop -->
+    <div class="example">
+      <h3>Basic Video with urlEndpoint prop</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Video with urlEndpoint prop"
+        height={300}
+        width={300}
+        controls
+      />
+    </div>
+
+    <!-- Video with leading slash in src -->
+    <div class="example">
+      <h3>Video with leading slash in src</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/sample-video.mp4"
+        title="Video with leading slash"
+        height={300}
+        width={300}
+        controls
+      />
+    </div>
+
+    <!-- Video with transformations -->
+    <div class="example">
+      <h3>Video with transformations</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Video with transformations"
+        transformation={[{ height: 100, width: 100 }]}
+        height={300}
+        width={300}
+        controls
+      />
+    </div>
+
+    <!-- Video with all props -->
+    <div class="example">
+      <h3>Video with all HTML attributes</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Video with all props"
+        height={300}
+        width={300}
+        controls
+        autoplay
+        loop
+        muted
+        preload="none"
+        poster="https://ik.imagekit.io/demo/default-image.jpg"
+      />
+    </div>
+
+    <!-- urlEndpoint override -->
+    <div class="example">
+      <h3>Video with different urlEndpoint</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo2/"
+        src="sample-video.mp4"
+        title="Video with urlEndpoint override"
+        height={300}
+        width={300}
+        transformation={[{ height: 100, width: 100 }]}
+        controls
+      />
+    </div>
+
+    <!-- transformationPosition="path" -->
+    <div class="example">
+      <h3>Video with transformationPosition="path"</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Video with path transformation"
+        transformationPosition="path"
+        height={300}
+        width={300}
+        transformation={[{ height: 100, width: 100 }]}
+        controls
+      />
+    </div>
+
+    <!-- Video with custom class -->
+    <div class="example">
+      <h3>Video with custom class</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Video with custom class"
+        class="custom-video-class"
+        height={300}
+        width={300}
+        controls
+      />
+    </div>
+
+    <!-- Video with queryParameters -->
+    <div class="example">
+      <h3>Video with queryParameters</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Video with queryParameters"
+        queryParameters={{
+          version: "v2",
+        }}
+        height={300}
+        width={300}
+        controls
+      />
+    </div>
+
+    <!-- Video with chained transformations -->
+    <div class="example">
+      <h3>Video with chained transformations</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Video with chained transformations"
+        transformation={[
+          { width: 200, height: 200 },
+          { quality: 80 },
+        ]}
+        height={300}
+        width={300}
+        controls
+      />
+    </div>
+
+    <!-- Video without controls (for autoplay scenarios) -->
+    <div class="example">
+      <h3>Video without controls (autoplay, muted, loop)</h3>
+      <IKVideo
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Autoplay video"
+        height={200}
+        width={300}
+        autoplay
+        muted
+        loop
+      />
+    </div>
+
+  </div>
+</body>
+</html>

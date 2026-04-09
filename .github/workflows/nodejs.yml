@@ -1,0 +1,54 @@
+name: Node CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install
+
+    - name: Build
+      run: pnpm build
+
+    - name: Pack the package
+      run: |
+        cd imagekit-astro
+        pnpm pack
+
+    - name: Setup test-app with packed package
+      run: |
+        cd test-app
+        pnpm remove @imagekit/astro || true
+        pnpm add ../imagekit-astro/imagekit-astro-*.tgz
+
+    - name: Install Playwright
+      run: |
+        cd test-app
+        pnpm exec playwright install --with-deps
+
+    - name: Run E2E tests
+      run: |
+        cd test-app
+        pnpm test:e2e
+      env:
+        CI: true

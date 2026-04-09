@@ -1,0 +1,5 @@
+{
+  "type": "module",
+  "main": "../dist/helpers/index.js",
+  "types": "../dist/helpers/index.d.ts"
+}
