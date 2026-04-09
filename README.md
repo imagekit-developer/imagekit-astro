@@ -115,6 +115,72 @@ All standard HTML `<img>` attributes are also supported and passed through.
 
 ---
 
+### `<IKAstroImage />`
+
+Uses Astro's built-in `<Image />` component with ImageKit transformations. This provides Astro's native image optimization features while leveraging ImageKit's URL-based transformations.
+
+```astro
+---
+import { IKAstroImage } from '@imagekit/astro';
+---
+
+<!-- Basic usage -->
+<IKAstroImage
+  urlEndpoint="https://ik.imagekit.io/your_id"
+  src="/hero.jpg"
+  alt="Hero image"
+  width={1200}
+  height={630}
+/>
+
+<!-- With transformations -->
+<IKAstroImage
+  urlEndpoint="https://ik.imagekit.io/your_id"
+  src="/hero.jpg"
+  alt="Cropped hero"
+  transformation={[{ width: 600, height: 400, focus: "auto" }]}
+  width={600}
+  height={400}
+/>
+
+<!-- With Astro-specific props -->
+<IKAstroImage
+  urlEndpoint="https://ik.imagekit.io/your_id"
+  src="/hero.jpg"
+  alt="Optimized hero"
+  width={800}
+  height={600}
+  format="webp"
+  quality={80}
+  loading="eager"
+/>
+```
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `src` | `string` | *required* | Relative path or absolute ImageKit URL |
+| `alt` | `string` | *required* | Alt text for accessibility |
+| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
+| `transformation` | `Transformation[]` | `[]` | Array of ImageKit transformations |
+| `queryParameters` | `Record<string, string \| number>` | — | Additional URL query parameters |
+| `transformationPosition` | `'path' \| 'query'` | `'query'` | Where to place transformations in the URL |
+| `responsive` | `boolean` | `true` | Generate responsive `srcSet` and `sizes` |
+| `sizes` | `string` | — | HTML `sizes` attribute for responsive images |
+| `deviceBreakpoints` | `number[]` | `[640,750,828,1080,1200,1920,2048,3840]` | Custom device-width breakpoints |
+| `imageBreakpoints` | `number[]` | `[16,32,48,64,96,128,256,384]` | Custom image-specific breakpoints |
+| `width` | `number \| string` | — | Image width |
+| `height` | `number \| string` | — | Image height |
+| `format` | `string` | — | Image format (webp, avif, jpg, png, etc.) |
+| `quality` | `number` | — | Image quality (1-100) |
+| `loading` | `'lazy' \| 'eager'` | `'lazy'` | Image loading strategy |
+| `class` | `string` | — | CSS class(es) to add |
+
+All standard Astro `<Image />` props are also supported.
+
+---
+
 ### `<IKVideo />`
 
 Renders a `<video>` element with an ImageKit-optimized source URL.
@@ -175,7 +241,8 @@ import { IKOgImage } from '@imagekit/astro';
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `src` | `string` | *required* | Relative path or absolute ImageKit URL |
-| `twitterTitle` | `string` | *required* | Title for `twitter:title` meta tag |
+| `twitterTitle` | `string` | *required* | Title for `twitter:title` and `og:title` meta tags |
+| `twitterDescription` | `string` | — | Description for `twitter:description` and `og:description` meta tags |
 | `alt` | `string` | — | Alt text for `og:image:alt` |
 | `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
 | `transformation` | `Transformation[]` | `[]` | Array of ImageKit transformations |
@@ -186,6 +253,7 @@ import { IKOgImage } from '@imagekit/astro';
 #### Generated Meta Tags
 
 ```html
+<meta property="og:title" content="..." />
 <meta property="og:image" content="..." />
 <meta property="og:image:secure_url" content="..." />
 <meta property="og:image:width" content="1200" />
@@ -338,9 +406,8 @@ pnpm dev          # Watch mode for the package
 ### Testing
 
 ```bash
-pnpm test:unit    # Run Vitest unit tests
-pnpm test:e2e     # Run Playwright E2E tests
-pnpm test         # Run all tests
+pnpm test:e2e          # Run Playwright E2E tests
+pnpm test:e2e-update   # Update E2E snapshots
 ```
 
 ### Project Structure
@@ -349,7 +416,7 @@ pnpm test         # Run all tests
 imagekit-astro/
 ├── imagekit-astro/          # Publishable @imagekit/astro package
 │   ├── src/
-│   │   ├── components/      # IKImage, IKVideo, IKOgImage (.astro)
+│   │   ├── components/      # IKImage, IKAstroImage, IKVideo, IKOgImage (.astro)
 │   │   ├── helpers/         # getImagekitUrl
 │   │   ├── lib/             # Config resolution
 │   │   ├── types/           # TypeScript interfaces
@@ -357,10 +424,9 @@ imagekit-astro/
 │   ├── index.ts             # Package entry point
 │   └── tsup.config.ts       # Build configuration
 │
-└── tests/
-    ├── unit/                # Vitest unit tests
-    ├── e2e/                 # Playwright E2E tests
-    └── fixtures/            # Test Astro app
+└── test-app/                # Test application
+    ├── src/pages/           # Test pages for components
+    └── e2e/                 # Playwright E2E tests
 ```
 
 ---
