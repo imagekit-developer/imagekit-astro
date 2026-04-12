@@ -1,6 +1,7 @@
 ---
 import { buildSrc, getResponsiveImageAttributes } from '@imagekit/javascript';
 import { getImageKitConfig } from '../lib/imagekit.js';
+import { getInt } from '../helpers/index.js';
 import type { IKImageProps } from '../types/index.js';
 
 interface Props extends IKImageProps {}
@@ -27,13 +28,6 @@ const {
 const config = getImageKitConfig({ urlEndpoint, transformationPosition });
 
 // Parse width as integer for responsive calculations
-function getInt(x: unknown): number {
-  if (typeof x === 'undefined') return NaN;
-  if (typeof x === 'number') return Number.isFinite(x) ? x : NaN;
-  if (typeof x === 'string' && /^[0-9]+$/.test(x)) return parseInt(x, 10);
-  return NaN;
-}
-
 const widthInt = getInt(width);
 
 // Build image attributes
