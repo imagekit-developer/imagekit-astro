@@ -1,6 +1,5 @@
 // Components
 export { default as IKAstroImage } from './src/components/IKAstroImage.astro';
-export { default as IKImage } from './src/components/IKImage.astro';
 export { default as IKOgImage } from './src/components/IKOgImage.astro';
 export { default as IKVideo } from './src/components/IKVideo.astro';
 
@@ -17,7 +16,7 @@ export {
 } from '@imagekit/javascript';
 
 // Types - Astro SDK types
-export type { IKImageProps, IKOgImageProps, IKVideoProps } from './src/types/index.js';
+export type {IKAstroImageProps, IKOgImageProps, IKVideoProps } from './src/types/index';
 
 // Types - Re-export from @imagekit/javascript
 export type {

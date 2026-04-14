@@ -31,10 +31,10 @@ PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
 
 ```astro
 ---
-import { IKImage } from '@imagekit/astro';
+import { IKAstroImage } from '@imagekit/astro';
 ---
 
-<IKImage
+<IKAstroImage
   src="/default-image.jpg"
   alt="A beautiful image"
   width={800}
@@ -47,76 +47,7 @@ import { IKImage } from '@imagekit/astro';
 
 ## Components
 
-### `<IKImage />`
-
-Renders an optimized `<img>` element with automatic responsive `srcSet` generation.
-
-```astro
----
-import { IKImage } from '@imagekit/astro';
----
-
-<!-- Basic usage -->
-<IKImage
-  src="/hero.jpg"
-  alt="Hero image"
-  width={1200}
-  height={630}
-/>
-
-<!-- With transformations -->
-<IKImage
-  src="/hero.jpg"
-  alt="Cropped hero"
-  width={600}
-  height={400}
-  transformation={[{ width: 600, height: 400, focus: "auto" }]}
-/>
-
-<!-- Responsive with sizes -->
-<IKImage
-  src="/hero.jpg"
-  alt="Responsive hero"
-  sizes="(max-width: 768px) 100vw, 50vw"
-  width={1200}
-  height={630}
-/>
-
-<!-- Non-responsive (single URL) -->
-<IKImage
-  src="/hero.jpg"
-  alt="Static hero"
-  responsive={false}
-  width={800}
-  height={600}
-/>
-```
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `src` | `string` | *required* | Relative path (e.g., `/image.jpg`) or absolute ImageKit URL |
-| `alt` | `string` | *required* | Alt text for accessibility |
-| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
-| `transformation` | `Transformation[]` | `[]` | Array of [ImageKit transformations](https://imagekit.io/docs/transformations) |
-| `queryParameters` | `Record<string, string | number>` | — | Additional URL query parameters |
-| `transformationPosition` | `'path' | 'query'` | `'query'` | Where to place transformations in the URL |
-| `responsive` | `boolean` | `true` | Generate responsive `srcSet` and `sizes` |
-| `sizes` | `string` | — | HTML `sizes` attribute for responsive images |
-| `deviceBreakpoints` | `number[]` | `[640,750,828,1080,1200,1920,2048,3840]` | Custom device-width breakpoints |
-| `imageBreakpoints` | `number[]` | `[16,32,48,64,96,128,256,384]` | Custom image-specific breakpoints |
-| `width` | `number | string` | — | Image width |
-| `height` | `number | string` | — | Image height |
-| `loading` | `'lazy' | 'eager'` | `'lazy'` | Image loading strategy |
-| `class` | `string` | — | CSS class(es) to add |
-
-All standard HTML `<img>` attributes are also supported and passed through.
-
----
-
 ### `<IKAstroImage />`
-
 Uses Astro's built-in `<Image />` component with ImageKit transformations. This provides Astro's native image optimization features while leveraging ImageKit's URL-based transformations.
 
 ```astro
@@ -266,28 +197,6 @@ import { IKOgImage } from '@imagekit/astro';
 
 ---
 
-## Helper Functions
-
-For programmatic URL generation outside of components:
-
-```ts
-import { getImagekitUrl } from '@imagekit/astro/helpers';
-
-// Image URL
-const imageUrl = getImagekitUrl({
-  src: '/my-image.jpg',
-  transformation: [{ width: 800, height: 600, quality: 80 }],
-  urlEndpoint: 'https://ik.imagekit.io/your_id', // or use env var
-});
-
-// Video URL (use getImagekitUrl for videos too)
-const videoUrl = getImagekitUrl({
-  src: '/my-video.mp4',
-  transformation: [{ width: 1280, height: 720 }],
-});
-```
-
----
 
 ## Transformations
 
@@ -312,7 +221,7 @@ transformation={[
 Multiple objects in the array create [chained transformations](https://imagekit.io/docs/transformations#chained-transformations):
 
 ```astro
-<IKImage
+<IKAstroImage
   src="/photo.jpg"
   alt="Chained transformations"
   transformation={[
@@ -329,7 +238,7 @@ Multiple objects in the array create [chained transformations](https://imagekit.
 By default, transformations are added as query parameters (`?tr=w-400,h-300`). Set `transformationPosition="path"` to use path-based transformations (`/tr:w-400,h-300/`):
 
 ```astro
-<IKImage
+<IKAstroImage
   src="/photo.jpg"
   alt="Path-based transforms"
   transformationPosition="path"
@@ -347,16 +256,11 @@ All component props and helper types are exported:
 
 ```typescript
 import type {
-  IKImageProps,
   IKVideoProps,
   IKOgImageProps,
   Transformation,
   SrcOptions,
 } from '@imagekit/astro';
-
-import type {
-  GetImagekitUrlOptions
-} from '@imagekit/astro/helpers';
 ```
 
 ---
@@ -376,7 +280,7 @@ PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
 Pass `urlEndpoint` directly to any component to override the environment variable:
 
 ```astro
-<IKImage
+<IKAstroImage
   urlEndpoint="https://ik.imagekit.io/different_account"
   src="/image.jpg"
   alt="Different account"
@@ -416,8 +320,8 @@ pnpm test:e2e-update   # Update E2E snapshots
 imagekit-astro/
 ├── imagekit-astro/          # Publishable @imagekit/astro package
 │   ├── src/
-│   │   ├── components/      # IKImage, IKAstroImage, IKVideo, IKOgImage (.astro)
-│   │   ├── helpers/         # getImagekitUrl
+│   │   ├── components/      # IKAstroImage, IKVideo, IKOgImage (.astro)
+│   │   ├── helpers/         # Helper functions
 │   │   ├── lib/             # Config resolution
 │   │   ├── types/           # TypeScript interfaces
 │   │   └── constants/       # Default values

@@ -1,31 +1,10 @@
 ---
 import { buildSrc, getResponsiveImageAttributes } from '@imagekit/javascript';
-import { getImageKitConfig } from '../lib/imagekit.js';
-import { getInt } from '../helpers/index.js';
+import { getImageKitConfig } from '../lib/imagekit';
+import { getInt } from '../helpers/index';
 import { Image, type RemoteImageProps } from 'astro:assets';
 import type { Transformation } from '@imagekit/javascript';
-
-// ImageKit-specific props for this component
-interface IKAstroImageProps {
-  /** ImageKit URL endpoint */
-  urlEndpoint?: string;
-  /** Array of ImageKit transformations */
-  transformation?: Transformation[];
-  /** Additional query parameters */
-  queryParameters?: Record<string, string | number>;
-  /** Position of transformation string in URL */
-  transformationPosition?: 'path' | 'query';
-  /** Enable responsive srcSet generation */
-  responsive?: boolean;
-  /** HTML sizes attribute for responsive images */
-  sizes?: string;
-  /** Custom device-width breakpoints */
-  deviceBreakpoints?: number[];
-  /** Custom image-specific breakpoints */
-  imageBreakpoints?: number[];
-  /** Format for the image */
-  format?: Transformation['format'];
-}
+import type { IKAstroImageProps } from '../types';
 
 // Combine Astro's RemoteImageProps with ImageKit props
 type Props = RemoteImageProps & IKAstroImageProps;

@@ -19,10 +19,6 @@
     ".": {
       "import": "./index.ts"
     },
-    "./helpers": {
-      "types": "./dist/helpers/index.d.ts",
-      "import": "./dist/helpers/index.js"
-    },
     "./package.json": "./package.json"
   },
   "files": [
