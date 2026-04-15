@@ -1,9 +1,9 @@
 ---
 import { buildSrc } from '@imagekit/javascript';
 import { getImageKitConfig } from '../lib/imagekit';
-import type { IKVideoProps } from '../types/index';
+import type { VideoProps } from '../types/index';
 
-interface Props extends IKVideoProps {}
+interface Props extends VideoProps {}
 
 const {
   src,
@@ -28,7 +28,7 @@ const videoSrc = buildSrc({
 });
 
 // Build the class name
-let videoClassName = 'astro-imagekit-ikvideo';
+let videoClassName = 'astro-imagekit-video';
 if (className) {
   videoClassName = `${videoClassName} ${className}`;
 }

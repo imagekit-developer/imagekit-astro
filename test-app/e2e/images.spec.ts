@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-test("IKAstroImage page renders correctly", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image page renders correctly", async ({ page }) => {
+  await page.goto("/images");
 
   // Scroll to the bottom of the page to trigger lazy loading
   await page.evaluate(() => {
@@ -20,25 +20,25 @@ test("IKAstroImage page renders correctly", async ({ page }) => {
   expect(outputHtml).toMatchSnapshot();
 });
 
-test("IKAstroImage renders with correct class", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image renders with correct class", async ({ page }) => {
+  await page.goto("/images");
 
-  // Check that IKAstroImage has the correct base class
-  const images = page.locator('img.astro-imagekit-ikastroimage');
+  // Check that Image has the correct base class
+  const images = page.locator('img.astro-imagekit-image');
   const count = await images.count();
   expect(count).toBeGreaterThan(0);
 });
 
-test("IKAstroImage with custom class has both classes", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with custom class has both classes", async ({ page }) => {
+  await page.goto("/images");
 
   // Check for image with custom class
-  const imageWithCustomClass = page.locator('img.astro-imagekit-ikastroimage.custom-class');
+  const imageWithCustomClass = page.locator('img.astro-imagekit-image.custom-class');
   await expect(imageWithCustomClass).toBeVisible();
 });
 
-test("IKAstroImage generates srcset for responsive images", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image generates srcset for responsive images", async ({ page }) => {
+  await page.goto("/images");
 
   // Get the first responsive image (example 1)
   const responsiveImage = page.locator('.example').nth(0).locator('img');
@@ -49,8 +49,8 @@ test("IKAstroImage generates srcset for responsive images", async ({ page }) => 
   expect(srcset).toContain('ik.imagekit.io');
 });
 
-test("IKAstroImage non-responsive does not generate srcset", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image non-responsive does not generate srcset", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 7 is non-responsive
   const nonResponsiveImage = page.locator('.example').nth(6).locator('img');
@@ -60,8 +60,8 @@ test("IKAstroImage non-responsive does not generate srcset", async ({ page }) =>
   expect(srcset).toBeFalsy();
 });
 
-test("IKAstroImage with transformations generates correct URL", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with transformations generates correct URL", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 3 has transformation
   const transformedImage = page.locator('.example').nth(2).locator('img');
@@ -72,8 +72,8 @@ test("IKAstroImage with transformations generates correct URL", async ({ page })
   expect(src).toContain('tr=');
 });
 
-test("IKAstroImage with queryParameters includes them in URL", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with queryParameters includes them in URL", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 4 has queryParameters
   const imageWithQuery = page.locator('.example').nth(3).locator('img');
@@ -83,8 +83,8 @@ test("IKAstroImage with queryParameters includes them in URL", async ({ page }) 
   expect(src).toContain('version=v1');
 });
 
-test("IKAstroImage with loading=eager has correct attribute", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with loading=eager has correct attribute", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 9 has loading="eager"
   const eagerImage = page.locator('.example').nth(8).locator('img');
@@ -93,8 +93,8 @@ test("IKAstroImage with loading=eager has correct attribute", async ({ page }) =
   expect(loading).toBe('eager');
 });
 
-test("IKAstroImage with data attributes preserves them", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with data attributes preserves them", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 14 has data attributes
   const imageWithData = page.locator('.example').nth(13).locator('img');
@@ -105,8 +105,8 @@ test("IKAstroImage with data attributes preserves them", async ({ page }) => {
   expect(customAttr).toBe('value');
 });
 
-test("IKAstroImage with transformationPosition=path uses path transformation", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with transformationPosition=path uses path transformation", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 11 has transformationPosition="path" with transformations
   const pathImage = page.locator('.example').nth(10).locator('img');
@@ -120,8 +120,8 @@ test("IKAstroImage with transformationPosition=path uses path transformation", a
 // ASTRO IMAGE COMPONENT PROPS TESTS
 // ============================================
 
-test("IKAstroImage with decoding=sync has correct attribute", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with decoding=sync has correct attribute", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 19 has decoding="sync"
   const syncDecodingImage = page.locator('.example').nth(18).locator('img');
@@ -130,8 +130,8 @@ test("IKAstroImage with decoding=sync has correct attribute", async ({ page }) =
   expect(decoding).toBe('sync');
 });
 
-test("IKAstroImage with fetchpriority=high has correct attribute", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with fetchpriority=high has correct attribute", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 20 has fetchpriority="high"
   const highPriorityImage = page.locator('.example').nth(19).locator('img');
@@ -140,8 +140,8 @@ test("IKAstroImage with fetchpriority=high has correct attribute", async ({ page
   expect(fetchpriority).toBe('high');
 });
 
-test("IKAstroImage with densities generates density-based srcset", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with densities generates density-based srcset", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 21 has densities=[1.5, 2]
   const densitiesImage = page.locator('.example').nth(20).locator('img');
@@ -154,8 +154,8 @@ test("IKAstroImage with densities generates density-based srcset", async ({ page
   }
 });
 
-test("IKAstroImage with widths generates width-based srcset", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with widths generates width-based srcset", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 22 has widths=[240, 540, 720]
   const widthsImage = page.locator('.example').nth(21).locator('img');
@@ -170,8 +170,8 @@ test("IKAstroImage with widths generates width-based srcset", async ({ page }) =
   }
 });
 
-test("IKAstroImage with layout=constrained has correct data attribute", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with layout=constrained has correct data attribute", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 23 has layout="constrained"
   const constrainedImage = page.locator('.example').nth(22).locator('img');
@@ -180,8 +180,8 @@ test("IKAstroImage with layout=constrained has correct data attribute", async ({
   expect(dataAstroImage).toBe('constrained');
 });
 
-test("IKAstroImage with layout=full-width has correct data attribute", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with layout=full-width has correct data attribute", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 24 has layout="full-width"
   const fullWidthImage = page.locator('.example').nth(23).locator('img');
@@ -190,8 +190,8 @@ test("IKAstroImage with layout=full-width has correct data attribute", async ({ 
   expect(dataAstroImage).toBe('full-width');
 });
 
-test("IKAstroImage with layout=fixed has correct data attribute", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with layout=fixed has correct data attribute", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 25 has layout="fixed"
   const fixedImage = page.locator('.example').nth(24).locator('img');
@@ -200,8 +200,8 @@ test("IKAstroImage with layout=fixed has correct data attribute", async ({ page 
   expect(dataAstroImage).toBe('fixed');
 });
 
-test("IKAstroImage with fit=contain has correct style", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with fit=contain has correct style", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 26 has fit="contain"
   const containFitImage = page.locator('.example').nth(25).locator('img');
@@ -212,8 +212,8 @@ test("IKAstroImage with fit=contain has correct style", async ({ page }) => {
   expect(style).toContain('contain');
 });
 
-test("IKAstroImage with position prop has correct style", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with position prop has correct style", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 27 has position="top left"
   const positionImage = page.locator('.example').nth(26).locator('img');
@@ -224,8 +224,8 @@ test("IKAstroImage with position prop has correct style", async ({ page }) => {
   expect(style).toContain('top left');
 });
 
-test("IKAstroImage with priority has eager loading attributes", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with priority has eager loading attributes", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 28 has priority flag
   const priorityImage = page.locator('.example').nth(27).locator('img');
@@ -239,8 +239,8 @@ test("IKAstroImage with priority has eager loading attributes", async ({ page })
   expect(fetchpriority).toBe('high');
 });
 
-test("IKAstroImage with inline style preserves style attribute", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with inline style preserves style attribute", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 29 has inline style
   const styledImage = page.locator('.example').nth(28).locator('img');
@@ -250,16 +250,16 @@ test("IKAstroImage with inline style preserves style attribute", async ({ page }
   expect(style).toContain('border-radius');
 });
 
-test("IKAstroImage with id attribute preserves it", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with id attribute preserves it", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 30 has id attribute
   const imageWithId = page.locator('#my-image-id');
   await expect(imageWithId).toBeVisible();
 });
 
-test("IKAstroImage with title attribute preserves it", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with title attribute preserves it", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 31 has title attribute
   const imageWithTitle = page.locator('.example').nth(30).locator('img');
@@ -268,8 +268,8 @@ test("IKAstroImage with title attribute preserves it", async ({ page }) => {
   expect(title).toBe('This is the image title tooltip');
 });
 
-test("IKAstroImage with crossorigin attribute preserves it", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with crossorigin attribute preserves it", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 32 has crossorigin="anonymous"
   const imageWithCrossorigin = page.locator('.example').nth(31).locator('img');
@@ -278,8 +278,8 @@ test("IKAstroImage with crossorigin attribute preserves it", async ({ page }) =>
   expect(crossorigin).toBe('anonymous');
 });
 
-test("IKAstroImage with referrerpolicy attribute preserves it", async ({ page }) => {
-  await page.goto("/astro-images");
+test("Image with referrerpolicy attribute preserves it", async ({ page }) => {
+  await page.goto("/images");
 
   // Example 33 has referrerpolicy="no-referrer"
   const imageWithReferrer = page.locator('.example').nth(32).locator('img');

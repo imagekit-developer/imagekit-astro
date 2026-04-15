@@ -2,12 +2,12 @@
 import { buildSrc, getResponsiveImageAttributes } from '@imagekit/javascript';
 import { getImageKitConfig } from '../lib/imagekit';
 import { getInt } from '../helpers/index';
-import { Image, type RemoteImageProps } from 'astro:assets';
+import { Image as AstroImage, type RemoteImageProps } from 'astro:assets';
 import type { Transformation } from '@imagekit/javascript';
-import type { IKAstroImageProps } from '../types';
+import type { ImageProps } from '../types';
 
 // Combine Astro's RemoteImageProps with ImageKit props
-type Props = RemoteImageProps & IKAstroImageProps;
+type Props = RemoteImageProps & ImageProps;
 
 const {
   // Common Image Props
@@ -116,7 +116,7 @@ if (responsive && shouldAddIKResponsiveProps) {
 }
 
 // Build the class name
-let imageClassName = 'astro-imagekit-ikastroimage';
+let imageClassName = 'astro-imagekit-image';
 if (className) {
   imageClassName = `${imageClassName} ${className}`;
 }
@@ -124,14 +124,14 @@ if (className) {
 
 {
   inferSize ? (
-    <Image
+    <AstroImage
       inferSize
       class={imageClassName}
       {...imageProps}
       {...astroProps}
     />
   ) : (
-    <Image
+    <AstroImage
       class={imageClassName}
       {...imageProps}
       width={widthInt}

@@ -26,3 +26,4 @@ Thumbs.db
 test-results/
 playwright-report/
 coverage/
+imagekit-astro/imagekit-astro-*.tgz

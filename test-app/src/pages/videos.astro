@@ -1,5 +1,5 @@
 ---
-import { IKVideo } from '@imagekit/astro';
+import { Video } from '@imagekit/astro';
 ---
 
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ import { IKVideo } from '@imagekit/astro';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IKVideo Tests</title>
+  <title>Video Tests</title>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -34,12 +34,12 @@ import { IKVideo } from '@imagekit/astro';
 </head>
 <body>
   <div class="container">
-    <h1>IKVideo Component Tests</h1>
+    <h1>Video Component Tests</h1>
 
     <!-- Basic video with urlEndpoint prop -->
     <div class="example">
       <h3>Basic Video with urlEndpoint prop</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with urlEndpoint prop"
@@ -52,7 +52,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- Video with leading slash in src -->
     <div class="example">
       <h3>Video with leading slash in src</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/sample-video.mp4"
         title="Video with leading slash"
@@ -65,7 +65,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- Video with transformations -->
     <div class="example">
       <h3>Video with transformations</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with transformations"
@@ -79,7 +79,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- Video with all props -->
     <div class="example">
       <h3>Video with all HTML attributes</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with all props"
@@ -97,7 +97,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- urlEndpoint override -->
     <div class="example">
       <h3>Video with different urlEndpoint</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo2/"
         src="sample-video.mp4"
         title="Video with urlEndpoint override"
@@ -111,7 +111,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- transformationPosition="path" -->
     <div class="example">
       <h3>Video with transformationPosition="path"</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with path transformation"
@@ -126,7 +126,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- Video with custom class -->
     <div class="example">
       <h3>Video with custom class</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with custom class"
@@ -140,7 +140,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- Video with queryParameters -->
     <div class="example">
       <h3>Video with queryParameters</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with queryParameters"
@@ -156,7 +156,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- Video with chained transformations -->
     <div class="example">
       <h3>Video with chained transformations</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with chained transformations"
@@ -173,7 +173,7 @@ import { IKVideo } from '@imagekit/astro';
     <!-- Video without controls (for autoplay scenarios) -->
     <div class="example">
       <h3>Video without controls (autoplay, muted, loop)</h3>
-      <IKVideo
+      <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Autoplay video"

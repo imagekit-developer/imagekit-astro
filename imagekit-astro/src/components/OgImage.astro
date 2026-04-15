@@ -3,9 +3,9 @@ import { buildSrc } from '@imagekit/javascript';
 import { getImageKitConfig } from '../lib/imagekit';
 import { getInt } from '../helpers/index';
 import { OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT } from '../constants/sizes';
-import type { IKOgImageProps } from '../types/index';
+import type { OgImageProps } from '../types/index';
 
-interface Props extends IKOgImageProps {}
+interface Props extends OgImageProps {}
 
 const {
   src,
@@ -21,7 +21,7 @@ const {
 
 // Validate required props
 if (!twitterTitle) {
-  throw new Error('[IKOgImage] twitterTitle is required for the IKOgImage component.');
+  throw new Error('[OgImage] twitterTitle is required for the OgImage component.');
 }
 
 // Resolve config

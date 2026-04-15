@@ -1,5 +1,5 @@
 ---
-import { IKAstroImage } from '@imagekit/astro';
+import { Image } from '@imagekit/astro';
 ---
 
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ import { IKAstroImage } from '@imagekit/astro';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IKAstroImage Tests</title>
+  <title>Image Tests</title>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -34,13 +34,13 @@ import { IKAstroImage } from '@imagekit/astro';
 </head>
 <body>
   <div class="container">
-    <h1>IKAstroImage Component Tests</h1>
-    <p>IKAstroImage uses Astro's built-in Image component for optimized image delivery with ImageKit transformations.</p>
+    <h1>Image Component Tests</h1>
+    <p>Image uses Astro's built-in Image component for optimized image delivery with ImageKit transformations.</p>
 
     <!-- Basic image with urlEndpoint prop -->
     <div class="example">
       <h3>1. Basic Image with urlEndpoint prop</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="default-image.jpg"
         alt="Image with urlEndpoint prop"
@@ -52,7 +52,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with leading slash in src -->
     <div class="example">
       <h3>2. Image with leading slash in src</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with leading slash"
@@ -64,7 +64,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with transformation -->
     <div class="example">
       <h3>3. Image with transformation</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="With transformation"
@@ -77,7 +77,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with queryParameters -->
     <div class="example">
       <h3>4. Image with queryParameters</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with queryParameters"
@@ -93,7 +93,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Responsive image with sizes -->
     <div class="example">
       <h3>5. Responsive image with sizes</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Responsive image with sizes"
@@ -106,7 +106,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Responsive image with fixed sizes -->
     <div class="example">
       <h3>6. Responsive image with fixed sizes (300px)</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Responsive image with fixed sizes"
@@ -119,7 +119,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Non-responsive image -->
     <div class="example">
       <h3>7. Non-responsive image (responsive=false)</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Non-responsive image"
@@ -132,7 +132,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with custom class -->
     <div class="example">
       <h3>8. Image with custom class</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with custom class"
@@ -145,7 +145,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Lazy loading eager -->
     <div class="example">
       <h3>9. Image with loading="eager"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with loading eager"
@@ -158,7 +158,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Transformation position path -->
     <div class="example">
       <h3>10. Image with transformationPosition="path"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with path transformation"
@@ -171,7 +171,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Transformation position path with custom transformations -->
     <div class="example">
       <h3>11. Image with transformationPosition="path" + custom transformations</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with path transformation + custom transformations"
@@ -185,7 +185,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Custom device breakpoints -->
     <div class="example">
       <h3>12. Image with custom deviceBreakpoints</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with custom device breakpoints"
@@ -198,7 +198,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Custom image breakpoints -->
     <div class="example">
       <h3>13. Image with custom imageBreakpoints</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with custom image breakpoints"
@@ -211,7 +211,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with data attributes -->
     <div class="example">
       <h3>14. Image with data attributes</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with data attributes"
@@ -225,7 +225,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with multiple transformations -->
     <div class="example">
       <h3>15. Image with multiple chained transformations</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with multiple chained transformations"
@@ -241,12 +241,12 @@ import { IKAstroImage } from '@imagekit/astro';
 
     <!-- ASTRO IMAGE COMPONENT SPECIFIC PROPS -->
     <h2>Astro Image Component Props</h2>
-    <p>The following tests verify that Astro's built-in Image component props work correctly with IKAstroImage.</p>
+    <p>The following tests verify that Astro's built-in Image component props work correctly with Image.</p>
 
     <!-- Image with format prop -->
     <div class="example">
       <h3>16. Image with format="avif"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with AVIF format"
@@ -259,7 +259,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with quality prop (preset) -->
     <div class="example">
       <h3>17. Image with quality="high"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with high quality preset"
@@ -272,7 +272,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with quality prop (number) -->
     <div class="example">
       <h3>18. Image with quality=50</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with numeric quality"
@@ -285,7 +285,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with decoding prop -->
     <div class="example">
       <h3>19. Image with decoding="sync"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with sync decoding"
@@ -298,7 +298,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with fetchpriority prop -->
     <div class="example">
       <h3>20. Image with fetchpriority="high"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with high fetch priority"
@@ -311,7 +311,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with densities prop -->
     <div class="example">
       <h3>21. Image with densities=[1.5, 2]</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with density srcset"
@@ -324,7 +324,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with widths prop -->
     <div class="example">
       <h3>22. Image with widths=[240, 540, 720]</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with specific widths srcset"
@@ -338,7 +338,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with layout="constrained" -->
     <div class="example">
       <h3>23. Image with layout="constrained"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with constrained layout"
@@ -351,7 +351,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with layout="full-width" -->
     <div class="example">
       <h3>24. Image with layout="full-width"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with full-width layout"
@@ -364,7 +364,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with layout="fixed" -->
     <div class="example">
       <h3>25. Image with layout="fixed"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with fixed layout"
@@ -377,7 +377,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with fit prop -->
     <div class="example">
       <h3>26. Image with fit="contain"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with contain fit"
@@ -391,7 +391,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with position prop -->
     <div class="example">
       <h3>27. Image with position="top left"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with top left position"
@@ -405,7 +405,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with priority prop -->
     <div class="example">
       <h3>28. Image with priority (eager loading shorthand)</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with priority flag"
@@ -418,7 +418,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with style attribute -->
     <div class="example">
       <h3>29. Image with inline style</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with inline style"
@@ -431,7 +431,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with id attribute -->
     <div class="example">
       <h3>30. Image with id attribute</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with id"
@@ -444,7 +444,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with title attribute -->
     <div class="example">
       <h3>31. Image with title attribute</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with title"
@@ -457,7 +457,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with crossorigin attribute -->
     <div class="example">
       <h3>32. Image with crossorigin="anonymous"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with crossorigin"
@@ -470,7 +470,7 @@ import { IKAstroImage } from '@imagekit/astro';
     <!-- Image with referrerpolicy attribute -->
     <div class="example">
       <h3>33. Image with referrerpolicy="no-referrer"</h3>
-      <IKAstroImage
+      <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
         alt="Image with referrer policy"

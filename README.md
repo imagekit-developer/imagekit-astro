@@ -31,10 +31,10 @@ PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
 
 ```astro
 ---
-import { IKAstroImage } from '@imagekit/astro';
+import { Image } from '@imagekit/astro';
 ---
 
-<IKAstroImage
+<Image
   src="/default-image.jpg"
   alt="A beautiful image"
   width={800}
@@ -47,16 +47,16 @@ import { IKAstroImage } from '@imagekit/astro';
 
 ## Components
 
-### `<IKAstroImage />`
+### `<Image />`
 Uses Astro's built-in `<Image />` component with ImageKit transformations. This provides Astro's native image optimization features while leveraging ImageKit's URL-based transformations.
 
 ```astro
 ---
-import { IKAstroImage } from '@imagekit/astro';
+import { Image } from '@imagekit/astro';
 ---
 
 <!-- Basic usage -->
-<IKAstroImage
+<Image
   urlEndpoint="https://ik.imagekit.io/your_id"
   src="/hero.jpg"
   alt="Hero image"
@@ -65,7 +65,7 @@ import { IKAstroImage } from '@imagekit/astro';
 />
 
 <!-- With transformations -->
-<IKAstroImage
+<Image
   urlEndpoint="https://ik.imagekit.io/your_id"
   src="/hero.jpg"
   alt="Cropped hero"
@@ -75,7 +75,7 @@ import { IKAstroImage } from '@imagekit/astro';
 />
 
 <!-- With Astro-specific props -->
-<IKAstroImage
+<Image
   urlEndpoint="https://ik.imagekit.io/your_id"
   src="/hero.jpg"
   alt="Optimized hero"
@@ -112,16 +112,16 @@ All standard Astro `<Image />` props are also supported.
 
 ---
 
-### `<IKVideo />`
+### `<Video />`
 
 Renders a `<video>` element with an ImageKit-optimized source URL.
 
 ```astro
 ---
-import { IKVideo } from '@imagekit/astro';
+import { Video } from '@imagekit/astro';
 ---
 
-<IKVideo
+<Video
   src="/sample-video.mp4"
   width={640}
   height={360}
@@ -145,18 +145,18 @@ All standard HTML `<video>` attributes (`controls`, `autoplay`, `loop`, `muted`,
 
 ---
 
-### `<IKOgImage />`
+### `<OgImage />`
 
 Generates OpenGraph and Twitter Card `<meta>` tags with ImageKit-optimized image URLs. Place it inside `<head>`.
 
 ```astro
 ---
-import { IKOgImage } from '@imagekit/astro';
+import { OgImage } from '@imagekit/astro';
 ---
 
 <html>
 <head>
-  <IKOgImage
+  <OgImage
     src="/og-banner.jpg"
     alt="My page description"
     twitterTitle="Check out this page!"
@@ -221,7 +221,7 @@ transformation={[
 Multiple objects in the array create [chained transformations](https://imagekit.io/docs/transformations#chained-transformations):
 
 ```astro
-<IKAstroImage
+<Image
   src="/photo.jpg"
   alt="Chained transformations"
   transformation={[
@@ -238,7 +238,7 @@ Multiple objects in the array create [chained transformations](https://imagekit.
 By default, transformations are added as query parameters (`?tr=w-400,h-300`). Set `transformationPosition="path"` to use path-based transformations (`/tr:w-400,h-300/`):
 
 ```astro
-<IKAstroImage
+<Image
   src="/photo.jpg"
   alt="Path-based transforms"
   transformationPosition="path"
@@ -256,8 +256,8 @@ All component props and helper types are exported:
 
 ```typescript
 import type {
-  IKVideoProps,
-  IKOgImageProps,
+  VideoProps,
+  OgImageProps,
   Transformation,
   SrcOptions,
 } from '@imagekit/astro';
@@ -280,7 +280,7 @@ PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
 Pass `urlEndpoint` directly to any component to override the environment variable:
 
 ```astro
-<IKAstroImage
+<Image
   urlEndpoint="https://ik.imagekit.io/different_account"
   src="/image.jpg"
   alt="Different account"
@@ -320,7 +320,7 @@ pnpm test:e2e-update   # Update E2E snapshots
 imagekit-astro/
 ├── imagekit-astro/          # Publishable @imagekit/astro package
 │   ├── src/
-│   │   ├── components/      # IKAstroImage, IKVideo, IKOgImage (.astro)
+│   │   ├── components/      # Image, Video, OgImage (.astro)
 │   │   ├── helpers/         # Helper functions
 │   │   ├── lib/             # Config resolution
 │   │   ├── types/           # TypeScript interfaces

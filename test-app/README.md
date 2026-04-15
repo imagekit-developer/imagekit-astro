@@ -5,8 +5,8 @@ This is a demo Astro application for testing the `@imagekit/astro` package.
 ## Pages
 
 - `/` - Home page with navigation links
-- `/videos` - Test cases for the `IKVideo` component
-- `/astro-images` - Test cases for the `IKAstroImage` component
+- `/videos` - Test cases for the `Video` component
+- `/images` - Test cases for the `Image` component
 
 ## Running the App
 
@@ -30,7 +30,7 @@ pnpm test:e2e-update
 
 ## Test Cases Covered
  
-### IKAstroImage
+### Image
 
 - Basic image with urlEndpoint prop
 - Image with leading slash in src
@@ -48,8 +48,8 @@ pnpm test:e2e-update
 - Image with custom deviceBreakpoints
 - Image with responsive=false
 - Image with format and quality props
+### Video
 
-### IKVideo
 
 - Basic video with urlEndpoint prop
 - Video with leading slash in src

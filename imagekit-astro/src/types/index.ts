@@ -1,10 +1,10 @@
 import type { Transformation } from '@imagekit/javascript';
 
 /**
- * Props for the IKVideo component.
+ * Props for the Video component.
  * Extends standard HTML video attributes with ImageKit-specific options.
  */
-export interface IKVideoProps {
+export interface VideoProps {
   /** Relative path or absolute URL of the video in your ImageKit account */
   src: string;
 
@@ -30,10 +30,10 @@ export interface IKVideoProps {
 }
 
 /**
- * Props for the IKOgImage component.
+ * Props for the OgImage component.
  * Generates OpenGraph and Twitter Card meta tags.
  */
-export interface IKOgImageProps {
+export interface OgImageProps {
   /** Relative path or absolute URL of the image */
   src: string;
 
@@ -71,10 +71,10 @@ export interface IKOgImageProps {
 }
 
 /**
- * Props for the IKAstroImage component.
+ * Props for the Image component.
  * Combines Astro's RemoteImageProps with ImageKit-specific options.
  */
-export interface IKAstroImageProps {
+export interface ImageProps {
   /** ImageKit URL endpoint */
   urlEndpoint?: string;
   /** Array of ImageKit transformations */
