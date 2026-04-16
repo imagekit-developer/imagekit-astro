@@ -18,6 +18,28 @@ pnpm dev
 
 Then open http://localhost:4321
 
+## Configuration
+
+The test app already includes the ImageKit service configuration in `astro.config.mjs`:
+
+```js
+import { defineConfig } from 'astro/config';
+
+export default defineConfig({
+  image: {
+    domains: ["imagekit.io"],
+    service: {
+      entrypoint: '@imagekit/astro/image-service',
+      config: {
+        urlEndpoint: 'https://ik.imagekit.io/demo/',
+      },
+    },
+  },
+});
+```
+
+When using the `@imagekit/astro` package in your own project, you need to add similar configuration to your Astro config.
+
 ## Running Tests
 
 ```bash

@@ -27,6 +27,24 @@ PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
 
 > Get your URL endpoint from the [ImageKit dashboard](https://imagekit.io/dashboard/url-endpoints).
 
+Also, add the ImageKit service to your Astro config:
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+
+export default defineConfig({
+  image: {
+    service: {
+      entrypoint: '@imagekit/astro/image-service',
+      config: {
+        urlEndpoint: 'https://ik.imagekit.io/your_imagekit_id',
+      },
+    },
+  },
+});
+```
+
 ### 3. Use
 
 ```astro
