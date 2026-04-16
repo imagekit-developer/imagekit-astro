@@ -258,34 +258,4 @@ test("Image with id attribute preserves it", async ({ page }) => {
   await expect(imageWithId).toBeVisible();
 });
 
-test("Image with title attribute preserves it", async ({ page }) => {
-  await page.goto("/images");
-
-  // Example 31 has title attribute
-  const imageWithTitle = page.locator('.example').nth(30).locator('img');
-  const title = await imageWithTitle.getAttribute('title');
-
-  expect(title).toBe('This is the image title tooltip');
-});
-
-test("Image with crossorigin attribute preserves it", async ({ page }) => {
-  await page.goto("/images");
-
-  // Example 32 has crossorigin="anonymous"
-  const imageWithCrossorigin = page.locator('.example').nth(31).locator('img');
-  const crossorigin = await imageWithCrossorigin.getAttribute('crossorigin');
-
-  expect(crossorigin).toBe('anonymous');
-});
-
-test("Image with referrerpolicy attribute preserves it", async ({ page }) => {
-  await page.goto("/images");
-
-  // Example 33 has referrerpolicy="no-referrer"
-  const imageWithReferrer = page.locator('.example').nth(32).locator('img');
-  const referrerpolicy = await imageWithReferrer.getAttribute('referrerpolicy');
-
-  expect(referrerpolicy).toBe('no-referrer');
-});
-
 

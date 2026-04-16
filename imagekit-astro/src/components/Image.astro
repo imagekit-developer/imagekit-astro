@@ -1,119 +1,14 @@
 ---
-import { buildSrc, getResponsiveImageAttributes } from '@imagekit/javascript';
-import { getImageKitConfig } from '../lib/imagekit';
-import { getInt } from '../helpers/index';
 import { Image as AstroImage, type RemoteImageProps } from 'astro:assets';
-import type { Transformation } from '@imagekit/javascript';
 import type { ImageProps } from '../types';
 
 // Combine Astro's RemoteImageProps with ImageKit props
 type Props = RemoteImageProps & ImageProps;
 
 const {
-  // Common Image Props
-  src,
-  alt,
-  sizes,
-  width,
-  height,
   class: className,
-
-  // IK Specific Props
-  urlEndpoint,
-  transformation = [],
-  queryParameters,
-  transformationPosition,
-  responsive = true,
-  deviceBreakpoints,
-  imageBreakpoints,
-  loading = 'lazy',
-
-  // Astro Image Props
-  format,
-  quality,
-  inferSize,
-  priority,
-  ...astroProps
+  ...props
 } = Astro.props;
-
-// Resolve ImageKit configuration
-const config = getImageKitConfig({ urlEndpoint, transformationPosition });
-
-// Parse width and height as integers for responsive calculations
-const widthInt = getInt(width);
-const heightInt = getInt(height);
-
-// Build image attributes
-const imageProps: {
-  src: Props['src'];
-  alt: Props['alt'];
-  srcset?: Props['srcset'];
-  loading?: Props['loading'];
-  priority?: Props['priority'];
-  sizes?: Props['sizes'];
-  format?: Props['format'];
-  quality?: Props['quality'];
-  width: Props['width'];
-  height?: Props['height'];
-} = {
-  src,
-  alt,
-  priority,
-  loading: priority ? undefined : (loading ?? 'lazy'),
-  sizes,
-
-  // Astro props supported by ImageKit transformations
-  quality: typeof quality !== 'number' ? quality : undefined,
-
-  // Size
-  width: inferSize ? undefined : width,
-  height: inferSize ? undefined : height,
-};
-
-const updatedTransformations: Transformation[] = Array.from(transformation ?? []);
-
-
-if (format && typeof format === 'string') {
-  updatedTransformations.push({ format });
-}
-if (typeof quality === 'number') {
-  updatedTransformations.push({ quality });
-}
-
-const shouldAddIKResponsiveProps =
-    astroProps.layout === undefined &&
-    astroProps.densities === undefined &&
-    astroProps.widths === undefined &&
-    width !== undefined &&
-    (inferSize === undefined || inferSize === false);
-
-if (responsive && shouldAddIKResponsiveProps) {
-  // Responsive: generate srcSet and sizes
-  const attrs = getResponsiveImageAttributes({
-    src: src as string,
-    urlEndpoint: config.urlEndpoint,
-    transformation: [...updatedTransformations],
-    queryParameters,
-    transformationPosition: config.transformationPosition,
-    width: Number.isNaN(widthInt) ? undefined : widthInt,
-    sizes,
-    deviceBreakpoints,
-    imageBreakpoints,
-  });
-
-  imageProps.src = attrs.src;
-  imageProps.srcset = attrs.srcSet;
-  imageProps.sizes = attrs.sizes;
-} else {
-  // Non-responsive: single URL
-  imageProps.src = buildSrc({
-    src: src as string,
-    urlEndpoint: config.urlEndpoint,
-    transformation: [...updatedTransformations],
-    queryParameters,
-    transformationPosition: config.transformationPosition,
-  });
-}
 
 // Build the class name
 let imageClassName = 'astro-imagekit-image';
@@ -122,21 +17,7 @@ if (className) {
 }
 ---
 
-{
-  inferSize ? (
-    <AstroImage
-      inferSize
-      class={imageClassName}
-      {...imageProps}
-      {...astroProps}
-    />
-  ) : (
-    <AstroImage
-      class={imageClassName}
-      {...imageProps}
-      width={widthInt}
-      height={heightInt}
-      {...astroProps}
-    />
-  )
-}
+<AstroImage
+  class={imageClassName}
+  {...props}
+/>
