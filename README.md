@@ -311,7 +311,7 @@ IMAGEKIT_PUBLIC_KEY=your_public_key
 
 ### Step 1: Create an Astro API Endpoint
 
-Create a server-side endpoint that returns auth parameters. Astro API endpoints must export named HTTP method handlers.
+Create a server-side endpoint that returns auth parameters. Astro API endpoints must export named HTTP method handlers. Make sure to add an adapter to your astro project and render the upload endpoint on demand. Refer astro docs for [on-demand rendering](https://docs.astro.build/en/guides/on-demand-rendering/) for more details.
 
 ```ts
 // src/pages/api/upload-auth.ts

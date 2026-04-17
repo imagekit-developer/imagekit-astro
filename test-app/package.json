@@ -11,8 +11,9 @@
     "test:e2e-update": "playwright test --update-snapshots"
   },
   "dependencies": {
+    "@astrojs/node": "^9.5.5",
     "@imagekit/astro": "workspace:*",
-    "astro": "^5.11.0"
+    "astro": "^5.18.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
