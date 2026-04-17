@@ -121,7 +121,7 @@ const service: ExternalImageService = {
           inferredSize.width = Math.round(inferredSize.width * scaleFactor);
           inferredSize.height = Math.round(inferredSize.height * scaleFactor);
         }
-        const densities = (options as any).densities ?? [1];
+        const densities: (number | `${number}x`)[] = (options as any).densities ?? [1];
         const largestDensity = Math.max(...densities.map((d) => (typeof d === 'number' ? d : Number.parseFloat(d))));
         options.width = Math.round(inferredSize.width / largestDensity);
         options.height = Math.round(inferredSize.height / largestDensity);

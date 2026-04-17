@@ -19,6 +19,9 @@
     ".": {
       "import": "./index.ts"
     },
+    "./server": {
+      "import": "./src/server/index.ts"
+    },
     "./image-service": {
       "import": "./src/services/imagekit-service.ts"
     },

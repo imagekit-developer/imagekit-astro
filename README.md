@@ -268,21 +268,6 @@ By default, transformations are added as query parameters (`?tr=w-400,h-300`). S
 
 ---
 
-## TypeScript
-
-All component props and helper types are exported:
-
-```typescript
-import type {
-  VideoProps,
-  OgImageProps,
-  Transformation,
-  SrcOptions,
-} from '@imagekit/astro';
-```
-
----
-
 ## Configuration
 
 ### Environment Variable
@@ -309,6 +294,112 @@ Pass `urlEndpoint` directly to any component to override the environment variabl
 
 ---
 
+## Uploading Files
+
+The SDK provides a `getUploadAuthParams` server-side helper that generates the authentication parameters (signature, token, expire) needed for client-side file uploads to ImageKit.
+
+> **Important:** `getUploadAuthParams` must only be called on the server. Never expose your **private key** to the client.
+
+### Setup
+
+Add your ImageKit keys to `.env`:
+
+```env
+IMAGEKIT_PRIVATE_KEY=your_private_key
+IMAGEKIT_PUBLIC_KEY=your_public_key
+```
+
+### Step 1: Create an Astro API Endpoint
+
+Create a server-side endpoint that returns auth parameters. Astro API endpoints must export named HTTP method handlers.
+
+```ts
+// src/pages/api/upload-auth.ts
+import type { APIRoute } from 'astro';
+import { getUploadAuthParams } from '@imagekit/astro/server';
+
+export const prerender = false;
+
+export const GET: APIRoute = async () => {
+  const authParams = getUploadAuthParams({
+    privateKey: import.meta.env.IMAGEKIT_PRIVATE_KEY,
+    publicKey: import.meta.env.IMAGEKIT_PUBLIC_KEY,
+  });
+
+  return new Response(JSON.stringify(authParams), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+};
+```
+
+### Step 2: Upload from the Client
+
+Use the `upload` function (re-exported from `@imagekit/javascript`) to upload files. Fetch auth parameters from your endpoint before each upload.
+
+```astro
+---
+// src/pages/upload.astro
+---
+
+<html>
+<body>
+  <input type="file" id="file-input" />
+  <button id="upload-btn">Upload</button>
+  <pre id="result"></pre>
+
+  <script>
+    import { upload } from '@imagekit/astro';
+
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement;
+    const result = document.getElementById('result') as HTMLPreElement;
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+
+      // Fetch auth params from your server endpoint
+      const res = await fetch('/api/upload-auth');
+      const authParams = await res.json();
+
+      const response = await upload({
+        file,
+        fileName: file.name,
+        publicKey: import.meta.env.IMAGEKIT_PUBLIC_KEY,
+        ...authParams,
+      });
+
+      result.textContent = JSON.stringify(response, null, 2);
+    });
+  </script>
+</body>
+</html>
+```
+
+### `getUploadAuthParams` Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `privateKey` | `string` | Yes | Your ImageKit private key |
+| `publicKey` | `string` | Yes | Your ImageKit public key |
+| `token` | `string` | No | Custom token (auto-generated UUID if omitted) |
+| `expire` | `number` | No | Expiry timestamp in seconds (defaults to 30 min from now) |
+
+### `getUploadAuthParams` Response
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `token` | `string` | Unique upload token |
+| `signature` | `string` | HMAC-SHA1 signature for authentication |
+| `expire` | `number` | Expiry timestamp (seconds since epoch) |
+| `publicKey` | `string` | publicKey for passing in upload API request |
+
+For the full list of `upload()` parameters, see the [@imagekit/javascript documentation](https://imagekit.io/docs/integration/javascript).
+
+
+---
+
 ## Contributing
 
 ### Setup
@@ -322,33 +413,16 @@ pnpm install
 ### Development
 
 ```bash
+cd test-app
 pnpm dev          # Watch mode for the package
 ```
 
 ### Testing
 
 ```bash
+cd test-app
 pnpm test:e2e          # Run Playwright E2E tests
 pnpm test:e2e-update   # Update E2E snapshots
-```
-
-### Project Structure
-
-```
-imagekit-astro/
-├── imagekit-astro/          # Publishable @imagekit/astro package
-│   ├── src/
-│   │   ├── components/      # Image, Video, OgImage (.astro)
-│   │   ├── helpers/         # Helper functions
-│   │   ├── lib/             # Config resolution
-│   │   ├── types/           # TypeScript interfaces
-│   │   └── constants/       # Default values
-│   ├── index.ts             # Package entry point
-│   └── tsup.config.ts       # Build configuration
-│
-└── test-app/                # Test application
-    ├── src/pages/           # Test pages for components
-    └── e2e/                 # Playwright E2E tests
 ```
 
 ---
