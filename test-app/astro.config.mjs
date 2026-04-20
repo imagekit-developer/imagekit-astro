@@ -7,7 +7,7 @@ export default defineConfig({
     service: {
       entrypoint: '@imagekit/astro/image-service',
       config: {
-        urlEndpoint: 'https://ik.imagekit.io/demo/',
+        urlEndpoint: import.meta.env.PUBLIC_IMAGEKIT_URL_ENDPOINT,
       },
     },
   },

@@ -38,7 +38,7 @@ export default defineConfig({
     service: {
       entrypoint: '@imagekit/astro/image-service',
       config: {
-        urlEndpoint: 'https://ik.imagekit.io/your_imagekit_id',
+        urlEndpoint: import.meta.env.PUBLIC_IMAGEKIT_URL_ENDPOINT,
       },
     },
   },
@@ -75,7 +75,7 @@ import { Image } from '@imagekit/astro';
 
 <!-- Basic usage -->
 <Image
-  urlEndpoint="https://ik.imagekit.io/your_id"
+  urlEndpoint="https://ik.imagekit.io/your_imagekit_id"
   src="/hero.jpg"
   alt="Hero image"
   width={1200}
@@ -84,7 +84,7 @@ import { Image } from '@imagekit/astro';
 
 <!-- With transformations -->
 <Image
-  urlEndpoint="https://ik.imagekit.io/your_id"
+  urlEndpoint="https://ik.imagekit.io/your_imagekit_id"
   src="/hero.jpg"
   alt="Cropped hero"
   transformation={[{ width: 600, height: 400, focus: "auto" }]}
@@ -94,7 +94,7 @@ import { Image } from '@imagekit/astro';
 
 <!-- With Astro-specific props -->
 <Image
-  urlEndpoint="https://ik.imagekit.io/your_id"
+  urlEndpoint="https://ik.imagekit.io/your_imagekit_id"
   src="/hero.jpg"
   alt="Optimized hero"
   width={800}
@@ -284,7 +284,7 @@ Pass `urlEndpoint` directly to any component to override the environment variabl
 
 ```astro
 <Image
-  urlEndpoint="https://ik.imagekit.io/different_account"
+  urlEndpoint="https://ik.imagekit.io/your_imagekit_id_2"
   src="/image.jpg"
   alt="Different account"
   width={400}
