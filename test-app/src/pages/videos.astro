@@ -185,6 +185,133 @@ import { Video } from '@imagekit/astro';
       />
     </div>
 
+    <!-- EDGE CASE TESTS -->
+    <h2>Edge Case Tests</h2>
+    <p>Testing extreme values and boundary conditions for video component.</p>
+
+    <!-- Minimal dimensions 1px x 1px -->
+    <div class="example" data-test-id="video-edge-minimal">
+      <h3>Edge Case: Minimal dimensions (1px × 1px)</h3>
+      <Video
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Edge: minimal video 1x1"
+        width={1}
+        height={1}
+        controls
+      />
+    </div>
+
+    <!-- Large dimensions -->
+    <div class="example" data-test-id="video-edge-large">
+      <h3>Edge Case: Large dimensions (4000px × 2000px)</h3>
+      <Video
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Edge: large video"
+        width={4000}
+        height={2000}
+        controls
+      />
+    </div>
+
+    <!-- Extreme aspect ratio tall -->
+    <div class="example" data-test-id="video-edge-ratio-tall">
+      <h3>Edge Case: Extreme aspect ratio (1:500)</h3>
+      <Video
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Edge: tall aspect ratio"
+        width={10}
+        height={5000}
+        controls
+      />
+    </div>
+
+    <!-- Extreme aspect ratio wide -->
+    <div class="example" data-test-id="video-edge-ratio-wide">
+      <h3>Edge Case: Extreme aspect ratio (500:1)</h3>
+      <Video
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Edge: wide aspect ratio"
+        width={5000}
+        height={10}
+        controls
+      />
+    </div>
+
+    <!-- Multiple complex transformations -->
+    <div class="example" data-test-id="video-edge-complex-transformations">
+      <h3>Edge Case: Multiple complex transformations</h3>
+      <Video
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Edge: complex transformations"
+        transformation={[
+          { width: 200, height: 200 },
+          { rotation: 90 },
+          { quality: 50 },
+          { aspectRatio: "16-9" }
+        ]}
+        width={300}
+        height={300}
+        controls
+      />
+    </div>
+
+    <!-- transformationPosition="path" with transformations -->
+    <div class="example" data-test-id="video-edge-transform-path">
+      <h3>Edge Case: transformationPosition="path"</h3>
+      <Video
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Edge: path transformation position"
+        transformationPosition="path"
+        transformation={[{ width: 200, height: 200 }]}
+        width={300}
+        height={300}
+        controls
+      />
+    </div>
+
+    <!-- transformationPosition="query" with queryParameters -->
+    <div class="example" data-test-id="video-edge-transform-query">
+      <h3>Edge Case: transformationPosition="query" + queryParameters</h3>
+      <Video
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Edge: query transformation position"
+        transformationPosition="query"
+        queryParameters={{
+          version: "v2",
+          custom: "value"
+        }}
+        width={300}
+        height={300}
+        controls
+      />
+    </div>
+
+    <!-- All HTML video attributes together -->
+    <div class="example" data-test-id="video-edge-all-attributes">
+      <h3>Edge Case: All HTML attributes combined</h3>
+      <Video
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="sample-video.mp4"
+        title="Edge: all attributes"
+        width={300}
+        height={300}
+        controls
+        autoplay
+        loop
+        muted
+        preload="metadata"
+        crossorigin="anonymous"
+        data-test="custom-attribute"
+      />
+    </div>
+
   </div>
 </body>
 </html>

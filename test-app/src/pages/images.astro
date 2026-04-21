@@ -440,6 +440,391 @@ import { Image } from '@imagekit/astro';
         height={300}
       />
     </div>
+
+    <!-- PROPERTY CONFLICT TESTS -->
+    <h2>Property Conflict Tests (Invalid Combinations)</h2>
+    <p>Per Astro docs: These property combinations should not be used together. Testing graceful handling.</p>
+
+    <!-- densities + layout conflict -->
+    <div class="example" data-test-id="conflict-densities-layout">
+      <h3>31. CONFLICT: densities + layout (densities should be ignored)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Conflict: densities + layout"
+        densities={[1.5, 2]}
+        layout="constrained"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- densities + widths conflict -->
+    <div class="example" data-test-id="conflict-densities-widths">
+      <h3>32. CONFLICT: densities + widths (only one should be used)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Conflict: densities + widths"
+        densities={[1.5, 2]}
+        widths={[240, 540, 720]}
+        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- widths without sizes -->
+    <div class="example" data-test-id="conflict-widths-no-sizes">
+      <h3>33. CONFLICT: widths without sizes (sizes required)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Conflict: widths without sizes"
+        widths={[240, 540, 720]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- layout=fixed + widths -->
+    <div class="example" data-test-id="conflict-fixed-widths">
+      <h3>34. CONFLICT: layout=fixed + widths (fixed layout shouldn't vary widths)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Conflict: layout=fixed + widths"
+        layout="fixed"
+        widths={[240, 540, 720]}
+        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- layout=none + responsive prop -->
+    <div class="example" data-test-id="conflict-none-layout-responsive">
+      <h3>35. CONFLICT: layout=none + responsive=true (none disables responsiveness)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Conflict: layout=none + responsive"
+        layout="none"
+        responsive={true}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- VALID PROPERTY COMBINATIONS -->
+    <h2>Valid Property Combinations</h2>
+    <p>These property combinations work correctly together.</p>
+
+    <!-- widths + sizes valid -->
+    <div class="example" data-test-id="valid-widths-sizes">
+      <h3>36. VALID: widths + sizes (responsive with explicit widths)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Valid: widths + sizes"
+        widths={[240, 540, 720]}
+        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- densities alone valid -->
+    <div class="example" data-test-id="valid-densities-alone">
+      <h3>37. VALID: densities alone (density-based srcset)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Valid: densities alone"
+        densities={[1.5, 2]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- layout=constrained + format + quality valid -->
+    <div class="example" data-test-id="valid-layout-format-quality">
+      <h3>38. VALID: layout=constrained + format + quality</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Valid: layout + format + quality"
+        layout="constrained"
+        format="webp"
+        quality="high"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- layout=full-width with responsive -->
+    <div class="example" data-test-id="valid-fullwidth-responsive">
+      <h3>39. VALID: layout=full-width with responsive props</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Valid: layout full-width"
+        layout="full-width"
+        responsive={true}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- responsive + ImageKit breakpoints -->
+    <div class="example" data-test-id="valid-responsive-breakpoints">
+      <h3>40. VALID: responsive=true + ImageKit breakpoints</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Valid: responsive + breakpoints"
+        responsive={true}
+        deviceBreakpoints={[320, 640, 1024]}
+        imageBreakpoints={[200, 400, 600]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- EDGE CASE TESTS -->
+    <h2>Edge Case Tests</h2>
+    <p>Testing extreme values and boundary conditions.</p>
+
+    <!-- Minimal dimensions 1px x 1px -->
+    <div class="example" data-test-id="edge-minimal-dimensions">
+      <h3>41. Edge Case: Minimal dimensions (1px × 1px)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: minimal 1x1"
+        width={1}
+        height={1}
+      />
+    </div>
+
+    <!-- Extreme aspect ratio 1:1000 -->
+    <div class="example" data-test-id="edge-extreme-ratio-tall">
+      <h3>42. Edge Case: Extreme aspect ratio (1:1000)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: 1:1000 aspect ratio"
+        width={10}
+        height={10000}
+      />
+    </div>
+
+    <!-- Extreme aspect ratio 1000:1 -->
+    <div class="example" data-test-id="edge-extreme-ratio-wide">
+      <h3>43. Edge Case: Extreme aspect ratio (1000:1)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: 1000:1 aspect ratio"
+        width={10000}
+        height={10}
+      />
+    </div>
+
+    <!-- Quality boundary: 0 -->
+    <div class="example" data-test-id="edge-quality-0">
+      <h3>44. Edge Case: Quality = 0 (minimum)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: quality 0"
+        quality={0}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Quality boundary: 100 -->
+    <div class="example" data-test-id="edge-quality-100">
+      <h3>45. Edge Case: Quality = 100 (maximum)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: quality 100"
+        quality={100}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Format: webp -->
+    <div class="example" data-test-id="edge-format-webp">
+      <h3>46. Edge Case: Format = webp</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: webp format"
+        format="webp"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Format: avif -->
+    <div class="example" data-test-id="edge-format-avif">
+      <h3>47. Edge Case: Format = avif</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: avif format"
+        format="avif"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Format: svg -->
+    <div class="example" data-test-id="edge-format-svg">
+      <h3>48. Edge Case: Format = svg</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: svg format"
+        format="svg"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Multiple complex transformations -->
+    <div class="example" data-test-id="edge-complex-transformations">
+      <h3>49. Edge Case: Multiple complex transformations</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: complex transformations"
+        transformation={[
+          { width: 200, height: 200 },
+          { rotation: 45 },
+          { blur: 10 },
+          { quality: 50 },
+          { overlayText: "WATERMARK" }
+        ]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- transformationPosition path with transformations -->
+    <div class="example" data-test-id="edge-transform-position-path">
+      <h3>50. Edge Case: transformationPosition="path" + transformations</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: transformation path position"
+        transformationPosition="path"
+        transformation={[{ width: 200, height: 200 }, { quality: 75 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- transformationPosition query with complex query params -->
+    <div class="example" data-test-id="edge-transform-position-query">
+      <h3>51. Edge Case: transformationPosition="query" + queryParameters</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: transformation query position"
+        transformationPosition="query"
+        transformation={[{ width: 200, height: 200 }]}
+        queryParameters={{
+          version: "v1",
+          custom: "param"
+        }}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Large width boundary test -->
+    <div class="example" data-test-id="edge-large-width">
+      <h3>52. Edge Case: Large width (5000px)</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: 5000px width"
+        width={5000}
+        height={5000}
+      />
+    </div>
+
+    <!-- Quality as string preset -->
+    <div class="example" data-test-id="edge-quality-preset-low">
+      <h3>53. Edge Case: Quality preset = "low"</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: quality low preset"
+        quality="low"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Quality as string preset mid -->
+    <div class="example" data-test-id="edge-quality-preset-mid">
+      <h3>54. Edge Case: Quality preset = "mid"</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: quality mid preset"
+        quality="mid"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Quality as string preset max -->
+    <div class="example" data-test-id="edge-quality-preset-max">
+      <h3>55. Edge Case: Quality preset = "max"</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: quality max preset"
+        quality="max"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Responsive with custom device breakpoints edge case -->
+    <div class="example" data-test-id="edge-device-breakpoints">
+      <h3>56. Edge Case: Responsive with extreme device breakpoints</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: device breakpoints"
+        responsive={true}
+        deviceBreakpoints={[100, 5000]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Responsive with custom image breakpoints edge case -->
+    <div class="example" data-test-id="edge-image-breakpoints">
+      <h3>57. Edge Case: Responsive with extreme image breakpoints</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo/"
+        src="/default-image.jpg"
+        alt="Edge: image breakpoints"
+        responsive={true}
+        imageBreakpoints={[100, 5000]}
+        width={300}
+        height={300}
+      />
+    </div>
   </div>
 </body>
 </html>
