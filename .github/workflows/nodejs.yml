@@ -48,7 +48,8 @@ jobs:
         cd test-app
         pnpm remove @imagekit/astro || true
         pnpm add ../imagekit-astro/imagekit-astro-*.tgz
-        pnpm add astro@${{ matrix.astro-version }} ${{ matrix.node-adapter }}
+        pnpm add astro@${{ matrix.astro-version }}
+        pnpm add ${{ matrix.node-adapter }}
 
     - name: Install Playwright
       run: |
