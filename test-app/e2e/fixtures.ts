@@ -6,7 +6,6 @@ function getInstalledAstroVersion(): string {
   try {
     const require = createRequire(import.meta.url);
     const astroPkg = require('astro/package.json');
-    console.log(`Detected installed Astro version: ${astroPkg.version}`);
     return astroPkg.version;
   } catch {
     return 'latest';
