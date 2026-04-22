@@ -61,10 +61,10 @@ export interface OgImageProps {
   twitterDescription?: string;
 
   /** OG image width. Default: 1200 */
-  width?: number | string;
+  width?: number;
 
   /** OG image height. Default: 630 */
-  height?: number | string;
+  height?: number;
 
   /** Image format override */
   format?: 'auto' | 'webp' | 'jpg' | 'jpeg' | 'png' | 'gif' | 'svg' | 'mp4' | 'webm' | 'avif' | 'orig';

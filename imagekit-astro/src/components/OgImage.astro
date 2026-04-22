@@ -1,7 +1,6 @@
 ---
 import { buildSrc } from '@imagekit/javascript';
 import { getImageKitConfig } from '../lib/imagekit';
-import { getInt } from '../helpers/index';
 import { OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT } from '../constants/sizes';
 import type { OgImageProps } from '../types/index';
 
@@ -28,10 +27,8 @@ if (!twitterTitle) {
 const config = getImageKitConfig({ urlEndpoint, transformationPosition });
 
 // Determine dimensions
-const widthInt = getInt(restProps.width);
-const heightInt = getInt(restProps.height);
-const width: number = Number.isNaN(widthInt) ? OG_IMAGE_WIDTH : widthInt;
-const height: number = Number.isNaN(heightInt) ? OG_IMAGE_HEIGHT : heightInt;
+const width: number = restProps.width ?? OG_IMAGE_WIDTH;
+const height: number = restProps.height ?? OG_IMAGE_HEIGHT;
 
 // Generate OG image URL (default format, typically jpg)
 const ogImageUrl = buildSrc({
