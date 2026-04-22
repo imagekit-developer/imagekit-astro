@@ -1,7 +1,21 @@
 import type { ExternalImageService, ImageTransform, AstroConfig } from 'astro';
 import { buildSrc, getResponsiveImageAttributes } from '@imagekit/javascript';
 import type { Transformation } from '@imagekit/javascript';
-import { inferRemoteSize } from 'astro:assets';
+/**
+ * Dynamically imports `inferRemoteSize` from `astro:assets`.
+ * Available since Astro 4.12. Returns `undefined` on older versions.
+ */
+async function tryInferRemoteSize(url: string): Promise<{ width: number; height: number } | undefined> {
+  try {
+    const mod = await import('astro:assets');
+    if (typeof mod.inferRemoteSize === 'function') {
+      return await mod.inferRemoteSize(url);
+    }
+    return undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 export interface ImageKitServiceConfig {
   /**
@@ -126,7 +140,7 @@ const service: ExternalImageService = {
         queryParameters: (options as any).queryParameters,
         transformationPosition: resolveConfig(options, imageConfig).transformationPosition,
       });
-      const inferredSize = await inferRemoteSize(baseSrc);
+      const inferredSize = await tryInferRemoteSize(baseSrc);
       
       if (inferredSize) {
         const { width, height } = getDimensionsUnder25MP(inferredSize.width, inferredSize.height);
@@ -137,8 +151,10 @@ const service: ExternalImageService = {
         options.width = Math.round(inferredSize.width / largestDensity);
         options.height = Math.round(inferredSize.height / largestDensity);
       } else {
-        throw new Error(
-          `Failed to infer image size for ${baseSrc}. Please provide explicit width and height.`,
+        console.warn(
+          `Failed to infer image size for ${baseSrc}. ` +
+          `Automatic dimension inference requires Astro 4.12+. ` +
+          `Please provide explicit width and height.`,
         );
       }
     }

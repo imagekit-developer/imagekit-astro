@@ -13,8 +13,8 @@
   "scripts": {
     "dev": "pnpm -r dev",
     "build": "pnpm -r build",
-    "test:e2e": "pnpm --filter test-app run test:e2e",
-    "test:e2e-update": "pnpm --filter test-app run test:e2e-update"
+    "test:all-versions": "./scripts/test-all-versions.sh",
+    "test:all-versions:update": "./scripts/test-all-versions.sh --update"
   },
   "devDependencies": {
     "typescript": "^5.5.4"

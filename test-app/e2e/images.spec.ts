@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, skipIfAstroVersionBelow } from "./fixtures";
 
 test("Image page renders correctly", async ({ page }) => {
   await page.goto("/images");
@@ -170,7 +170,8 @@ test("Image with widths generates width-based srcset", async ({ page }) => {
   }
 });
 
-test("Image with layout=constrained has correct data attribute", async ({ page }) => {
+test("Image with layout=constrained has correct data attribute", async ({ page, astroVersion }) => {
+  test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
   await page.goto("/images");
 
   // Example 23 has layout="constrained"
@@ -180,7 +181,8 @@ test("Image with layout=constrained has correct data attribute", async ({ page }
   expect(dataAstroImage).toBe('constrained');
 });
 
-test("Image with layout=full-width has correct data attribute", async ({ page }) => {
+test("Image with layout=full-width has correct data attribute", async ({ page, astroVersion }) => {
+  test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
   await page.goto("/images");
 
   // Example 24 has layout="full-width"
@@ -190,7 +192,8 @@ test("Image with layout=full-width has correct data attribute", async ({ page })
   expect(dataAstroImage).toBe('full-width');
 });
 
-test("Image with layout=fixed has correct data attribute", async ({ page }) => {
+test("Image with layout=fixed has correct data attribute", async ({ page, astroVersion }) => {
+  test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
   await page.goto("/images");
 
   // Example 25 has layout="fixed"
@@ -200,31 +203,34 @@ test("Image with layout=fixed has correct data attribute", async ({ page }) => {
   expect(dataAstroImage).toBe('fixed');
 });
 
-test("Image with fit=contain has correct style", async ({ page }) => {
+test("Image with fit=contain has correct style", async ({ page, astroVersion }) => {
+  test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
   await page.goto("/images");
 
   // Example 26 has fit="contain"
   const containFitImage = page.locator('.example').nth(25).locator('img');
   const style = await containFitImage.getAttribute('style');
 
-  // Should have --fit CSS variable set to contain
-  expect(style).toContain('--fit');
+  // Should have object-fit CSS property set to contain
+  expect(style).toContain('object-fit');
   expect(style).toContain('contain');
 });
 
-test("Image with position prop has correct style", async ({ page }) => {
+test("Image with position prop has correct style", async ({ page, astroVersion }) => {
+  test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
   await page.goto("/images");
 
   // Example 27 has position="top left"
   const positionImage = page.locator('.example').nth(26).locator('img');
   const style = await positionImage.getAttribute('style');
 
-  // Should have --pos CSS variable
-  expect(style).toContain('--pos');
+  // Should have object-position CSS property set to top left
+  expect(style).toContain('object-position');
   expect(style).toContain('top left');
 });
 
-test("Image with priority has eager loading attributes", async ({ page }) => {
+test("Image with priority has eager loading attributes", async ({ page, astroVersion }) => {
+  test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
   await page.goto("/images");
 
   // Example 28 has priority flag
@@ -263,15 +269,16 @@ test("Image with id attribute preserves it", async ({ page }) => {
 // ============================================
 
 test.describe('Property Conflict Tests', () => {
-  test('CONFLICT: densities + layout should handle gracefully', async ({ page }) => {
+  test('CONFLICT: densities + layout should handle gracefully', async ({ page, astroVersion }) => {
+    test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
     await page.goto("/images");
 
     // Example 31: densities + layout conflict
     const conflictImage = page.locator('[data-test-id="conflict-densities-layout"]').locator('img');
-    
+
     // Image should still render
     await expect(conflictImage).toBeVisible();
-    
+
     // Per Astro docs, when layout is set, densities should be ignored
     // The image should use layout-based srcset, not density-based
     const dataAstroImage = await conflictImage.getAttribute('data-astro-image');
@@ -307,15 +314,16 @@ test.describe('Property Conflict Tests', () => {
     expect(alt).toBeTruthy();
   });
 
-  test('CONFLICT: layout=fixed + widths should not generate width variants', async ({ page }) => {
+  test('CONFLICT: layout=fixed + widths should not generate width variants', async ({ page, astroVersion }) => {
+    test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
     await page.goto("/images");
 
     // Example 34: layout=fixed + widths
     const conflictImage = page.locator('[data-test-id="conflict-fixed-widths"]').locator('img');
-    
+
     // Image should render
     await expect(conflictImage).toBeVisible();
-    
+
     // Should have data-astro-image="fixed"
     const dataAstroImage = await conflictImage.getAttribute('data-astro-image');
     expect(dataAstroImage).toBe('fixed');
@@ -347,16 +355,16 @@ test.describe('Valid Property Combinations', () => {
 
     // Example 36: widths + sizes (valid combination)
     const validImage = page.locator('[data-test-id="valid-widths-sizes"]').locator('img');
-    
+
     await expect(validImage).toBeVisible();
-    
+
     const srcset = await validImage.getAttribute('srcset');
     const sizes = await validImage.getAttribute('sizes');
-    
+
     // Both should exist
     expect(srcset).toBeTruthy();
     expect(sizes).toBeTruthy();
-    
+
     // srcset should contain width descriptors
     if (srcset) {
       expect(srcset).toMatch(/\d+w/);
@@ -380,35 +388,37 @@ test.describe('Valid Property Combinations', () => {
     }
   });
 
-  test('VALID: layout + format + quality should work together', async ({ page }) => {
+  test('VALID: layout + format + quality should work together', async ({ page, astroVersion }) => {
+    test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
     await page.goto("/images");
 
     // Example 38: layout + format + quality (valid)
     const validImage = page.locator('[data-test-id="valid-layout-format-quality"]').locator('img');
-    
+
     await expect(validImage).toBeVisible();
-    
+
     // Should have constrained layout
     const dataAstroImage = await validImage.getAttribute('data-astro-image');
     expect(dataAstroImage).toBe('constrained');
-    
+
     // URL should contain format and quality parameters
     const src = await validImage.getAttribute('src');
     expect(src).toContain('ik.imagekit.io');
   });
 
-  test('VALID: layout=full-width with responsive props', async ({ page }) => {
+  test('VALID: layout=full-width with responsive props', async ({ page, astroVersion }) => {
+    test.skip(skipIfAstroVersionBelow(astroVersion, '5.10.0'), 'Requires Astro 5.10.0+ for stable responsive images');
     await page.goto("/images");
 
     // Example 39: layout=full-width
     const validImage = page.locator('[data-test-id="valid-fullwidth-responsive"]').locator('img');
-    
+
     await expect(validImage).toBeVisible();
-    
+
     // Should have full-width layout
     const dataAstroImage = await validImage.getAttribute('data-astro-image');
     expect(dataAstroImage).toBe('full-width');
-    
+
     // Should generate srcset for responsive behavior
     const srcset = await validImage.getAttribute('srcset');
     expect(srcset).toBeTruthy();

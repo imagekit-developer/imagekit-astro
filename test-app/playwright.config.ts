@@ -1,8 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
 import path from "path";
+import "./e2e/fixtures";
 
 // Use process.env.PORT by default and fallback to port 4321
 const PORT = process.env.PORT || 4321;
+
+// Astro major version for per-version snapshot directories (set by CI matrix)
+const ASTRO_VERSION = process.env.ASTRO_VERSION || 'default';
 
 // Set webServer.url and use.baseURL with the location of the WebServer respecting the correct set port
 const baseURL = `http://localhost:${PORT}`;
@@ -19,7 +23,7 @@ export default defineConfig({
   outputDir: "test-results/",
 
   // Single template for all assertions
-  snapshotPathTemplate: '{testDir}/__snapshot__/{testFilePath}/{arg}{ext}',
+  snapshotPathTemplate: `{testDir}/__snapshot__/astro-${ASTRO_VERSION}/{testFilePath}/{arg}{ext}`,
 
   // Run your local dev server before starting the tests:
   // https://playwright.dev/docs/test-advanced#launching-a-development-web-server-during-the-tests

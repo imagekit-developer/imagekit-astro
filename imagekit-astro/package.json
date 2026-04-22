@@ -53,7 +53,7 @@
     "@imagekit/javascript": "^5.1.0"
   },
   "peerDependencies": {
-    "astro": ">=5.14.2"
+    "astro": ">=3.2.0"
   },
   "devDependencies": {
     "astro": "^5.11.0",
