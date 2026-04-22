@@ -27,11 +27,14 @@ export interface ImageKitConfig {
  * @throws {Error} If no urlEndpoint is available from either source.
  */
 export function getImageKitConfig(overrides?: Partial<ImageKitConfig>): ImageKitConfig {
-  const urlEndpoint = overrides?.urlEndpoint ?? import.meta.env.PUBLIC_IMAGEKIT_URL_ENDPOINT;
+  const urlEndpoint =
+    overrides?.urlEndpoint ??
+    import.meta.env.PUBLIC_IMAGEKIT_URL_ENDPOINT ??
+    import.meta.env.IMAGEKIT_URL_ENDPOINT;
 
   if (!urlEndpoint) {
     throw new Error(
-      'An ImageKit URL endpoint is required. Set PUBLIC_IMAGEKIT_URL_ENDPOINT in your environment or pass urlEndpoint as a prop.'
+      'An ImageKit URL endpoint is required. Set PUBLIC_IMAGEKIT_URL_ENDPOINT or IMAGEKIT_URL_ENDPOINT in your environment, or pass urlEndpoint as a prop.'
     );
   }
 

@@ -191,11 +191,11 @@ import { Video } from '@imagekit/astro';
 
     <!-- Minimal dimensions 1px x 1px -->
     <div class="example" data-test-id="video-edge-minimal">
-      <h3>Edge Case: Minimal dimensions (1px × 1px)</h3>
+      <h3>Minimal dimensions (1px × 1px)</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
-        title="Edge: minimal video 1x1"
+        title="minimal video 1x1"
         width={1}
         height={1}
         controls
@@ -204,11 +204,11 @@ import { Video } from '@imagekit/astro';
 
     <!-- Large dimensions -->
     <div class="example" data-test-id="video-edge-large">
-      <h3>Edge Case: Large dimensions (4000px × 2000px)</h3>
+      <h3>Large dimensions (4000px × 2000px)</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
-        title="Edge: large video"
+        title="large video"
         width={4000}
         height={2000}
         controls
@@ -217,11 +217,11 @@ import { Video } from '@imagekit/astro';
 
     <!-- Extreme aspect ratio tall -->
     <div class="example" data-test-id="video-edge-ratio-tall">
-      <h3>Edge Case: Extreme aspect ratio (1:500)</h3>
+      <h3>Extreme aspect ratio (1:500)</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
-        title="Edge: tall aspect ratio"
+        title="tall aspect ratio"
         width={10}
         height={5000}
         controls
@@ -230,11 +230,11 @@ import { Video } from '@imagekit/astro';
 
     <!-- Extreme aspect ratio wide -->
     <div class="example" data-test-id="video-edge-ratio-wide">
-      <h3>Edge Case: Extreme aspect ratio (500:1)</h3>
+      <h3>Extreme aspect ratio (500:1)</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
-        title="Edge: wide aspect ratio"
+        title="wide aspect ratio"
         width={5000}
         height={10}
         controls
@@ -243,11 +243,11 @@ import { Video } from '@imagekit/astro';
 
     <!-- Multiple complex transformations -->
     <div class="example" data-test-id="video-edge-complex-transformations">
-      <h3>Edge Case: Multiple complex transformations</h3>
+      <h3>Multiple complex transformations</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
-        title="Edge: complex transformations"
+        title="complex transformations"
         transformation={[
           { width: 200, height: 200 },
           { rotation: 90 },
@@ -262,11 +262,11 @@ import { Video } from '@imagekit/astro';
 
     <!-- transformationPosition="path" with transformations -->
     <div class="example" data-test-id="video-edge-transform-path">
-      <h3>Edge Case: transformationPosition="path"</h3>
+      <h3>transformationPosition="path"</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
-        title="Edge: path transformation position"
+        title="path transformation position"
         transformationPosition="path"
         transformation={[{ width: 200, height: 200 }]}
         width={300}
@@ -277,11 +277,11 @@ import { Video } from '@imagekit/astro';
 
     <!-- transformationPosition="query" with queryParameters -->
     <div class="example" data-test-id="video-edge-transform-query">
-      <h3>Edge Case: transformationPosition="query" + queryParameters</h3>
+      <h3>transformationPosition="query" + queryParameters</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
-        title="Edge: query transformation position"
+        title="query transformation position"
         transformationPosition="query"
         queryParameters={{
           version: "v2",
@@ -295,11 +295,11 @@ import { Video } from '@imagekit/astro';
 
     <!-- All HTML video attributes together -->
     <div class="example" data-test-id="video-edge-all-attributes">
-      <h3>Edge Case: All HTML attributes combined</h3>
+      <h3>All HTML attributes combined</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
-        title="Edge: all attributes"
+        title="all attributes"
         width={300}
         height={300}
         controls

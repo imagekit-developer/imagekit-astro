@@ -597,11 +597,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Minimal dimensions 1px x 1px -->
     <div class="example" data-test-id="edge-minimal-dimensions">
-      <h3>41. Edge Case: Minimal dimensions (1px × 1px)</h3>
+      <h3>41. Minimal dimensions (1px × 1px)</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: minimal 1x1"
+        alt="minimal 1x1"
         width={1}
         height={1}
       />
@@ -609,11 +609,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Extreme aspect ratio 1:1000 -->
     <div class="example" data-test-id="edge-extreme-ratio-tall">
-      <h3>42. Edge Case: Extreme aspect ratio (1:1000)</h3>
+      <h3>42. Extreme aspect ratio (1:1000)</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: 1:1000 aspect ratio"
+        alt="1:1000 aspect ratio"
         width={10}
         height={10000}
       />
@@ -621,11 +621,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Extreme aspect ratio 1000:1 -->
     <div class="example" data-test-id="edge-extreme-ratio-wide">
-      <h3>43. Edge Case: Extreme aspect ratio (1000:1)</h3>
+      <h3>43. Extreme aspect ratio (1000:1)</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: 1000:1 aspect ratio"
+        alt="1000:1 aspect ratio"
         width={10000}
         height={10}
       />
@@ -633,11 +633,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Quality boundary: 0 -->
     <div class="example" data-test-id="edge-quality-0">
-      <h3>44. Edge Case: Quality = 0 (minimum)</h3>
+      <h3>44. Quality = 0 (minimum)</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: quality 0"
+        alt="quality 0"
         quality={0}
         width={300}
         height={300}
@@ -646,11 +646,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Quality boundary: 100 -->
     <div class="example" data-test-id="edge-quality-100">
-      <h3>45. Edge Case: Quality = 100 (maximum)</h3>
+      <h3>45. Quality = 100 (maximum)</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: quality 100"
+        alt="quality 100"
         quality={100}
         width={300}
         height={300}
@@ -659,11 +659,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Format: webp -->
     <div class="example" data-test-id="edge-format-webp">
-      <h3>46. Edge Case: Format = webp</h3>
+      <h3>46. Format = webp</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: webp format"
+        alt="webp format"
         format="webp"
         width={300}
         height={300}
@@ -672,11 +672,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Format: avif -->
     <div class="example" data-test-id="edge-format-avif">
-      <h3>47. Edge Case: Format = avif</h3>
+      <h3>47. Format = avif</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: avif format"
+        alt="avif format"
         format="avif"
         width={300}
         height={300}
@@ -685,11 +685,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Format: svg -->
     <div class="example" data-test-id="edge-format-svg">
-      <h3>48. Edge Case: Format = svg</h3>
+      <h3>48. Format = svg</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: svg format"
+        alt="svg format"
         format="svg"
         width={300}
         height={300}
@@ -698,11 +698,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Multiple complex transformations -->
     <div class="example" data-test-id="edge-complex-transformations">
-      <h3>49. Edge Case: Multiple complex transformations</h3>
+      <h3>49. Multiple complex transformations</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: complex transformations"
+        alt="complex transformations"
         transformation={[
           { width: 200, height: 200 },
           { rotation: 45 },
@@ -717,11 +717,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- transformationPosition path with transformations -->
     <div class="example" data-test-id="edge-transform-position-path">
-      <h3>50. Edge Case: transformationPosition="path" + transformations</h3>
+      <h3>50. transformationPosition="path" + transformations</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: transformation path position"
+        alt="transformation path position"
         transformationPosition="path"
         transformation={[{ width: 200, height: 200 }, { quality: 75 }]}
         width={300}
@@ -731,11 +731,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- transformationPosition query with complex query params -->
     <div class="example" data-test-id="edge-transform-position-query">
-      <h3>51. Edge Case: transformationPosition="query" + queryParameters</h3>
+      <h3>51. transformationPosition="query" + queryParameters</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: transformation query position"
+        alt="transformation query position"
         transformationPosition="query"
         transformation={[{ width: 200, height: 200 }]}
         queryParameters={{
@@ -749,11 +749,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Large width boundary test -->
     <div class="example" data-test-id="edge-large-width">
-      <h3>52. Edge Case: Large width (5000px)</h3>
+      <h3>52. Large width (5000px)</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: 5000px width"
+        alt="5000px width"
         width={5000}
         height={5000}
       />
@@ -761,11 +761,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Quality as string preset -->
     <div class="example" data-test-id="edge-quality-preset-low">
-      <h3>53. Edge Case: Quality preset = "low"</h3>
+      <h3>53. Quality preset = "low"</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: quality low preset"
+        alt="quality low preset"
         quality="low"
         width={300}
         height={300}
@@ -774,11 +774,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Quality as string preset mid -->
     <div class="example" data-test-id="edge-quality-preset-mid">
-      <h3>54. Edge Case: Quality preset = "mid"</h3>
+      <h3>54. Quality preset = "mid"</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: quality mid preset"
+        alt="quality mid preset"
         quality="mid"
         width={300}
         height={300}
@@ -787,11 +787,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Quality as string preset max -->
     <div class="example" data-test-id="edge-quality-preset-max">
-      <h3>55. Edge Case: Quality preset = "max"</h3>
+      <h3>55. Quality preset = "max"</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: quality max preset"
+        alt="quality max preset"
         quality="max"
         width={300}
         height={300}
@@ -800,11 +800,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Responsive with custom device breakpoints edge case -->
     <div class="example" data-test-id="edge-device-breakpoints">
-      <h3>56. Edge Case: Responsive with extreme device breakpoints</h3>
+      <h3>56. Responsive with extreme device breakpoints</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: device breakpoints"
+        alt="device breakpoints"
         responsive={true}
         deviceBreakpoints={[100, 5000]}
         width={300}
@@ -814,11 +814,11 @@ import { Image } from '@imagekit/astro';
 
     <!-- Responsive with custom image breakpoints edge case -->
     <div class="example" data-test-id="edge-image-breakpoints">
-      <h3>57. Edge Case: Responsive with extreme image breakpoints</h3>
+      <h3>57. Responsive with extreme image breakpoints</h3>
       <Image
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="/default-image.jpg"
-        alt="Edge: image breakpoints"
+        alt="image breakpoints"
         responsive={true}
         imageBreakpoints={[100, 5000]}
         width={300}

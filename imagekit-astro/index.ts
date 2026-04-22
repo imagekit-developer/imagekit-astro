@@ -1,7 +1,10 @@
 // Components
 export { default as Image } from './src/components/Image.astro';
-export { default as OgImage } from './src/components/OgImage.astro';
 export { default as Video } from './src/components/Video.astro';
+
+// Helpers
+export { getOgImageTags } from './src/helpers';
+export type { OgMetaTag } from './src/helpers';
 
 // Re-export functions from @imagekit/javascript
 export {
@@ -16,7 +19,7 @@ export {
 } from '@imagekit/javascript';
 
 // Types - Astro SDK types
-export type {ImageProps, OgImageProps, VideoProps } from './src/types/index';
+export type {ImageProps, OgImageTagOptions, VideoProps } from './src/types/index';
 
 // Types - Re-export from @imagekit/javascript
 export type {

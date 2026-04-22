@@ -30,15 +30,14 @@ export interface VideoProps {
 }
 
 /**
- * Props for the OgImage component.
- * Generates OpenGraph and Twitter Card meta tags.
+ * Options for generating OpenGraph and Twitter Card meta tags.
  */
-export interface OgImageProps {
+export interface OgImageTagOptions {
   /** Relative path or absolute URL of the image */
   src: string;
 
   /**
-   * ImageKit URL endpoint. Overrides PUBLIC_IMAGEKIT_URL_ENDPOINT env var.
+   * ImageKit URL endpoint. Overrides PUBLIC_IMAGEKIT_URL_ENDPOINT/IMAGEKIT_URL_ENDPOINT env vars.
    */
   urlEndpoint?: string;
 
@@ -54,11 +53,26 @@ export interface OgImageProps {
   /** Alt text for og:image:alt meta tag */
   alt?: string;
 
-  /** Required title for twitter:title meta tag. Used for og:title as well */
-  twitterTitle: string;
+  /** Shared title used for OG and Twitter when specific titles are not set */
+  title?: string;
 
-  /** Description for twitter:description meta tag. Used for og:description as well */
+  /** OpenGraph title. Falls back to `title`, then `twitterTitle` for backward compatibility */
+  ogTitle?: string;
+
+  /** Twitter title. Falls back to `title`, then `ogTitle` */
+  twitterTitle?: string;
+
+  /** Shared description used for OG and Twitter when specific descriptions are not set */
+  description?: string;
+
+  /** OpenGraph description. Falls back to `description`, then `twitterDescription` for backward compatibility */
+  ogDescription?: string;
+
+  /** Twitter description. Falls back to `description`, then `ogDescription` */
   twitterDescription?: string;
+
+  /** Twitter card type. Default: summary_large_image */
+  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
 
   /** OG image width. Default: 1200 */
   width?: number;

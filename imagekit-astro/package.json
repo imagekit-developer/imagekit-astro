@@ -4,7 +4,7 @@
   "type": "module",
   "license": "MIT",
   "description": "Astro SDK for ImageKit.io - optimized image & video delivery with transformations",
-  "module": "./index.ts",
+  "types": "./dist/index.d.ts",
   "keywords": [
     "imagekit",
     "astro",
@@ -17,21 +17,31 @@
   ],
   "exports": {
     ".": {
-      "import": "./index.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./index.ts"
+    },
+    "./integration": {
+      "types": "./dist/integration.d.ts",
+      "default": "./dist/integration.js"
+    },
+    "./helpers": {
+      "types": "./dist/helpers.d.ts",
+      "default": "./dist/helpers.js"
     },
     "./server": {
-      "import": "./src/server/index.ts"
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
     },
     "./image-service": {
-      "import": "./src/services/imagekit-service.ts"
+      "types": "./dist/imagekit-service.d.ts",
+      "default": "./dist/imagekit-service.js"
     },
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
-    "helpers",
-    "src",
-    "index.ts"
+    "index.ts",
+    "src"
   ],
   "scripts": {
     "dev": "tsup --watch",
@@ -43,7 +53,7 @@
     "@imagekit/javascript": "^5.1.0"
   },
   "peerDependencies": {
-    "astro": ">=3.2.0"
+    "astro": ">=5.14.2"
   },
   "devDependencies": {
     "astro": "^5.11.0",

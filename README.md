@@ -22,26 +22,45 @@ yarn add @imagekit/astro
 Add your ImageKit URL endpoint to your `.env` file:
 
 ```env
+# Preferred when endpoint may be used in client-side code
 PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
+
+# Server-only fallback
+IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
 ```
 
 > Get your URL endpoint from the [ImageKit dashboard](https://imagekit.io/dashboard/url-endpoints).
 
-Also, add the ImageKit service to your Astro config:
+Add the ImageKit integration to your Astro config:
 
 ```js
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
+import imagekit from '@imagekit/astro/integration';
 
 export default defineConfig({
-  image: {
-    service: {
-      entrypoint: '@imagekit/astro/image-service',
-      config: {
-        urlEndpoint: import.meta.env.PUBLIC_IMAGEKIT_URL_ENDPOINT,
-      },
-    },
-  },
+  integrations: [imagekit()],
+});
+```
+
+By default, the integration automatically configures:
+
+- `image.service` with `@imagekit/astro/image-service`
+- `image.domains` allowlisting for ImageKit hosts
+- `image.remotePatterns` with secure (`https`) ImageKit patterns
+
+You can also pass options when needed:
+
+```js
+export default defineConfig({
+  integrations: [
+    imagekit({
+      urlEndpoint: import.meta.env.PUBLIC_IMAGEKIT_URL_ENDPOINT,
+      transformationPosition: 'query',
+      domains: ['assets.example.com'],
+      remotePatterns: [{ protocol: 'https', hostname: 'assets.example.com', pathname: '/**' }],
+    }),
+  ],
 });
 ```
 
@@ -111,7 +130,7 @@ import { Image } from '@imagekit/astro';
 |------|------|---------|-------------|
 | `src` | `string` | *required* | Relative path or absolute ImageKit URL |
 | `alt` | `string` | *required* | Alt text for accessibility |
-| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
+| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` / `IMAGEKIT_URL_ENDPOINT` |
 | `transformation` | `Transformation[]` | `[]` | Array of ImageKit transformations |
 | `queryParameters` | `Record<string, string \| number>` | — | Additional URL query parameters |
 | `transformationPosition` | `'path' \| 'query'` | `'query'` | Where to place transformations in the URL |
@@ -153,7 +172,7 @@ import { Video } from '@imagekit/astro';
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `src` | `string` | *required* | Relative path or absolute ImageKit URL |
-| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
+| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` / `IMAGEKIT_URL_ENDPOINT` |
 | `transformation` | `Transformation[]` | `[]` | Array of ImageKit transformations |
 | `queryParameters` | `Record<string, string | number>` | — | Additional URL query parameters |
 | `transformationPosition` | `'path' | 'query'` | `'query'` | Where to place transformations in the URL |
@@ -163,37 +182,51 @@ All standard HTML `<video>` attributes (`controls`, `autoplay`, `loop`, `muted`,
 
 ---
 
-### `<OgImage />`
+### `getOgImageTags()`
 
-Generates OpenGraph and Twitter Card `<meta>` tags with ImageKit-optimized image URLs. Place it inside `<head>`.
+Builds OpenGraph and Twitter Card meta-tag data with ImageKit-optimized URLs.
+
+Use this helper in frontmatter, then render the returned tags inside your `<head>`.
+
+#### How To Use
+
+1. Import the helper from `@imagekit/astro/helpers`.
+2. Call it in frontmatter with your OG/Twitter options.
+3. Map over the returned tags inside `<head>`.
 
 ```astro
 ---
-import { OgImage } from '@imagekit/astro';
+import { getOgImageTags } from '@imagekit/astro/helpers';
+
+const ogTags = getOgImageTags({
+  src: '/og-banner.jpg',
+  title: 'Check out this page!',
+  description: 'Preview description for social cards',
+  alt: 'My page description',
+  twitterCard: 'summary_large_image',
+  transformation: [{ width: 1200, height: 630 }],
+});
 ---
 
-<html>
 <head>
-  <OgImage
-    src="/og-banner.jpg"
-    alt="My page description"
-    twitterTitle="Check out this page!"
-    transformation={[{ width: 1200, height: 630 }]}
-  />
+  {ogTags.map((tag) => <meta {...tag} />)}
 </head>
-<body>...</body>
-</html>
 ```
 
-#### Props
+#### Helper Options
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `src` | `string` | *required* | Relative path or absolute ImageKit URL |
-| `twitterTitle` | `string` | *required* | Title for `twitter:title` and `og:title` meta tags |
-| `twitterDescription` | `string` | — | Description for `twitter:description` and `og:description` meta tags |
+| `title` | `string` | — | Shared title used by both OG and Twitter |
+| `ogTitle` | `string` | — | OpenGraph-only title override |
+| `twitterTitle` | `string` | — | Twitter-only title override (legacy-compatible) |
+| `description` | `string` | — | Shared description used by both OG and Twitter |
+| `ogDescription` | `string` | — | OpenGraph-only description override |
+| `twitterDescription` | `string` | — | Twitter-only description override |
+| `twitterCard` | `string` | `summary_large_image` | Twitter card type (`summary`, `summary_large_image`, `app`, `player`) |
 | `alt` | `string` | — | Alt text for `og:image:alt` |
-| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` |
+| `urlEndpoint` | `string` | env var | Overrides `PUBLIC_IMAGEKIT_URL_ENDPOINT` / `IMAGEKIT_URL_ENDPOINT` |
 | `transformation` | `Transformation[]` | `[]` | Array of ImageKit transformations |
 | `width` | `number | string` | `1200` | OG image width |
 | `height` | `number | string` | `630` | OG image height |
@@ -203,12 +236,14 @@ import { OgImage } from '@imagekit/astro';
 
 ```html
 <meta property="og:title" content="..." />
+<meta property="og:description" content="..." />
 <meta property="og:image" content="..." />
 <meta property="og:image:secure_url" content="..." />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="..." />
 <meta property="twitter:title" content="..." />
+<meta property="twitter:description" content="..." />
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content="..." />
 ```
@@ -272,10 +307,14 @@ By default, transformations are added as query parameters (`?tr=w-400,h-300`). S
 
 ### Environment Variable
 
-Set `PUBLIC_IMAGEKIT_URL_ENDPOINT` in your `.env` (or `.env.local`) file. This is used as the default `urlEndpoint` for all components and helpers:
+Set one of these in `.env` (or `.env.local`) to provide a default `urlEndpoint` for all components and helpers:
 
 ```env
+# Checked first (required only when endpoint is needed client-side)
 PUBLIC_IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
+
+# Server-only fallback
+IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
 ```
 
 ### Per-Component Override

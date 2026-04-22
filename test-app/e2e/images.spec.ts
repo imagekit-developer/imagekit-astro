@@ -433,7 +433,7 @@ test.describe('Valid Property Combinations', () => {
 // ============================================
 
 test.describe('Edge Case Tests - Dimensions', () => {
-  test('Edge Case: Minimal dimensions (1px × 1px)', async ({ page }) => {
+  test('Minimal dimensions (1px × 1px)', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-minimal-dimensions"]').locator('img');
@@ -444,7 +444,7 @@ test.describe('Edge Case Tests - Dimensions', () => {
     expect(width).toBe('1');
   });
 
-  test('Edge Case: Extreme aspect ratio (1:1000)', async ({ page }) => {
+  test('Extreme aspect ratio (1:1000)', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-extreme-ratio-tall"]').locator('img');
@@ -455,7 +455,7 @@ test.describe('Edge Case Tests - Dimensions', () => {
     expect(height).toBe('10000');
   });
 
-  test('Edge Case: Extreme aspect ratio (1000:1)', async ({ page }) => {
+  test('Extreme aspect ratio (1000:1)', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-extreme-ratio-wide"]').locator('img');
@@ -466,7 +466,7 @@ test.describe('Edge Case Tests - Dimensions', () => {
     expect(width).toBe('10000');
   });
 
-  test('Edge Case: Large width (5000px)', async ({ page }) => {
+  test('Large width (5000px)', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-large-width"]').locator('img');
@@ -479,7 +479,7 @@ test.describe('Edge Case Tests - Dimensions', () => {
 });
 
 test.describe('Edge Case Tests - Quality', () => {
-  test('Edge Case: Quality = 0 (minimum)', async ({ page }) => {
+  test('Quality = 0 (minimum)', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-quality-0"]').locator('img');
@@ -491,7 +491,7 @@ test.describe('Edge Case Tests - Quality', () => {
     expect(src).toBeTruthy();
   });
 
-  test('Edge Case: Quality = 100 (maximum)', async ({ page }) => {
+  test('Quality = 100 (maximum)', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-quality-100"]').locator('img');
@@ -503,7 +503,7 @@ test.describe('Edge Case Tests - Quality', () => {
     expect(src).toBeTruthy();
   });
 
-  test('Edge Case: Quality preset = "low"', async ({ page }) => {
+  test('Quality preset = "low"', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-quality-preset-low"]').locator('img');
@@ -514,7 +514,7 @@ test.describe('Edge Case Tests - Quality', () => {
     expect(src).toContain('ik.imagekit.io');
   });
 
-  test('Edge Case: Quality preset = "mid"', async ({ page }) => {
+  test('Quality preset = "mid"', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-quality-preset-mid"]').locator('img');
@@ -525,7 +525,7 @@ test.describe('Edge Case Tests - Quality', () => {
     expect(src).toContain('ik.imagekit.io');
   });
 
-  test('Edge Case: Quality preset = "max"', async ({ page }) => {
+  test('Quality preset = "max"', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-quality-preset-max"]').locator('img');
@@ -538,7 +538,7 @@ test.describe('Edge Case Tests - Quality', () => {
 });
 
 test.describe('Edge Case Tests - Formats', () => {
-  test('Edge Case: Format = webp', async ({ page }) => {
+  test('Format = webp', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-format-webp"]').locator('img');
@@ -549,7 +549,7 @@ test.describe('Edge Case Tests - Formats', () => {
     expect(src).toBeTruthy();
   });
 
-  test('Edge Case: Format = avif', async ({ page }) => {
+  test('Format = avif', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-format-avif"]').locator('img');
@@ -560,7 +560,7 @@ test.describe('Edge Case Tests - Formats', () => {
     expect(src).toBeTruthy();
   });
 
-  test('Edge Case: Format = svg', async ({ page }) => {
+  test('Format = svg', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-format-svg"]').locator('img');
@@ -573,7 +573,7 @@ test.describe('Edge Case Tests - Formats', () => {
 });
 
 test.describe('Edge Case Tests - Transformations', () => {
-  test('Edge Case: Multiple complex transformations', async ({ page }) => {
+  test('Multiple complex transformations', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-complex-transformations"]').locator('img');
@@ -586,7 +586,7 @@ test.describe('Edge Case Tests - Transformations', () => {
     expect(src).toContain('tr=');
   });
 
-  test('Edge Case: transformationPosition="path"', async ({ page }) => {
+  test('transformationPosition="path"', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-transform-position-path"]').locator('img');
@@ -598,7 +598,7 @@ test.describe('Edge Case Tests - Transformations', () => {
     expect(src).toContain('/tr:');
   });
 
-  test('Edge Case: transformationPosition="query"', async ({ page }) => {
+  test('transformationPosition="query"', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-transform-position-query"]').locator('img');
@@ -612,7 +612,7 @@ test.describe('Edge Case Tests - Transformations', () => {
 });
 
 test.describe('Edge Case Tests - Responsive Breakpoints', () => {
-  test('Edge Case: Extreme device breakpoints', async ({ page }) => {
+  test('Extreme device breakpoints', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-device-breakpoints"]').locator('img');
@@ -624,7 +624,7 @@ test.describe('Edge Case Tests - Responsive Breakpoints', () => {
     expect(srcset).toBeTruthy();
   });
 
-  test('Edge Case: Extreme image breakpoints', async ({ page }) => {
+  test('Extreme image breakpoints', async ({ page }) => {
     await page.goto("/images");
 
     const edgeImage = page.locator('[data-test-id="edge-image-breakpoints"]').locator('img');

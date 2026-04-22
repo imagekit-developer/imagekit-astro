@@ -1,4 +1,4 @@
-import { type ExternalImageService, type ImageTransform, type AstroConfig, build } from 'astro';
+import type { ExternalImageService, ImageTransform, AstroConfig } from 'astro';
 import { buildSrc, getResponsiveImageAttributes } from '@imagekit/javascript';
 import type { Transformation } from '@imagekit/javascript';
 import { inferRemoteSize } from 'astro:assets';
@@ -50,7 +50,12 @@ function resolveConfig(
   imageConfig: AstroConfig['image'],
 ): { urlEndpoint: string; transformationPosition: 'path' | 'query' } {
   const config = (imageConfig.service.config ?? {}) as ImageKitServiceConfig;
-  const urlEndpoint = (options as any).urlEndpoint ?? config.urlEndpoint ?? '';
+  const urlEndpoint =
+    (options as any).urlEndpoint ??
+    config.urlEndpoint ??
+    process.env.PUBLIC_IMAGEKIT_URL_ENDPOINT ??
+    process.env.IMAGEKIT_URL_ENDPOINT ??
+    '';
   const transformationPosition =
     (options as any).transformationPosition ?? config.transformationPosition ?? 'query';
   return { urlEndpoint, transformationPosition };
@@ -86,18 +91,15 @@ function buildIKTransformations(options: ImageTransform): Transformation[] {
  *
  * IK responsive is used when:
  * - `responsive` prop is true (default)
- * - No Astro `densities` or `inferSize` are specified
- * - No Astro-generated `widths` are present (from layout computation)
- * - `width` is defined
+ * - No Astro `densities` are specified
+ * - `width` is defined (including width inferred during validateOptions)
  */
 function shouldUseIKResponsive(options: ImageTransform): boolean {
   const responsive = (options as any).responsive ?? true;
   const hasAstroDensities = !!(options as any).densities;
-  const hasInferSize = !!(options as any).inferSize;
   return (
     responsive &&
     !hasAstroDensities &&
-    !hasInferSize &&
     options.width !== undefined
   );
 }
@@ -198,7 +200,7 @@ const service: ExternalImageService = {
     });
   },
 
-  getSrcSet(options: ImageTransform, imageConfig: AstroConfig['image']) {
+  getSrcSet(options: ImageTransform, _imageConfig: AstroConfig['image']) {
     // If IK responsive mode handled srcSet, return empty - srcSet is set via getHTMLAttributes
     if (shouldUseIKResponsive(options)) {
       return [];

@@ -1,16 +1,23 @@
 import { defineConfig } from 'tsup'
 
-export default defineConfig(() => {
-  return {
-    clean: true,
-    entry: [
-      './src/helpers/index.ts',
-    ],
-    dts: true,
-    minify: false,
-    bundle: true,
-    sourcemap: true,
-    format: ['esm'],
-    external: ['astro', '@imagekit/javascript', 'node:async_hooks', '#async-local-storage'],
-  };
-});
+export default defineConfig({
+  entry: {
+    'index': './index.ts',
+    'integration': './src/integration.ts',
+    'helpers': './src/helpers/index.ts',
+    'server': './src/server/index.ts',
+    'imagekit-service': './src/services/imagekit-service.ts',
+  },
+  format: ['esm'],
+  dts: true,
+  clean: true,
+  bundle: true,
+  sourcemap: true,
+  minify: false,
+  external: [
+    'astro',
+    'astro:assets',
+    '@imagekit/javascript',
+    /\.astro$/,
+  ],
+})

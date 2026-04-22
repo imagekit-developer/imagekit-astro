@@ -25,7 +25,7 @@ test("Videos page renders correctly", async ({ page }) => {
 // ============================================
 
 test.describe('Video Edge Case Tests - Dimensions', () => {
-  test('Edge Case: Minimal dimensions (1px × 1px)', async ({ page }) => {
+  test('Minimal dimensions (1px × 1px)', async ({ page }) => {
     await page.goto("/videos");
 
     const edgeVideo = page.locator('[data-test-id="video-edge-minimal"]').locator('video');
@@ -36,7 +36,7 @@ test.describe('Video Edge Case Tests - Dimensions', () => {
     expect(width).toBe('1');
   });
 
-  test('Edge Case: Large dimensions (4000px × 2000px)', async ({ page }) => {
+  test('Large dimensions (4000px × 2000px)', async ({ page }) => {
     await page.goto("/videos");
 
     const edgeVideo = page.locator('[data-test-id="video-edge-large"]').locator('video');
@@ -47,7 +47,7 @@ test.describe('Video Edge Case Tests - Dimensions', () => {
     expect(width).toBe('4000');
   });
 
-  test('Edge Case: Extreme aspect ratio (1:500)', async ({ page }) => {
+  test('Extreme aspect ratio (1:500)', async ({ page }) => {
     await page.goto("/videos");
 
     const edgeVideo = page.locator('[data-test-id="video-edge-ratio-tall"]').locator('video');
@@ -58,7 +58,7 @@ test.describe('Video Edge Case Tests - Dimensions', () => {
     expect(height).toBe('5000');
   });
 
-  test('Edge Case: Extreme aspect ratio (500:1)', async ({ page }) => {
+  test('Extreme aspect ratio (500:1)', async ({ page }) => {
     await page.goto("/videos");
 
     const edgeVideo = page.locator('[data-test-id="video-edge-ratio-wide"]').locator('video');
@@ -71,7 +71,7 @@ test.describe('Video Edge Case Tests - Dimensions', () => {
 });
 
 test.describe('Video Edge Case Tests - Transformations', () => {
-  test('Edge Case: Multiple complex transformations', async ({ page }) => {
+  test('Multiple complex transformations', async ({ page }) => {
     await page.goto("/videos");
 
     const edgeVideo = page.locator('[data-test-id="video-edge-complex-transformations"]').locator('video');
@@ -84,7 +84,7 @@ test.describe('Video Edge Case Tests - Transformations', () => {
     expect(src).toContain('tr=');
   });
 
-  test('Edge Case: transformationPosition="path"', async ({ page }) => {
+  test('transformationPosition="path"', async ({ page }) => {
     await page.goto("/videos");
 
     const edgeVideo = page.locator('[data-test-id="video-edge-transform-path"]').locator('video');
@@ -96,7 +96,7 @@ test.describe('Video Edge Case Tests - Transformations', () => {
     expect(src).toContain('/tr:');
   });
 
-  test('Edge Case: transformationPosition="query"', async ({ page }) => {
+  test('transformationPosition="query"', async ({ page }) => {
     await page.goto("/videos");
 
     const edgeVideo = page.locator('[data-test-id="video-edge-transform-query"]').locator('video');
@@ -110,7 +110,7 @@ test.describe('Video Edge Case Tests - Transformations', () => {
 });
 
 test.describe('Video Edge Case Tests - Attributes', () => {
-  test('Edge Case: All HTML attributes combined', async ({ page }) => {
+  test('All HTML attributes combined', async ({ page }) => {
     await page.goto("/videos");
 
     const edgeVideo = page.locator('[data-test-id="video-edge-all-attributes"]').locator('video');
