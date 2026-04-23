@@ -64,6 +64,34 @@ export default defineConfig({
 });
 ```
 
+### Standalone image service
+
+If you want to control Astro's image config yourself, you can use the ImageKit image service directly. This is useful when you already manage `image.domains`, `image.remotePatterns`, or have a custom setup.
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+
+export default defineConfig({
+  image: {
+    service: {
+      entrypoint: '@imagekit/astro/image-service',
+      config: {
+        urlEndpoint: import.meta.env.PUBLIC_IMAGEKIT_URL_ENDPOINT,
+        transformationPosition: 'query',
+      },
+    },
+    domains: ['ik.imagekit.io'],
+    remotePatterns: [{ protocol: 'https', hostname: 'ik.imagekit.io', pathname: '/**' }],
+  },
+});
+```
+
+Notes:
+
+- If you omit `urlEndpoint`, the service falls back to `PUBLIC_IMAGEKIT_URL_ENDPOINT` or `IMAGEKIT_URL_ENDPOINT`.
+- You are responsible for keeping `domains` and `remotePatterns` in sync with your ImageKit URL endpoint.
+
 ### 3. Use
 
 ```astro

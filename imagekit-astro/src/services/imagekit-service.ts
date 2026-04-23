@@ -92,7 +92,7 @@ function buildIKTransformations(options: ImageTransform): Transformation[] {
   const quality = (options.quality as keyof typeof qualityPresets);
   const finalQuality = !Number.isNaN(qualityInt) ? qualityInt : qualityPresets[quality];
   
-  if (finalQuality) {
+  if (finalQuality !== undefined && !Number.isNaN(finalQuality)) {
     userTransformation.push({ quality: finalQuality as Transformation['quality'] });
   }
 

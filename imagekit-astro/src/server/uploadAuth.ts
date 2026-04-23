@@ -1,5 +1,5 @@
-const DEFAULT_TIME_DIFF = 60 * 30; // 30 minutes
 import crypto from "crypto";
+const DEFAULT_TIME_DIFF = 60 * 30; // 30 minutes
 
 export interface GenerateAuthOptions {
   privateKey: string;

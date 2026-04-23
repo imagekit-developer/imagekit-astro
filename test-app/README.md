@@ -20,25 +20,23 @@ Then open http://localhost:4321
 
 ## Configuration
 
-The test app already includes the ImageKit service configuration in `astro.config.mjs`:
+The test app uses the `@imagekit/astro` integration with a Node adapter in `astro.config.mjs`:
 
 ```js
 import { defineConfig } from 'astro/config';
+import node from '@astrojs/node';
+import imagekit from '@imagekit/astro/integration';
 
 export default defineConfig({
-  image: {
-    domains: ["imagekit.io"],
-    service: {
-      entrypoint: '@imagekit/astro/image-service',
-      config: {
-        urlEndpoint: import.meta.env.PUBLIC_IMAGEKIT_URL_ENDPOINT,
-      },
-    },
-  },
+  output: 'server',
+  integrations: [imagekit()],
+  adapter: node({
+    mode: 'standalone',
+  }),
 });
 ```
 
-When using the `@imagekit/astro` package in your own project, you need to add similar configuration to your Astro config.
+When using the `@imagekit/astro` package in your own project, you need to add the integration to your Astro config. The Node adapter is required for server-side features like upload authentication.
 
 ## Running Tests
 
@@ -61,36 +59,3 @@ This demo shows how to implement file uploading in an Astro application using `@
 
 See `/upload` for a live demo.
 
-## Test Cases Covered
- 
-### Image
-
-- Basic image with urlEndpoint prop
-- Image with leading slash in src
-- Image with transformation
-- Image with queryParameters
-- Responsive image with sizes
-- Responsive image with fixed sizes (no vw token)
-- Image with different urlEndpoint (override)
-- Image with custom className
-- Image with loading="eager"
-- Image with transformationPosition="path"
-- Image with transformationPosition="path" + custom transformations
-- Absolute URL with transformationPosition="path"
-- Image without width (natural size)
-- Image with custom deviceBreakpoints
-- Image with responsive=false
-- Image with format and quality props
-### Video
-
-
-- Basic video with urlEndpoint prop
-- Video with leading slash in src
-- Video with transformations
-- Video with all HTML attributes
-- Video with different urlEndpoint (override)
-- Video with transformationPosition="path"
-- Video with custom class
-- Video with queryParameters
-- Video with chained transformations
-- Video without controls (autoplay, muted, loop)
