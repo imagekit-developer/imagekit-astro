@@ -67,8 +67,8 @@ function resolveConfig(
   const urlEndpoint =
     (options as any).urlEndpoint ??
     config.urlEndpoint ??
-    process.env.PUBLIC_IMAGEKIT_URL_ENDPOINT ??
-    process.env.IMAGEKIT_URL_ENDPOINT ??
+    import.meta.env?.PUBLIC_IMAGEKIT_URL_ENDPOINT ??
+    import.meta.env?.IMAGEKIT_URL_ENDPOINT ??
     '';
   const transformationPosition =
     (options as any).transformationPosition ?? config.transformationPosition ?? 'query';
@@ -133,12 +133,13 @@ function getDimensionsUnder25MP(width: number, height: number): { width: number;
 const service: ExternalImageService = {
   async validateOptions(options: ImageTransform, imageConfig: AstroConfig['image']) {
     if (!options.width) {
+      const config = resolveConfig(options, imageConfig);
       const baseSrc = buildSrc({
         src: typeof options.src === 'string' ? options.src : options.src.src,
-        urlEndpoint: resolveConfig(options, imageConfig).urlEndpoint,
+        urlEndpoint: config.urlEndpoint,
         transformation: [{ raw: 'orig-true'}],
         queryParameters: (options as any).queryParameters,
-        transformationPosition: resolveConfig(options, imageConfig).transformationPosition,
+        transformationPosition: config.transformationPosition,
       });
       const inferredSize = await tryInferRemoteSize(baseSrc);
       

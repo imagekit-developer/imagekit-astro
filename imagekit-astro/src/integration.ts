@@ -167,8 +167,8 @@ export default function imagekit(
         const resolvedUrlEndpoint =
           options.urlEndpoint ??
           asString(existingServiceConfig.urlEndpoint) ??
-          process.env.PUBLIC_IMAGEKIT_URL_ENDPOINT ??
-          process.env.IMAGEKIT_URL_ENDPOINT;
+          import.meta.env?.PUBLIC_IMAGEKIT_URL_ENDPOINT ??
+          import.meta.env?.IMAGEKIT_URL_ENDPOINT;
 
         const resolvedTransformationPosition =
           options.transformationPosition ??
