@@ -8,7 +8,7 @@ type Props = RemoteImageProps & ImageProps;
 const {
   class: className,
   ...props
-} = Astro.props;
+}: Props = Astro.props;
 
 // Build the class name
 let imageClassName = 'astro-imagekit-image';
