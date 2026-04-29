@@ -111,9 +111,11 @@ function buildIKTransformations(options: ImageTransform): Transformation[] {
 function shouldUseIKResponsive(options: ImageTransform): boolean {
   const responsive = (options as any).responsive ?? true;
   const hasAstroDensities = !!(options as any).densities;
+  const hasSrcset = !!(options as any).srcset;
   return (
     responsive &&
-    !hasAstroDensities &&
+    !hasAstroDensities && // Densities does not play well with IK responsive
+    !hasSrcset && // If the user provided their own srcset, don't override with IK responsive
     options.width !== undefined
   );
 }
