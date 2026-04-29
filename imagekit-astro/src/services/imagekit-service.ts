@@ -118,18 +118,6 @@ function shouldUseIKResponsive(options: ImageTransform): boolean {
   );
 }
 
-function getDimensionsUnder25MP(width: number, height: number): { width: number; height: number } {
-  const megapixels = (width * height) / 1_000_000;
-  if (megapixels <= 25) {
-    return { width, height };
-  }
-  const scaleFactor = Math.sqrt(25 / megapixels);
-  return {
-    width: Math.round(width * scaleFactor),
-    height: Math.round(height * scaleFactor),
-  };
-}
-
 const service: ExternalImageService = {
   async validateOptions(options: ImageTransform, imageConfig: AstroConfig['image']) {
     if (!options.width) {
@@ -144,9 +132,6 @@ const service: ExternalImageService = {
       const inferredSize = await tryInferRemoteSize(baseSrc);
       
       if (inferredSize) {
-        const { width, height } = getDimensionsUnder25MP(inferredSize.width, inferredSize.height);
-        inferredSize.width = width;
-        inferredSize.height = height;
         const densities: (number | `${number}x`)[] = (options as any).densities ?? [1];
         const largestDensity = Math.max(...densities.map((d) => (typeof d === 'number' ? d : Number.parseFloat(d))));
         options.width = Math.round(inferredSize.width / largestDensity);
@@ -252,12 +237,11 @@ const service: ExternalImageService = {
 
     return allWidths.map(({ width, descriptor }) => {
       const height = Math.round(width / aspectRatio);
-      const { width: adjustedWidth, height: adjustedHeight } = getDimensionsUnder25MP(width, height);
       return {
         transform: {
           ...options,
-          width: adjustedWidth,
-          height: adjustedHeight,
+          width,
+          height,
         },
         descriptor,
         attributes: {},

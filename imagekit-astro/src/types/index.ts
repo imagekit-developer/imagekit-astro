@@ -81,7 +81,7 @@ export interface OgImageTagOptions {
   height?: number;
 
   /** Image format override */
-  format?: 'auto' | 'webp' | 'jpg' | 'jpeg' | 'png' | 'gif' | 'svg' | 'mp4' | 'webm' | 'avif' | 'orig';
+  format?: Transformation['format'];
 }
 
 /**
