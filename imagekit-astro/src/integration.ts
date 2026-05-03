@@ -4,6 +4,36 @@ const IMAGEKIT_SERVICE_ENTRYPOINT = '@imagekit/astro/image-service';
 const ASTRO_DEFAULT_SERVICE_ENTRYPOINT = 'astro/assets/services/sharp';
 const DEFAULT_IMAGEKIT_HOSTNAME = 'ik.imagekit.io';
 const DEFAULT_PATHNAME = '/**';
+const VIRTUAL_CONFIG_ID = 'virtual:@imagekit/astro/config';
+const RESOLVED_VIRTUAL_CONFIG_ID = '\0' + VIRTUAL_CONFIG_ID;
+
+function imagekitConfigVitePlugin(resolved: {
+  urlEndpoint?: string;
+  transformationPosition?: 'path' | 'query';
+}) {
+  return {
+    name: '@imagekit/astro:virtual-config',
+    resolveId(id: string) {
+      if (id === VIRTUAL_CONFIG_ID) {
+        return RESOLVED_VIRTUAL_CONFIG_ID;
+      }
+      return null;
+    },
+    load(id: string) {
+      if (id !== RESOLVED_VIRTUAL_CONFIG_ID) {
+        return null;
+      }
+      const urlEndpoint = JSON.stringify(resolved.urlEndpoint ?? '');
+      const transformationPosition = JSON.stringify(
+        resolved.transformationPosition ?? 'query',
+      );
+      return `export const urlEndpoint = ${urlEndpoint};
+export const transformationPosition = ${transformationPosition};
+export default { urlEndpoint, transformationPosition };
+`;
+    },
+  };
+}
 
 export interface ImageKitIntegrationOptions {
   /**
@@ -231,6 +261,14 @@ export default function imagekit(
               config: nextServiceConfig,
             },
           },
+          vite: {
+            plugins: [
+              imagekitConfigVitePlugin({
+                urlEndpoint: resolvedUrlEndpoint,
+                transformationPosition: resolvedTransformationPosition,
+              }),
+            ],
+          },
         });
       },
 
@@ -245,6 +283,13 @@ export default function imagekit(
         injectTypes({
           filename: 'imagekit-image-props.d.ts',
           content: `import type { Transformation } from '@imagekit/javascript';
+
+declare module 'virtual:@imagekit/astro/config' {
+  export const urlEndpoint: string;
+  export const transformationPosition: 'path' | 'query';
+  const config: { urlEndpoint: string; transformationPosition: 'path' | 'query' };
+  export default config;
+}
 
 declare global {
   namespace Astro {

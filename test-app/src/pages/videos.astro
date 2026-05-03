@@ -40,7 +40,6 @@ import { Video } from '@imagekit/astro';
     <div class="example">
       <h3>Basic Video with urlEndpoint prop</h3>
       <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with urlEndpoint prop"
         height={300}
@@ -53,7 +52,6 @@ import { Video } from '@imagekit/astro';
     <div class="example">
       <h3>Video with leading slash in src</h3>
       <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
         src="/sample-video.mp4"
         title="Video with leading slash"
         height={300}
@@ -66,31 +64,12 @@ import { Video } from '@imagekit/astro';
     <div class="example">
       <h3>Video with transformations</h3>
       <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
         title="Video with transformations"
         transformation={[{ height: 100, width: 100 }]}
         height={300}
         width={300}
         controls
-      />
-    </div>
-
-    <!-- Video with all props -->
-    <div class="example">
-      <h3>Video with all HTML attributes</h3>
-      <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="sample-video.mp4"
-        title="Video with all props"
-        height={300}
-        width={300}
-        controls
-        autoplay
-        loop
-        muted
-        preload="none"
-        poster="https://ik.imagekit.io/demo/default-image.jpg"
       />
     </div>
 
@@ -185,84 +164,9 @@ import { Video } from '@imagekit/astro';
       />
     </div>
 
-    <!-- EDGE CASE TESTS -->
-    <h2>Edge Case Tests</h2>
-    <p>Testing extreme values and boundary conditions for video component.</p>
-
-    <!-- Minimal dimensions 1px x 1px -->
-    <div class="example" data-test-id="video-edge-minimal">
-      <h3>Minimal dimensions (1px × 1px)</h3>
-      <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="sample-video.mp4"
-        title="minimal video 1x1"
-        width={1}
-        height={1}
-        controls
-      />
-    </div>
-
-    <!-- Large dimensions -->
-    <div class="example" data-test-id="video-edge-large">
-      <h3>Large dimensions (4000px × 2000px)</h3>
-      <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="sample-video.mp4"
-        title="large video"
-        width={4000}
-        height={2000}
-        controls
-      />
-    </div>
-
-    <!-- Extreme aspect ratio tall -->
-    <div class="example" data-test-id="video-edge-ratio-tall">
-      <h3>Extreme aspect ratio (1:500)</h3>
-      <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="sample-video.mp4"
-        title="tall aspect ratio"
-        width={10}
-        height={5000}
-        controls
-      />
-    </div>
-
-    <!-- Extreme aspect ratio wide -->
-    <div class="example" data-test-id="video-edge-ratio-wide">
-      <h3>Extreme aspect ratio (500:1)</h3>
-      <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="sample-video.mp4"
-        title="wide aspect ratio"
-        width={5000}
-        height={10}
-        controls
-      />
-    </div>
-
-    <!-- Multiple complex transformations -->
-    <div class="example" data-test-id="video-edge-complex-transformations">
-      <h3>Multiple complex transformations</h3>
-      <Video
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="sample-video.mp4"
-        title="complex transformations"
-        transformation={[
-          { width: 200, height: 200 },
-          { rotation: 90 },
-          { quality: 50 },
-          { aspectRatio: "16-9" }
-        ]}
-        width={300}
-        height={300}
-        controls
-      />
-    </div>
-
     <!-- transformationPosition="path" with transformations -->
     <div class="example" data-test-id="video-edge-transform-path">
-      <h3>transformationPosition="path"</h3>
+      <h3>transformationPosition="path" with transformations</h3>
       <Video
         urlEndpoint="https://ik.imagekit.io/demo/"
         src="sample-video.mp4"
