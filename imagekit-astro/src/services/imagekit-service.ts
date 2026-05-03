@@ -34,42 +34,9 @@ export interface ImageKitServiceConfig {
  */
 const QUALITY_PRESETS: Record<string, number> = {
   low: 30,
-  mid: 50,
-  high: 80,
-  max: 100,
-};
-
-/**
- * Maps Astro `fit` prop to ImageKit `crop` parameter.
- * https://imagekit.io/docs/image-resize-and-crop
- *
- * - cover  -> maintain_ratio (resize+crop to exact dims)
- * - contain -> at_max (fit within bounds, preserve aspect)
- * - fill   -> force (stretch to exact dims)
- *
- * Sharp's `inside`/`outside`/`scale-down` have no clean IK equivalent and are ignored.
- */
-const FIT_TO_CROP: Record<string, string> = {
-  cover: 'maintain_ratio',
-  contain: 'at_max',
-  fill: 'force',
-};
-
-/**
- * Maps Astro `position` prop (Sharp keywords) to ImageKit `focus` parameter.
- * Sharp only accepts these 9 keyword values; CSS percentages are not supported.
- * https://imagekit.io/docs/image-resize-and-crop#focus-fo
- */
-const POSITION_TO_FOCUS: Record<string, string> = {
-  center: 'center',
-  top: 'top',
-  bottom: 'bottom',
-  left: 'left',
-  right: 'right',
-  'top left': 'top_left',
-  'top right': 'top_right',
-  'bottom left': 'bottom_left',
-  'bottom right': 'bottom_right',
+  mid: 80,
+  high: 90,
+  max: 95,
 };
 
 /**
@@ -103,47 +70,42 @@ function resolveQuality(quality: ImageTransform['quality']): number | undefined 
 }
 
 /**
- * Builds the IK transformation array from Astro `ImageTransform` options.
- * Maps width/height/fit/position/quality to their ImageKit equivalents and
- * appends user-supplied `transformation` last so users can override defaults.
+ * Builds the IK transformation chain from Astro `ImageTransform` options.
+ *
+ * Ordering matches imagekit-next:
+ *   [ ...userTransformation, { width, quality, crop: 'at_max' } ]
+ *
+ * The trailing chain step always uses `crop: at_max` so that:
+ *   - srcset variants never upscale beyond the source image
+ *   - base src behaves consistently with its variants
+ *
+ * `height` is intentionally omitted from the final step — `at_max` preserves
+ * the source's aspect ratio, so passing height is redundant and can produce
+ * unexpected results if the requested aspect ratio doesn't match the source.
+ *
+ * Astro's `fit` and `position` props are intentionally ignored — `at_max`
+ * preserves aspect ratio and there's no crop/focus to apply on top of it.
+ * Users who need cropping or focus should pass them via `transformation`.
  */
 function buildIKTransformations(options: ImageTransform): Transformation[] {
-  const transformations: Transformation[] = [];
+  const result: Transformation[] = [];
 
-  // Size + crop + focus combined into a single transformation step
-  const sizeTransform: Transformation = {};
-  if (options.width) sizeTransform.width = Math.round(options.width);
-  if (options.height) sizeTransform.height = Math.round(options.height);
-
-  // fit -> crop (only meaningful when both width and height are set)
-  if (options.width && options.height && (options as any).fit) {
-    const crop = FIT_TO_CROP[(options as any).fit as string];
-    if (crop) sizeTransform.crop = crop as Transformation['crop'];
-  }
-
-  // position -> focus
-  if ((options as any).position) {
-    const focus = POSITION_TO_FOCUS[(options as any).position as string];
-    if (focus) sizeTransform.focus = focus as Transformation['focus'];
-  }
-
-  if (Object.keys(sizeTransform).length > 0) {
-    transformations.push(sizeTransform);
-  }
-
-  // quality
-  const quality = resolveQuality(options.quality);
-  if (quality !== undefined) {
-    transformations.push({ quality });
-  }
-
-  // User-supplied transformations come last so they win on conflicts.
+  // 1. User-supplied transformations come first.
   const userTransformation = (options as any).transformation as Transformation[] | undefined;
   if (Array.isArray(userTransformation) && userTransformation.length > 0) {
-    transformations.push(...userTransformation);
+    result.push(...userTransformation);
   }
 
-  return transformations;
+  // 2. Final chain step: width / quality / at_max crop.
+  const finalStep: Transformation = { crop: 'at_max' };
+  if (options.width) finalStep.width = Math.round(options.width);
+
+  const quality = resolveQuality(options.quality);
+  if (quality !== undefined) finalStep.quality = quality;
+
+  result.push(finalStep);
+
+  return result;
 }
 
 const service: ExternalImageService = {
@@ -169,10 +131,10 @@ const service: ExternalImageService = {
   },
 
   getHTMLAttributes(options: ImageTransform) {
-    // Strip only props we consume/handle:
+    // Strip props we consume or that would otherwise leak as invalid HTML attrs:
     // - src is replaced with our generated URL
     // - quality/background are baked into the URL
-    // - fit/position are mapped to ImageKit transformations
+    // - fit/position are intentionally ignored by the service
     // - format is intentionally ignored (use `transformation: [{ format: ... }]` to force one)
     // - inferSize is intentionally ignored (external services don't fetch remote images for dimensions)
     // - densities/widths/layout are Astro-internal (would render as invalid HTML attrs)

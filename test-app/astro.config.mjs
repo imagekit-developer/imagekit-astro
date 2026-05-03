@@ -4,7 +4,11 @@ import imagekit from '@imagekit/astro/integration';
 
 export default defineConfig({
   output: 'server',
-  integrations: [imagekit()],
+  integrations: [
+    imagekit({
+      urlEndpoint: 'https://ik.imagekit.io/demo/',
+    }),
+  ],
   adapter: node({
     mode: 'standalone',
   }),
