@@ -233,6 +233,46 @@ export default function imagekit(
           },
         });
       },
+
+      // Augment Astro's <Image>/<Picture>/getImage() prop types with
+      // ImageKit-specific props so users get autocomplete and type safety.
+      // injectTypes() requires Astro >= 4.4; older versions skip this gracefully.
+      // https://docs.astro.build/en/reference/integrations-reference/#injecttypes-option
+      'astro:config:done': ({ injectTypes }) => {
+        if (typeof injectTypes !== 'function') {
+          return;
+        }
+        injectTypes({
+          filename: 'imagekit-image-props.d.ts',
+          content: `import type { Transformation } from '@imagekit/javascript';
+
+declare global {
+  namespace Astro {
+    interface CustomImageProps {
+      /** Override the ImageKit URL endpoint for this image. */
+      urlEndpoint?: string;
+      /**
+       * Array of ImageKit transformations applied after Astro's built-in
+       * width/height/fit/position/quality mappings. Later items take precedence.
+       * @see https://imagekit.io/docs/image-transformation
+       */
+      transformation?: Transformation[];
+      /** Extra query parameters appended to the generated URL. */
+      queryParameters?: Record<string, string | number>;
+      /**
+       * Position of the transformation string in the URL.
+       * - \`'query'\` (default): appended as \`?tr=...\`
+       * - \`'path'\`: inserted in the URL path as \`tr:...\`
+       */
+      transformationPosition?: 'path' | 'query';
+    }
+  }
+}
+
+export {};
+`,
+        });
+      },
     },
   };
 }

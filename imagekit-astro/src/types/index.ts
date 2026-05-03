@@ -84,27 +84,3 @@ export interface OgImageTagOptions {
   format?: Transformation['format'];
 }
 
-/**
- * Props for the Image component.
- * Combines Astro's RemoteImageProps with ImageKit-specific options.
- */
-export interface ImageProps {
-  /** ImageKit URL endpoint */
-  urlEndpoint?: string;
-  /** Array of ImageKit transformations */
-  transformation?: Transformation[];
-  /** Additional query parameters */
-  queryParameters?: Record<string, string | number>;
-  /** Position of transformation string in URL */
-  transformationPosition?: 'path' | 'query';
-  /** Enable responsive srcSet generation */
-  responsive?: boolean;
-  /** HTML sizes attribute for responsive images */
-  sizes?: string;
-  /** Custom device-width breakpoints */
-  deviceBreakpoints?: number[];
-  /** Custom image-specific breakpoints */
-  imageBreakpoints?: number[];
-  /** Format for the image */
-  format?: Transformation['format'];
-}

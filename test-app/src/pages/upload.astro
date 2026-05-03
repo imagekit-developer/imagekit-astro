@@ -109,7 +109,7 @@
   </div>
 
   <script>
-    import { upload } from '@imagekit/astro';
+    import { upload } from '@imagekit/javascript';
 
     const fileInput = document.getElementById('file-input') as HTMLInputElement;
     const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement;
@@ -147,7 +147,7 @@
         const response = await upload({
           file,
           fileName: file.name,
-          publicKey: import.meta.env.IMAGEKIT_PUBLIC_KEY,
+          publicKey: import.meta.env.PUBLIC_IMAGEKIT_PUBLIC_KEY,
           ...authParams,
         });
 

@@ -107,6 +107,11 @@ for VERSION in "${VERSIONS[@]}"; do
   (
     cd "$TEST_APP_DIR"
     pnpm remove --silent @imagekit/astro 2>/dev/null || true
+    # Clear pnpm's cached extracted copies of the local tarball — pnpm keys
+    # by tarball path, not content, so an updated rebuild of the same
+    # filename would otherwise be silently reused.
+    rm -rf "$REPO_ROOT/node_modules/.pnpm/@imagekit+astro"*
+    rm -rf "$TEST_APP_DIR/node_modules/@imagekit/astro"
     pnpm add --silent "$TARBALL"
     pnpm remove --silent "@astrojs/node" 2>/dev/null || true
     pnpm add --silent "astro@$VERSION"

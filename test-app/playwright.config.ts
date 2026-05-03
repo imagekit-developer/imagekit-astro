@@ -1,6 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
 import path from "path";
-import "./e2e/fixtures";
 
 // Use process.env.PORT by default and fallback to port 4321
 const PORT = process.env.PORT || 4321;

@@ -1,5 +1,5 @@
 ---
-import { Image } from '@imagekit/astro';
+import { Image } from 'astro:assets';
 ---
 
 <!DOCTYPE html>
@@ -116,19 +116,6 @@ import { Image } from '@imagekit/astro';
       />
     </div>
 
-    <!-- Non-responsive image -->
-    <div class="example">
-      <h3>7. Non-responsive image (responsive=false)</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Non-responsive image"
-        responsive={false}
-        width={300}
-        height={300}
-      />
-    </div>
-
     <!-- Image with custom class -->
     <div class="example">
       <h3>8. Image with custom class</h3>
@@ -177,32 +164,6 @@ import { Image } from '@imagekit/astro';
         alt="Image with path transformation + custom transformations"
         transformationPosition="path"
         transformation={[{ height: 100, width: 100 }]}
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- Custom device breakpoints -->
-    <div class="example">
-      <h3>12. Image with custom deviceBreakpoints</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Image with custom device breakpoints"
-        deviceBreakpoints={[320, 640, 1024]}
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- Custom image breakpoints -->
-    <div class="example">
-      <h3>13. Image with custom imageBreakpoints</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Image with custom image breakpoints"
-        imageBreakpoints={[200, 400, 600]}
         width={300}
         height={300}
       />
@@ -441,156 +402,6 @@ import { Image } from '@imagekit/astro';
       />
     </div>
 
-    <!-- PROPERTY CONFLICT TESTS -->
-    <h2>Property Conflict Tests (Invalid Combinations)</h2>
-    <p>Per Astro docs: These property combinations should not be used together. Testing graceful handling.</p>
-
-    <!-- densities + layout conflict -->
-    <div class="example" data-test-id="conflict-densities-layout">
-      <h3>31. CONFLICT: densities + layout (densities should be ignored)</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Conflict: densities + layout"
-        densities={[1.5, 2]}
-        layout="constrained"
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- densities + widths conflict -->
-    <div class="example" data-test-id="conflict-densities-widths">
-      <h3>32. CONFLICT: densities + widths (only one should be used)</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Conflict: densities + widths"
-        densities={[1.5, 2]}
-        widths={[240, 540, 720]}
-        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- widths without sizes -->
-    <div class="example" data-test-id="conflict-widths-no-sizes">
-      <h3>33. CONFLICT: widths without sizes (sizes required)</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Conflict: widths without sizes"
-        widths={[240, 540, 720]}
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- layout=fixed + widths -->
-    <div class="example" data-test-id="conflict-fixed-widths">
-      <h3>34. CONFLICT: layout=fixed + widths (fixed layout shouldn't vary widths)</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Conflict: layout=fixed + widths"
-        layout="fixed"
-        widths={[240, 540, 720]}
-        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- layout=none + responsive prop -->
-    <div class="example" data-test-id="conflict-none-layout-responsive">
-      <h3>35. CONFLICT: layout=none + responsive=true (none disables responsiveness)</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Conflict: layout=none + responsive"
-        layout="none"
-        responsive={true}
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- VALID PROPERTY COMBINATIONS -->
-    <h2>Valid Property Combinations</h2>
-    <p>These property combinations work correctly together.</p>
-
-    <!-- widths + sizes valid -->
-    <div class="example" data-test-id="valid-widths-sizes">
-      <h3>36. VALID: widths + sizes (responsive with explicit widths)</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Valid: widths + sizes"
-        widths={[240, 540, 720]}
-        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- densities alone valid -->
-    <div class="example" data-test-id="valid-densities-alone">
-      <h3>37. VALID: densities alone (density-based srcset)</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Valid: densities alone"
-        densities={[1.5, 2]}
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- layout=constrained + format + quality valid -->
-    <div class="example" data-test-id="valid-layout-format-quality">
-      <h3>38. VALID: layout=constrained + format + quality</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Valid: layout + format + quality"
-        layout="constrained"
-        format="webp"
-        quality="high"
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- layout=full-width with responsive -->
-    <div class="example" data-test-id="valid-fullwidth-responsive">
-      <h3>39. VALID: layout=full-width with responsive props</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Valid: layout full-width"
-        layout="full-width"
-        responsive={true}
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- responsive + ImageKit breakpoints -->
-    <div class="example" data-test-id="valid-responsive-breakpoints">
-      <h3>40. VALID: responsive=true + ImageKit breakpoints</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="Valid: responsive + breakpoints"
-        responsive={true}
-        deviceBreakpoints={[320, 640, 1024]}
-        imageBreakpoints={[200, 400, 600]}
-        width={300}
-        height={300}
-      />
-    </div>
-
     <!-- EDGE CASE TESTS -->
     <h2>Edge Case Tests</h2>
     <p>Testing extreme values and boundary conditions.</p>
@@ -798,33 +609,6 @@ import { Image } from '@imagekit/astro';
       />
     </div>
 
-    <!-- Responsive with custom device breakpoints edge case -->
-    <div class="example" data-test-id="edge-device-breakpoints">
-      <h3>56. Responsive with extreme device breakpoints</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="device breakpoints"
-        responsive={true}
-        deviceBreakpoints={[100, 5000]}
-        width={300}
-        height={300}
-      />
-    </div>
-
-    <!-- Responsive with custom image breakpoints edge case -->
-    <div class="example" data-test-id="edge-image-breakpoints">
-      <h3>57. Responsive with extreme image breakpoints</h3>
-      <Image
-        urlEndpoint="https://ik.imagekit.io/demo/"
-        src="/default-image.jpg"
-        alt="image breakpoints"
-        responsive={true}
-        imageBreakpoints={[100, 5000]}
-        width={300}
-        height={300}
-      />
-    </div>
   </div>
 </body>
 </html>

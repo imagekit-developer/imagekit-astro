@@ -13,6 +13,7 @@
   "dependencies": {
     "@astrojs/node": "^9.5.5",
     "@imagekit/astro": "workspace:*",
+    "@imagekit/javascript": "^5.1.0",
     "astro": "^5.18.1"
   },
   "devDependencies": {

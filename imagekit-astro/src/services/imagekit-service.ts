@@ -1,21 +1,17 @@
 import type { ExternalImageService, ImageTransform, AstroConfig } from 'astro';
-import { buildSrc, getResponsiveImageAttributes } from '@imagekit/javascript';
+import { buildSrc } from '@imagekit/javascript';
 import type { Transformation } from '@imagekit/javascript';
+
 /**
- * Dynamically imports `inferRemoteSize` from `astro:assets`.
- * Available since Astro 4.12. Returns `undefined` on older versions.
+ * Mirrors Astro's internal `UnresolvedSrcSetValue` (not exported from the
+ * public `astro` entry). Astro's pipeline fills in `url` later by calling
+ * `getURL` on the returned `transform`.
  */
-async function tryInferRemoteSize(url: string): Promise<{ width: number; height: number } | undefined> {
-  try {
-    const mod = await import('astro:assets');
-    if (typeof mod.inferRemoteSize === 'function') {
-      return await mod.inferRemoteSize(url);
-    }
-    return undefined;
-  } catch {
-    return undefined;
-  }
-}
+type UnresolvedSrcSetValue = {
+  transform: ImageTransform;
+  descriptor?: string;
+  attributes?: Record<string, any>;
+};
 
 export interface ImageKitServiceConfig {
   /**
@@ -33,28 +29,48 @@ export interface ImageKitServiceConfig {
 }
 
 /**
- * IK-specific prop names that flow through ImageTransform's index signature.
- * These must be stripped from HTML attributes.
+ * Astro quality presets mapped to ImageKit quality (0-100).
+ * https://imagekit.io/docs/image-resize-and-crop#quality-q
  */
-const IK_PROP_NAMES = [
-  'urlEndpoint',
-  'transformation',
-  'queryParameters',
-  'transformationPosition',
-  'responsive',
-  'deviceBreakpoints',
-  'imageBreakpoints',
-  // Internal props set by the service
-  '_ik_srcset',
-  '_ik_sizes',
-] as const;
-
-const qualityPresets = {
+const QUALITY_PRESETS: Record<string, number> = {
   low: 30,
   mid: 50,
   high: 80,
   max: 100,
-}
+};
+
+/**
+ * Maps Astro `fit` prop to ImageKit `crop` parameter.
+ * https://imagekit.io/docs/image-resize-and-crop
+ *
+ * - cover  -> maintain_ratio (resize+crop to exact dims)
+ * - contain -> at_max (fit within bounds, preserve aspect)
+ * - fill   -> force (stretch to exact dims)
+ *
+ * Sharp's `inside`/`outside`/`scale-down` have no clean IK equivalent and are ignored.
+ */
+const FIT_TO_CROP: Record<string, string> = {
+  cover: 'maintain_ratio',
+  contain: 'at_max',
+  fill: 'force',
+};
+
+/**
+ * Maps Astro `position` prop (Sharp keywords) to ImageKit `focus` parameter.
+ * Sharp only accepts these 9 keyword values; CSS percentages are not supported.
+ * https://imagekit.io/docs/image-resize-and-crop#focus-fo
+ */
+const POSITION_TO_FOCUS: Record<string, string> = {
+  center: 'center',
+  top: 'top',
+  bottom: 'bottom',
+  left: 'left',
+  right: 'right',
+  'top left': 'top_left',
+  'top right': 'top_right',
+  'bottom left': 'bottom_left',
+  'bottom right': 'bottom_right',
+};
 
 /**
  * Resolves the ImageKit config from the service config and per-image overrides.
@@ -76,240 +92,152 @@ function resolveConfig(
 }
 
 /**
- * Builds the IK transformation array from user-supplied transformations
- * plus Astro's format/quality props.
+ * Resolves quality (preset string or number) to an ImageKit quality value.
  */
-function buildIKTransformations(options: ImageTransform): Transformation[] {
-  const userTransformation: Transformation[] = Array.from(
-    (options as any).transformation ?? [],
-  );
-
-  if (options.format && typeof options.format === 'string') {
-    userTransformation.push({ format: options.format as Transformation['format'] });
-  }
-
-  const qualityInt = parseInt(String(options.quality), 10);
-  const quality = (options.quality as keyof typeof qualityPresets);
-  const finalQuality = !Number.isNaN(qualityInt) ? qualityInt : qualityPresets[quality];
-  
-  if (finalQuality !== undefined && !Number.isNaN(finalQuality)) {
-    userTransformation.push({ quality: finalQuality as Transformation['quality'] });
-  }
-
-  return userTransformation;
+function resolveQuality(quality: ImageTransform['quality']): number | undefined {
+  if (quality === undefined || quality === null) return undefined;
+  if (typeof quality === 'number') return quality;
+  const num = Number.parseInt(String(quality), 10);
+  if (!Number.isNaN(num)) return num;
+  return QUALITY_PRESETS[String(quality)];
 }
 
 /**
- * Determines whether ImageKit should handle responsive image generation
- * (as opposed to Astro's native layout/densities/widths handling).
- *
- * IK responsive is used when:
- * - `responsive` prop is true (default)
- * - No Astro `densities` are specified
- * - `width` is defined (including width inferred during validateOptions)
+ * Builds the IK transformation array from Astro `ImageTransform` options.
+ * Maps width/height/fit/position/quality to their ImageKit equivalents and
+ * appends user-supplied `transformation` last so users can override defaults.
  */
-function shouldUseIKResponsive(options: ImageTransform): boolean {
-  const responsive = (options as any).responsive ?? true;
-  const hasAstroDensities = !!(options as any).densities;
-  const hasSrcset = !!(options as any).srcset;
-  return (
-    responsive &&
-    !hasAstroDensities && // Densities does not play well with IK responsive
-    !hasSrcset && // If the user provided their own srcset, don't override with IK responsive
-    options.width !== undefined
-  );
+function buildIKTransformations(options: ImageTransform): Transformation[] {
+  const transformations: Transformation[] = [];
+
+  // Size + crop + focus combined into a single transformation step
+  const sizeTransform: Transformation = {};
+  if (options.width) sizeTransform.width = Math.round(options.width);
+  if (options.height) sizeTransform.height = Math.round(options.height);
+
+  // fit -> crop (only meaningful when both width and height are set)
+  if (options.width && options.height && (options as any).fit) {
+    const crop = FIT_TO_CROP[(options as any).fit as string];
+    if (crop) sizeTransform.crop = crop as Transformation['crop'];
+  }
+
+  // position -> focus
+  if ((options as any).position) {
+    const focus = POSITION_TO_FOCUS[(options as any).position as string];
+    if (focus) sizeTransform.focus = focus as Transformation['focus'];
+  }
+
+  if (Object.keys(sizeTransform).length > 0) {
+    transformations.push(sizeTransform);
+  }
+
+  // quality
+  const quality = resolveQuality(options.quality);
+  if (quality !== undefined) {
+    transformations.push({ quality });
+  }
+
+  // User-supplied transformations come last so they win on conflicts.
+  const userTransformation = (options as any).transformation as Transformation[] | undefined;
+  if (Array.isArray(userTransformation) && userTransformation.length > 0) {
+    transformations.push(...userTransformation);
+  }
+
+  return transformations;
 }
 
 const service: ExternalImageService = {
-  async validateOptions(options: ImageTransform, imageConfig: AstroConfig['image']) {
-    if (!options.width) {
-      const config = resolveConfig(options, imageConfig);
-      const baseSrc = buildSrc({
-        src: typeof options.src === 'string' ? options.src : options.src.src,
-        urlEndpoint: config.urlEndpoint,
-        transformation: [{ raw: 'orig-true'}],
-        queryParameters: (options as any).queryParameters,
-        transformationPosition: config.transformationPosition,
-      });
-      const inferredSize = await tryInferRemoteSize(baseSrc);
-      
-      if (inferredSize) {
-        const densities: (number | `${number}x`)[] = (options as any).densities ?? [1];
-        const largestDensity = Math.max(...densities.map((d) => (typeof d === 'number' ? d : Number.parseFloat(d))));
-        options.width = Math.round(inferredSize.width / largestDensity);
-        options.height = Math.round(inferredSize.height / largestDensity);
-      } else {
-        console.warn(
-          `Failed to infer image size for ${baseSrc}. ` +
-          `Automatic dimension inference requires Astro 4.12+. ` +
-          `Please provide explicit width and height.`,
-        );
-      }
-    }
-    // Round width/height like the base service
+  validateOptions(options: ImageTransform) {
+    // No remote-size inference: external services don't process images,
+    // so we don't need exact source dimensions at build time. Just round.
     if (options.width) options.width = Math.round(options.width);
     if (options.height) options.height = Math.round(options.height);
-
     return options;
   },
 
   getURL(options: ImageTransform, imageConfig: AstroConfig['image']) {
     const { urlEndpoint, transformationPosition } = resolveConfig(options, imageConfig);
     const src = typeof options.src === 'string' ? options.src : options.src.src;
-    const transformation = buildIKTransformations(options);
-    const queryParameters = (options as any).queryParameters;
-    const widths = options.widths;
-
-    // If IK responsive mode is active, use getResponsiveImageAttributes for the src URL.
-    // The srcSet/sizes will be stored on options for getHTMLAttributes to pick up.
-    if (shouldUseIKResponsive(options)) {
-      const imageBreakpoints: number[] | undefined = (options as any).imageBreakpoints;
-      const widthBreakpoints = Array.isArray(widths) && widths.length > 0 
-                                ? Array.from(new Set(widths.concat(imageBreakpoints ?? [])))
-                                : imageBreakpoints;
-
-      const attrs = getResponsiveImageAttributes({
-        src,
-        urlEndpoint,
-        transformation: [...transformation],
-        queryParameters,
-        transformationPosition,
-        width: options.width,
-        sizes: (options as any).sizes,
-        deviceBreakpoints: (options as any).deviceBreakpoints,
-        imageBreakpoints: widthBreakpoints,
-      });
-
-      // Store responsive attrs on options for getHTMLAttributes to read
-      (options as any)._ik_srcset = attrs.srcSet;
-      (options as any)._ik_sizes = attrs.sizes;
-
-      return attrs.src;
-    }
-
-    // Non-responsive or Astro-handled responsive: build a single IK URL
-    // Include width/height in the transformation so the IK URL reflects the requested dimensions
-    const sizeTransformation: Transformation = {};
-    if (options.width && options.densities) {
-      sizeTransformation.width = options.width;
-      sizeTransformation.crop = 'at_max';
-    }
 
     return buildSrc({
       src,
       urlEndpoint,
-      transformation: [sizeTransformation, ...transformation],
-      queryParameters,
+      transformation: buildIKTransformations(options),
+      queryParameters: (options as any).queryParameters,
       transformationPosition,
     });
   },
 
-  getSrcSet(options: ImageTransform, _imageConfig: AstroConfig['image']) {
-    // If IK responsive mode handled srcSet, return empty - srcSet is set via getHTMLAttributes
-    if (shouldUseIKResponsive(options)) {
-      return [];
-    }
-
-    // For Astro layout/widths/densities: generate IK URLs for each width variant
-    const { densities } = options;
-    const targetWidth = options.width;
-    const targetHeight = options.height;
-
-    if (!targetWidth || !targetHeight) {
-      return [];
-    }
-
-    const aspectRatio = targetWidth / targetHeight;
-    const sortNumeric = (a: number, b: number) => a - b;
-
-    let allWidths: Array<{ width: number; descriptor: string }> = [];
-
-    if (densities) {
-      const densityValues = (densities as (number | string)[]).map((d) =>
-        typeof d === 'number' ? d : Number.parseFloat(d),
-      );
-      const densityWidths = densityValues
-        .sort(sortNumeric)
-        .map((d) => Math.round(targetWidth * d));
-      allWidths = densityWidths.map((w, i) => ({
-        width: w,
-        descriptor: `${densityValues[i]}x`,
-      }));
-    }
-
-    return allWidths.map(({ width, descriptor }) => {
-      const height = Math.round(width / aspectRatio);
-      return {
-        transform: {
-          ...options,
-          width,
-          height,
-        },
-        descriptor,
-        attributes: {},
-      };
-    });
-  },
-
   getHTMLAttributes(options: ImageTransform) {
-    // Destructure standard image service props that shouldn't appear as HTML attributes
+    // Strip only props we consume/handle:
+    // - src is replaced with our generated URL
+    // - quality/background are baked into the URL
+    // - fit/position are mapped to ImageKit transformations
+    // - format is intentionally ignored (use `transformation: [{ format: ... }]` to force one)
+    // - inferSize is intentionally ignored (external services don't fetch remote images for dimensions)
+    // - densities/widths/layout are Astro-internal (would render as invalid HTML attrs)
+    // - urlEndpoint/transformation/queryParameters/transformationPosition are IK config
+    // Everything else (width, height, sizes, alt, class, style, loading, etc.) passes through.
     const {
       src,
-      width,
-      height,
       format,
       quality,
       densities,
       widths,
-      formats,
-      priority,
-      sizes,
       fit,
       position,
       layout,
-      ...attributes
+      background,
+      inferSize,
+      urlEndpoint,
+      transformation,
+      queryParameters,
+      transformationPosition,
+      ...nonIKAttributes
     } = options as any;
 
-    // Remove IK-specific props from HTML attributes
-    for (const prop of IK_PROP_NAMES) {
-      delete attributes[prop];
-    }
+    return {
+      ...nonIKAttributes,
+      loading: nonIKAttributes.loading ?? 'lazy',
+      decoding: nonIKAttributes.decoding ?? 'async',
+    };
+  },
 
-    const result: Record<string, any> = {
-      ...attributes,
-      width,
-      height,
-      loading: attributes.loading ?? 'lazy',
-      decoding: attributes.decoding ?? 'async',
+  /**
+   * Build one srcset entry per requested width. Astro fills in the `url`
+   * for each entry by calling `getURL(transform)` (see
+   * `astro/dist/assets/internal.js`). `layout` is already converted to
+   * `widths` upstream by Astro's `getImage`, so only `widths`/`densities`
+   * need handling here.
+   */
+  getSrcSet(options: ImageTransform): UnresolvedSrcSetValue[] {
+    const { width, height, densities, widths } = options as ImageTransform & {
+      densities?: Array<number | `${number}x`>;
+      widths?: number[];
     };
 
-    // If IK responsive mode generated srcSet/sizes, include them
-    if ((options as any)._ik_srcset) {
-      result.srcset = (options as any)._ik_srcset;
-    }
-    if ((options as any)._ik_sizes) {
-      result.sizes = (options as any)._ik_sizes;
-    }
+    const targets: Array<{ w: number; descriptor: string }> = [];
 
-    // If Astro set sizes (from layout computation), pass it through
-    if (sizes && !result.sizes) {
-      result.sizes = sizes;
-    }
-
-    if (fit) {
-      result.style = `${result.style ?? ''} object-fit: ${fit};`.trim();
-    }
-    if (position) {
-      result.style = `${result.style ?? ''} object-position: ${position};`.trim();
-    }
-    if (layout) {
-      if (layout === 'constrained') {
-        result.style = `${result.style ?? ''} max-width: 100%;`.trim();
-      } else if (layout === 'full-width') {
-        result.style = `${result.style ?? ''} width: 100%;`.trim();
+    if (widths?.length) {
+      for (const w of widths) targets.push({ w, descriptor: `${Math.round(w)}w` });
+    } else if (densities?.length && width) {
+      for (const d of densities) {
+        const factor = typeof d === 'number' ? d : Number.parseFloat(String(d));
+        targets.push({ w: width * factor, descriptor: `${factor}x` });
       }
     }
-    return result;
+
+    const aspectRatio = width && height ? width / height : undefined;
+
+    return targets.map(({ w, descriptor }) => ({
+      transform: {
+        ...options,
+        width: Math.round(w),
+        height: aspectRatio ? Math.round(w / aspectRatio) : height,
+      },
+      descriptor,
+      attributes: {},
+    }));
   },
 };
 

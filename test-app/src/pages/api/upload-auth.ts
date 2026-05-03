@@ -7,7 +7,7 @@ export const GET: APIRoute = async () => {
   try {
     const authParams = getUploadAuthParams({
       privateKey: import.meta.env.IMAGEKIT_PRIVATE_KEY,
-      publicKey: import.meta.env.IMAGEKIT_PUBLIC_KEY,
+      publicKey: import.meta.env.PUBLIC_IMAGEKIT_PUBLIC_KEY,
     });
     return new Response(JSON.stringify(authParams), {
       status: 200,
@@ -20,7 +20,7 @@ export const GET: APIRoute = async () => {
         token: 'dummy-token',
         signature: 'dummy-signature',
         expire: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes from now
-        publicKey: import.meta.env.IMAGEKIT_PUBLIC_KEY || 'dummy-public-key',
+        publicKey: import.meta.env.PUBLIC_IMAGEKIT_PUBLIC_KEY || 'dummy-public-key',
       };
       console.warn('Using dummy auth params for CI environment');
       return new Response(JSON.stringify(dummyAuthParams), {
