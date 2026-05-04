@@ -57,7 +57,7 @@ Install the Node SDK as a dev dependency (it's only used at build time):
 npm install -D @imagekit/nodejs
 ```
 
-Define a collection backed by `client.assets.list()`. The Node SDK returns an array of `File | Folder` objects directly, so filter to image files and shape each entry as `{ id, ...data }` — Astro's content layer treats the top-level `id` as the entry key and validates everything else against your `schema`:
+Define a collection backed by `client.assets.list()`. The Node SDK returns an array of `File | Folder` objects directly, so pass `type: 'file'` to exclude folders and `fileType: 'image'` to limit results to images. Shape each entry as `{ id, ...data }` — Astro's content layer treats the top-level `id` as the entry key and validates everything else against your `schema`:
 
 ```ts
 // src/content.config.ts
@@ -71,19 +71,22 @@ const client = new ImageKit({
 const gallery = defineCollection({
   loader: async () => {
     const assets = await client.assets.list({
-      type: 'file',   // exclude folders
+      type: 'file',       // exclude folders
+      fileType: 'image',  // only image files
       skip: 0,
       limit: 50,
     });
 
-    return assets.map((asset) => ({
-      id: asset.fileId!,
-      url: asset.url!,
-      width: asset.width!,
-      height: asset.height!,
-      name: asset.name ?? '',
-      tags: asset.tags ?? [],
-    }));
+    return assets
+      .filter((asset) => asset.fileId && asset.url)
+      .map((asset) => ({
+        id: asset.fileId!,
+        url: asset.url!,
+        width: asset.width ?? 0,
+        height: asset.height ?? 0,
+        name: asset.name ?? '',
+        tags: asset.tags ?? [],
+      }));
   },
   schema: z.object({
     url: z.string().url(),
@@ -96,6 +99,8 @@ const gallery = defineCollection({
 
 export const collections = { gallery };
 ```
+
+After adding the collection, run `astro sync` (or start the dev server) so Astro generates the collection types used by `getCollection()`.
 
 Render with `<Image>` from `astro:assets` — the integration's image service generates the IK CDN URL with the correct transformations:
 
@@ -111,7 +116,7 @@ const photos = await getCollection('gallery');
 ))}
 ```
 
-> Keep your `privateKey` in a server-only env var. Collections are evaluated at build time (or in SSR endpoints), never shipped to the browser.
+> Keep your `privateKey` in a server-only env var (e.g. `IMAGEKIT_PRIVATE_KEY` in `.env`, never prefixed with `PUBLIC_`). Collection loaders run at build time (or in SSR endpoints), never in the browser.
 
 ## Documentation
 
