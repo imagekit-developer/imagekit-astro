@@ -1,6 +1,7 @@
-import type { ExternalImageService, ImageTransform, AstroConfig } from 'astro';
+import type { LocalImageService, ImageTransform, AstroConfig } from 'astro';
 import { buildSrc } from '@imagekit/javascript';
 import type { Transformation } from '@imagekit/javascript';
+import sharpService from 'astro/assets/services/sharp';
 
 /**
  * Mirrors Astro's internal `UnresolvedSrcSetValue` (not exported from the
@@ -39,6 +40,16 @@ export interface ImageKitServiceConfig {
    * - `'path'`: inserted in the URL path as `tr:...`
    */
   transformationPosition?: 'path' | 'query';
+
+  /**
+   * Hostnames recognized as ImageKit endpoints. Absolute URLs whose host
+   * matches one of these are treated as IK URLs (transformations applied
+   * directly). All other srcs are delegated to Astro's default sharp service.
+   *
+   * Populated automatically by the integration from `urlEndpoint` and
+   * `additionalEndpoints`.
+   */
+  imagekitHosts?: string[];
 }
 
 /**
@@ -133,10 +144,58 @@ function buildIKTransformations(options: IKImageTransform): Transformation[] {
   return result;
 }
 
-const service: ExternalImageService = {
-  validateOptions(options: ImageTransform) {
-    // No remote-size inference: external services don't process images,
-    // so we don't need exact source dimensions at build time. Just round.
+/**
+ * Determines whether a `src` should be handled by the ImageKit service.
+ *
+ * Eligible:
+ *   - Bare paths or filenames (e.g. `'foo.jpg'`, `'folder/bar.png'`).
+ *   - Root-relative paths that don't look like Vite-emitted local assets.
+ *   - Absolute URLs whose host matches a known IK host (canonical, custom
+ *     domain, or any `additionalEndpoints` host).
+ *
+ * Not eligible (→ delegated to sharp):
+ *   - Vite/Astro local asset paths: `/_astro/...`, `/@fs/...`, `/@id/...`.
+ *   - Absolute URLs on hosts not in the IK host set.
+ *   - `data:` / `blob:` URLs.
+ */
+function isImageKitSrc(src: string, ikHosts: string[]): boolean {
+  if (!src) return false;
+  if (src.startsWith('data:') || src.startsWith('blob:')) return false;
+  if (
+    src.startsWith('/_astro/') ||
+    src.startsWith('/@fs/') ||
+    src.startsWith('/@id/')
+  ) {
+    return false;
+  }
+  if (/^https?:\/\//i.test(src)) {
+    try {
+      const u = new URL(src);
+      return ikHosts.includes(u.hostname.toLowerCase());
+    } catch {
+      return false;
+    }
+  }
+  // Bare paths: assume IK (will be resolved against urlEndpoint).
+  return true;
+}
+
+function getIKHosts(imageConfig: AstroConfig['image']): string[] {
+  const config = (imageConfig.service.config ?? {}) as Partial<ImageKitServiceConfig>;
+  const hosts = Array.isArray(config.imagekitHosts) ? config.imagekitHosts : [];
+  // Always include the canonical host as a safety net.
+  return Array.from(new Set([...hosts, 'ik.imagekit.io'].map((h) => h.toLowerCase())));
+}
+
+const service: LocalImageService = {
+  validateOptions(options: ImageTransform, imageConfig: AstroConfig['image']) {
+    const src = typeof options.src === 'string' ? options.src : options.src.src;
+    // For non-IK srcs, defer to sharp's validation (handles format clamping,
+    // local-asset dimension inference, etc.).
+    if (!isImageKitSrc(src, getIKHosts(imageConfig))) {
+      return sharpService.validateOptions!(options, imageConfig);
+    }
+    // For IK srcs, just round dimensions — IK handles the rest server-side.
     if (options.width) options.width = Math.round(options.width);
     if (options.height) options.height = Math.round(options.height);
     return options;
@@ -144,8 +203,13 @@ const service: ExternalImageService = {
 
   getURL(options: ImageTransform, imageConfig: AstroConfig['image']) {
     const opts = options as IKImageTransform;
-    const { urlEndpoint, transformationPosition } = resolveConfig(opts, imageConfig);
     const src = typeof opts.src === 'string' ? opts.src : opts.src.src;
+
+    if (!isImageKitSrc(src, getIKHosts(imageConfig))) {
+      return sharpService.getURL!(options, imageConfig);
+    }
+
+    const { urlEndpoint, transformationPosition } = resolveConfig(opts, imageConfig);
 
     return buildSrc({
       src,
@@ -156,7 +220,14 @@ const service: ExternalImageService = {
     });
   },
 
-  getHTMLAttributes(options: ImageTransform) {
+  getHTMLAttributes(options: ImageTransform, imageConfig: AstroConfig['image']) {
+    const opts = options as IKImageTransform;
+    const srcStr = typeof opts.src === 'string' ? opts.src : opts.src.src;
+
+    if (!isImageKitSrc(srcStr, getIKHosts(imageConfig))) {
+      return sharpService.getHTMLAttributes!(options, imageConfig);
+    }
+
     // Strip props we consume or that would otherwise leak as invalid HTML attrs:
     // - src is replaced with our generated URL
     // - quality/background are baked into the URL
@@ -205,8 +276,14 @@ const service: ExternalImageService = {
    * `widths` upstream by Astro's `getImage`, so only `widths`/`densities`
    * need handling here.
    */
-  getSrcSet(options: ImageTransform): UnresolvedSrcSetValue[] {
+  getSrcSet(options: ImageTransform, imageConfig: AstroConfig['image']): UnresolvedSrcSetValue[] {
     const opts = options as IKImageTransform;
+    const src = typeof opts.src === 'string' ? opts.src : opts.src.src;
+
+    if (!isImageKitSrc(src, getIKHosts(imageConfig))) {
+      return sharpService.getSrcSet!(options, imageConfig) as UnresolvedSrcSetValue[];
+    }
+
     const { width, height, densities, widths } = opts;
 
     const targets: Array<{ w: number; descriptor: string }> = [];
@@ -232,6 +309,18 @@ const service: ExternalImageService = {
       attributes: {},
     }));
   },
+
+  // --- Local-service hooks (delegated to sharp) ---
+  //
+  // We register as a `LocalImageService` so Astro's `/_image` endpoint
+  // accepts requests for non-IK srcs (local assets, foreign hosts in
+  // `image.domains`/`remotePatterns`). These hooks only fire when our
+  // `getURL` returned a `/_image?...` URL — which only happens for
+  // sharp-delegated srcs. IK URLs go straight to `ik.imagekit.io` and
+  // never hit `/_image`, so this is purely additive.
+  parseURL: sharpService.parseURL,
+  transform: sharpService.transform,
+  propertiesToHash: sharpService.propertiesToHash,
 };
 
 export default service;

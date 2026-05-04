@@ -7,6 +7,7 @@ export default defineConfig({
   integrations: [
     imagekit({
       urlEndpoint: 'https://ik.imagekit.io/demo/',
+      additionalEndpoints: ['https://ik.imgkit.net'],
     }),
   ],
   adapter: node({
@@ -14,5 +15,6 @@ export default defineConfig({
   }),
   image: {
     layout: 'constrained',
+    domains: ['placehold.co']
   }
 });

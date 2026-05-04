@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import heroImage from '../assets/hero.jpg';
 ---
 
 <!DOCTYPE html>
@@ -528,6 +529,32 @@ import { Image } from 'astro:assets';
         quality="max"
         width={300}
         height={300}
+      />
+    </div>
+
+    <!-- SHARP DELEGATION: non-IK srcs are routed through Astro's bundled sharp service. -->
+    <h2>Sharp delegation (non-ImageKit srcs)</h2>
+    <p>The following cases use srcs that are not ImageKit URLs. The integration delegates them to Astro's default sharp service, so they're served via Astro's <code>/_image</code> endpoint instead of being rewritten to <code>ik.imagekit.io</code>.</p>
+
+    <!-- Local imported asset (Vite-emitted /_astro/ path) -->
+    <div class="example" data-test-id="sharp-local-import">
+      <h3>Local imported asset (sharp)</h3>
+      <Image
+        src={heroImage}
+        alt="Local hero image processed by sharp"
+        width={300}
+      />
+    </div>
+
+    <!-- Allow-listed external URL (in image.domains) -->
+    <div class="example" data-test-id="sharp-external-allowed">
+      <h3>Allow-listed external URL (sharp)</h3>
+      <Image
+        src="https://placehold.co/600x400"
+        alt="External URL on an allow-listed host, processed by sharp"
+        width={600}
+        height={400}
+        inferSize={false}
       />
     </div>
 

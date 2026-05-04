@@ -8,7 +8,7 @@
 
 ## Introduction
 
-ImageKit Astro SDK plugs ImageKit.io into Astro's built-in image pipeline as an [external image service](https://docs.astro.build/en/reference/image-service-reference/). It allows you to:
+ImageKit Astro SDK plugs ImageKit.io into Astro's built-in image pipeline. It allows you to:
 
 - Render images with Astro's `<Image />` and `<Picture />` components, served from ImageKit with automatic optimization, responsive `srcset`, and lazy loading.
 - Apply real-time transformations (resize, crop, focus, quality, format) using URL parameters.
@@ -16,6 +16,18 @@ ImageKit Astro SDK plugs ImageKit.io into Astro's built-in image pipeline as an 
 - Render optimized `<Video />` tags backed by ImageKit.
 - Generate OpenGraph / Twitter Card meta tags pointing to ImageKit URLs with `getOgImageTags()`.
 - Generate server-side upload authentication parameters with `getUploadAuthParams()`.
+
+## How it works
+
+The SDK ships as an Astro **integration** that registers a custom **image service**. Once added to `astro.config.mjs`, it takes over Astro's image pipeline for the whole site — `<Image />`, `<Picture />`, `getImage()`, and even markdown `![]()` images all flow through it.
+
+The service is **host-aware**. For each image, it inspects the `src` and routes the request to one of two backends:
+
+1. **ImageKit fast-path** — when `src` is an ImageKit URL (your `urlEndpoint` host, any `additionalEndpoints` host, or a bare path like `"folder/photo.jpg"`), the service builds an ImageKit URL with the requested transformations and points the browser at `https://ik.imagekit.io/...` directly. No server processing, no `/_image` round-trip — just a CDN-cached URL with `?tr=...` parameters.
+
+2. **Sharp fallback** — when `src` is a local Astro asset (`import` of an image, or markdown `![](../foo.jpg)`) or an absolute URL on a non-ImageKit host (e.g. an allow-listed third-party domain), the service delegates to Astro's bundled sharp service. The image is processed at build time (or on-demand by Astro's `/_image` endpoint in SSR) exactly as if you had no integration installed.
+
+This means you can drop the integration into an existing Astro project without breaking any of its existing local-asset usage. Local assets keep working via sharp; ImageKit URLs get the full ImageKit treatment.
 
 ## Installation
 

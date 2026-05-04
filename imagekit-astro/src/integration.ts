@@ -37,25 +37,28 @@ export default { urlEndpoint, transformationPosition };
 
 export interface ImageKitIntegrationOptions {
   /**
-  * The ImageKit URL endpoint.
-  * If omitted, IMAGEKIT_URL_ENDPOINT is used.
+   * The ImageKit URL endpoint. Used as the default when an `<Image>` is given
+   * a relative `src` and as an IK-eligible host for absolute URLs.
+   * If omitted, `IMAGEKIT_URL_ENDPOINT` is used.
    */
   urlEndpoint?: string;
+
+  /**
+   * Additional ImageKit URL endpoints (other accounts or custom domains).
+   * Their hosts are auto-added to `image.domains` and recognized as IK-eligible
+   * by the image service, so absolute URLs on those hosts get IK transformations
+   * applied (without being rewritten to the primary `urlEndpoint`).
+   *
+   * For non-ImageKit hosts you want Astro to optimize via the default sharp
+   * service, add them to `image.domains` / `image.remotePatterns` in your
+   * `astro.config.mjs` directly.
+   */
+  additionalEndpoints?: string[];
 
   /**
    * Position of the transformation string in the URL.
    */
   transformationPosition?: 'path' | 'query';
-
-  /**
-   * Additional remote hostnames to allow in Astro image config.
-   */
-  domains?: string[];
-
-  /**
-   * Additional Astro remote patterns to allow.
-   */
-  remotePatterns?: Partial<RemotePattern>[];
 }
 
 interface ParsedEndpoint {
@@ -215,17 +218,33 @@ export default function imagekit(
           );
         }
 
-        const mergedDomains = uniqStrings([
-          ...normalizeDomainList(imageConfigRecord.domains),
-          ...normalizeDomainList(options.domains),
+        const additionalEndpoints = (options.additionalEndpoints ?? [])
+          .map((url) => {
+            const parsed = parseEndpoint(url);
+            if (!parsed) {
+              logger.warn(
+                `Could not parse additionalEndpoints entry "${url}" as a URL. Skipping.`,
+              );
+            }
+            return parsed;
+          })
+          .filter((e): e is ParsedEndpoint => Boolean(e));
+
+        const ikHosts = uniqStrings([
           DEFAULT_IMAGEKIT_HOSTNAME,
           ...(endpoint?.hostname ? [endpoint.hostname] : []),
+          ...additionalEndpoints.map((e) => e.hostname),
+        ]);
+
+        const mergedDomains = uniqStrings([
+          ...normalizeDomainList(imageConfigRecord.domains),
+          ...ikHosts,
         ]);
 
         const mergedRemotePatterns = uniqPatterns([
           ...normalizePatternList(imageConfigRecord.remotePatterns),
-          ...normalizePatternList(options.remotePatterns),
           ...getDefaultRemotePatterns(endpoint),
+          ...additionalEndpoints.flatMap((e) => getDefaultRemotePatterns(e)),
         ]);
 
         // Only carry forward keys we recognize. Any leftover keys from a
@@ -240,6 +259,8 @@ export default function imagekit(
         if (resolvedTransformationPosition) {
           nextServiceConfig.transformationPosition = resolvedTransformationPosition;
         }
+
+        nextServiceConfig.imagekitHosts = ikHosts;
 
         if (
           existingEntrypoint &&
