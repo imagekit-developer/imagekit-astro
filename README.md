@@ -47,6 +47,68 @@ The SDK is written in TypeScript and ships with full type definitions. The integ
 
 Run `astro sync` (or start the dev server) once after installing so Astro picks up the injected types. For editor support in `.astro` files, install the [Astro VS Code extension](https://marketplace.visualstudio.com/items?itemName=astro-build.astro-vscode); for type-checking from the CLI, use [`@astrojs/check`](https://www.npmjs.com/package/@astrojs/check).
 
+## Loading images from your ImageKit Media Library
+
+You can use [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/) together with the [`@imagekit/nodejs`](https://www.npmjs.com/package/@imagekit/nodejs) SDK to power gallery/listing pages directly from your ImageKit Media Library, without hand-maintaining a list of URLs.
+
+Install the Node SDK as a dev dependency (it's only used at build time):
+
+```bash
+npm install -D @imagekit/nodejs
+```
+
+Define a collection backed by `client.assets.list()`:
+
+```ts
+// src/content.config.ts
+import { defineCollection, z } from 'astro:content';
+import ImageKit from '@imagekit/nodejs';
+
+const client = new ImageKit({
+  privateKey: import.meta.env.IMAGEKIT_PRIVATE_KEY,
+});
+
+const gallery = defineCollection({
+  loader: async () => {
+    const assets = await client.assets.list({ skip: 0, limit: 50 });
+    return assets.map((asset) => ({
+      id: asset.fileId,
+      url: asset.url,
+      width: asset.width,
+      height: asset.height,
+      name: asset.name,
+      tags: asset.tags ?? [],
+    }));
+  },
+  schema: z.object({
+    id: z.string(),
+    url: z.string().url(),
+    width: z.number(),
+    height: z.number(),
+    name: z.string(),
+    tags: z.array(z.string()),
+  }),
+});
+
+export const collections = { gallery };
+```
+
+Render with `<Image>` from `astro:assets` — the integration's image service generates the IK CDN URL with the correct transformations:
+
+```astro
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+const photos = await getCollection('gallery');
+---
+{photos.map(({ data }) => (
+  <Image src={data.url} width={data.width} height={data.height} alt={data.name} />
+))}
+```
+
+> Keep your `privateKey` in a server-only env var. Collections are evaluated at build time (or in SSR endpoints), never shipped to the browser.
+
 ## Documentation
 
 Refer to the ImageKit [official documentation](https://imagekit.io/docs/integration/astro) for setup instructions, configuration options, and the full API reference.
