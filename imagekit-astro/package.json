@@ -45,9 +45,7 @@
   ],
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup",
-    "prepublishOnly": "cp ../README.md . && cp ../LICENSE . && pnpm build",
-    "postpublish": "rm ./README.md && rm ./LICENSE"
+    "build": "tsup"
   },
   "dependencies": {
     "@imagekit/javascript": "^5.1.0"
