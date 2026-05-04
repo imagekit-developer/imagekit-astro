@@ -36,6 +36,10 @@
       "types": "./dist/imagekit-service.d.ts",
       "default": "./dist/imagekit-service.js"
     },
+    "./loaders": {
+      "types": "./dist/loaders.d.ts",
+      "default": "./dist/loaders.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [

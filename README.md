@@ -467,6 +467,116 @@ For the full list of `upload()` parameters, see the [@imagekit/javascript docume
 
 ---
 
+## Content Collections (Assets Loader)
+
+The `ikAssetsLoader` allows you to query your ImageKit media library assets and use them in [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/). This is useful for building image galleries, media libraries, or any page that displays assets stored in ImageKit.
+
+### Setup
+
+Add your ImageKit private key to `.env`:
+
+```env
+IMAGEKIT_PRIVATE_KEY=your_private_key
+```
+
+### Define a Collection
+
+Create a content collection using the loader in `src/content.config.ts`:
+
+```ts
+import { defineCollection } from 'astro:content';
+import { ikAssetsLoader } from '@imagekit/astro/loaders';
+
+export const collections = {
+  assets: defineCollection({
+    loader: ikAssetsLoader({
+      limit: 10,
+      path: '/samples/',
+      fileType: 'image',
+    })
+  }),
+};
+```
+
+### Getting Assets from a Collection
+
+Use `getCollection` to retrieve your assets:
+
+```astro
+---
+import { Image } from '@imagekit/astro';
+import { getCollection } from 'astro:content';
+
+const assets = await getCollection('assets');
+---
+
+<ul>
+  {assets.map(asset => (
+    <li>
+      <Image
+        src={asset.data.filePath}
+        width={asset.data.width}
+        height={asset.data.height}
+        alt={asset.data.name}
+      />
+    </li>
+  ))}
+</ul>
+```
+
+### Getting a Single Asset
+
+Use `getEntry` to retrieve a single asset by its `fileId`:
+
+```astro
+---
+import { Image } from '@imagekit/astro';
+import { getEntry } from 'astro:content';
+
+const asset = await getEntry('assets', '<fileId>');
+---
+
+<Image
+  src={asset.data.filePath}
+  width={asset.data.width}
+  height={asset.data.height}
+  alt={asset.data.name}
+/>
+```
+
+### Loader Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `path` | `string` | — | Folder path to limit search (e.g., `/products/`) |
+| `fileType` | `"all" \| "image" \| "non-image"` | `"all"` | Filter by file type |
+| `limit` | `number` | `1000` | Maximum number of assets to load |
+| `sort` | `string` | `"ASC_CREATED"` | Sort order (e.g., `DESC_CREATED`, `ASC_NAME`) |
+| `searchQuery` | `string` | — | Lucene-like query (e.g., `createdAt > "7d"`) |
+| `type` | `"file" \| "folder" \| "all"` | `"file"` | Filter by asset type |
+
+### Asset Data Shape
+
+Each asset in the collection has the following data fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fileId` | `string` | Unique identifier |
+| `name` | `string` | File name |
+| `filePath` | `string` | Full path in media library |
+| `url` | `string` | Direct URL to the asset |
+| `fileType` | `string` | `"image"` or `"non-image"` |
+| `width` | `number` | Image width in pixels |
+| `height` | `number` | Image height in pixels |
+| `size` | `number` | File size in bytes |
+| `mime` | `string` | MIME type |
+| `tags` | `string[]` | Tags assigned to the file |
+| `customMetadata` | `object` | Custom metadata fields |
+| `createdAt` | `string` | ISO date string |
+| `updatedAt` | `string` | ISO date string |
+
+---
+
 ## Contributing
 
 ### Setup

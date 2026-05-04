@@ -6,6 +6,10 @@ export { default as Video } from './src/components/Video.astro';
 export { getOgImageTags } from './src/helpers';
 export type { OgMetaTag } from './src/helpers';
 
+// Loaders
+export { ikAssetsLoader, imagekitAssetSchema } from './src/loaders';
+export type { ImageKitAssetsLoaderOptions, ImageKitAsset } from './src/loaders';
+
 // Re-export functions from @imagekit/javascript
 export {
   buildSrc,

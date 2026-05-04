@@ -7,6 +7,7 @@ export default defineConfig({
     'helpers': './src/helpers/index.ts',
     'server': './src/server/index.ts',
     'imagekit-service': './src/services/imagekit-service.ts',
+    'loaders': './src/loaders/index.ts',
   },
   format: ['esm'],
   dts: true,
