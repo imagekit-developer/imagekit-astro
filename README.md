@@ -57,7 +57,7 @@ Install the Node SDK as a dev dependency (it's only used at build time):
 npm install -D @imagekit/nodejs
 ```
 
-Define a collection backed by `client.assets.list()`:
+Define a collection backed by `client.assets.list()`. The Node SDK returns an array of `File | Folder` objects directly, so filter to image files and shape each entry as `{ id, ...data }` — Astro's content layer treats the top-level `id` as the entry key and validates everything else against your `schema`:
 
 ```ts
 // src/content.config.ts
@@ -70,18 +70,22 @@ const client = new ImageKit({
 
 const gallery = defineCollection({
   loader: async () => {
-    const assets = await client.assets.list({ skip: 0, limit: 50 });
+    const assets = await client.assets.list({
+      type: 'file',   // exclude folders
+      skip: 0,
+      limit: 50,
+    });
+
     return assets.map((asset) => ({
-      id: asset.fileId,
-      url: asset.url,
-      width: asset.width,
-      height: asset.height,
-      name: asset.name,
+      id: asset.fileId!,
+      url: asset.url!,
+      width: asset.width!,
+      height: asset.height!,
+      name: asset.name ?? '',
       tags: asset.tags ?? [],
     }));
   },
   schema: z.object({
-    id: z.string(),
     url: z.string().url(),
     width: z.number(),
     height: z.number(),
