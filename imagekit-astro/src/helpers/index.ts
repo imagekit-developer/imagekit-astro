@@ -11,7 +11,9 @@ export interface OgMetaTag {
 /**
  * Build OG/Twitter meta tags for a given image.
  *
- * Render these tags inside your page's <head>.
+ * Render these tags inside your page's <head>. ImageKit serves the optimal
+ * image format automatically based on the requesting client (no `format`
+ * option needed).
  */
 export function getOgImageTags(props: OgImageTagOptions): OgMetaTag[] {
   const {
@@ -28,7 +30,6 @@ export function getOgImageTags(props: OgImageTagOptions): OgMetaTag[] {
     transformation = [],
     queryParameters,
     transformationPosition,
-    format,
     width = OG_IMAGE_WIDTH,
     height = OG_IMAGE_HEIGHT,
   } = props;
@@ -47,24 +48,10 @@ export function getOgImageTags(props: OgImageTagOptions): OgMetaTag[] {
 
   const config = getImageKitConfig({ urlEndpoint, transformationPosition });
 
-  const ogImageUrl = buildSrc({
+  const imageUrl = buildSrc({
     src,
     urlEndpoint: config.urlEndpoint,
-    transformation: [
-      ...transformation,
-      { width, height },
-    ],
-    queryParameters,
-    transformationPosition: config.transformationPosition,
-  });
-
-  const twitterImageUrl = buildSrc({
-    src,
-    urlEndpoint: config.urlEndpoint,
-    transformation: [
-      ...transformation,
-      { width, height, format: format || 'webp' },
-    ],
+    transformation: [...transformation, { width, height }],
     queryParameters,
     transformationPosition: config.transformationPosition,
   });
@@ -72,8 +59,8 @@ export function getOgImageTags(props: OgImageTagOptions): OgMetaTag[] {
   const tags: Array<OgMetaTag | undefined> = [
     resolvedOgTitle ? { property: 'og:title', content: resolvedOgTitle } : undefined,
     resolvedOgDescription ? { property: 'og:description', content: resolvedOgDescription } : undefined,
-    { property: 'og:image', content: ogImageUrl },
-    { property: 'og:image:secure_url', content: ogImageUrl },
+    { property: 'og:image', content: imageUrl },
+    { property: 'og:image:secure_url', content: imageUrl },
     { property: 'og:image:width', content: String(width) },
     { property: 'og:image:height', content: String(height) },
     alt ? { property: 'og:image:alt', content: alt } : undefined,
@@ -82,8 +69,9 @@ export function getOgImageTags(props: OgImageTagOptions): OgMetaTag[] {
       ? { property: 'twitter:description', content: resolvedTwitterDescription }
       : undefined,
     { property: 'twitter:card', content: twitterCard },
-    { property: 'twitter:image', content: twitterImageUrl },
+    { property: 'twitter:image', content: imageUrl },
   ];
 
   return tags.filter((tag): tag is OgMetaTag => Boolean(tag));
 }
+

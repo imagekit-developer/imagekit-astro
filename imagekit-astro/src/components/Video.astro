@@ -1,9 +1,5 @@
 ---
 import { buildSrc } from '@imagekit/javascript';
-import {
-  urlEndpoint as integrationUrlEndpoint,
-  transformationPosition as integrationTransformationPosition,
-} from 'virtual:@imagekit/astro/config';
 import { getImageKitConfig } from '../lib/imagekit';
 import type { VideoProps } from '../types/index';
 
@@ -21,17 +17,15 @@ const {
 
 // Resolve ImageKit configuration.
 // Priority: prop > integration config (astro.config.mjs) > env vars.
-const config = getImageKitConfig({
-  urlEndpoint: urlEndpoint ?? (integrationUrlEndpoint || undefined),
-  transformationPosition:
-    transformationPosition ?? integrationTransformationPosition,
-});
+const config = getImageKitConfig({ urlEndpoint, transformationPosition });
 
-// Build the video URL
+// Build the video URL.
+// Note: width/height props are HTML attributes only; they are NOT applied as
+// ImageKit transformations. To resize the video, pass them via `transformation`.
 const videoSrc = buildSrc({
   src,
   urlEndpoint: config.urlEndpoint,
-  transformation: [...transformation],
+  transformation,
   queryParameters,
   transformationPosition: config.transformationPosition,
 });
@@ -48,3 +42,4 @@ if (className) {
   class={videoClassName}
   {...restProps}
 />
+

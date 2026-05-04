@@ -18,6 +18,7 @@ export default defineConfig({
     'astro',
     'astro:assets',
     '@imagekit/javascript',
+    'virtual:@imagekit/astro/config',
     /\.astro$/,
   ],
 })

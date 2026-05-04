@@ -38,8 +38,7 @@ export default { urlEndpoint, transformationPosition };
 export interface ImageKitIntegrationOptions {
   /**
   * The ImageKit URL endpoint.
-  * If omitted, PUBLIC_IMAGEKIT_URL_ENDPOINT is checked first,
-  * then IMAGEKIT_URL_ENDPOINT.
+  * If omitted, IMAGEKIT_URL_ENDPOINT is used.
    */
   urlEndpoint?: string;
 
@@ -197,7 +196,6 @@ export default function imagekit(
         const resolvedUrlEndpoint =
           options.urlEndpoint ??
           asString(existingServiceConfig.urlEndpoint) ??
-          import.meta.env?.PUBLIC_IMAGEKIT_URL_ENDPOINT ??
           import.meta.env?.IMAGEKIT_URL_ENDPOINT;
 
         const resolvedTransformationPosition =
@@ -210,6 +208,12 @@ export default function imagekit(
         const endpoint = resolvedUrlEndpoint
           ? parseEndpoint(resolvedUrlEndpoint)
           : undefined;
+
+        if (resolvedUrlEndpoint && !endpoint) {
+          logger.warn(
+            `Could not parse urlEndpoint "${resolvedUrlEndpoint}" as a URL. Make sure it includes the protocol (e.g. "https://ik.imagekit.io/your_id"). The endpoint host will not be added to image.domains/remotePatterns.`,
+          );
+        }
 
         const mergedDomains = uniqStrings([
           ...normalizeDomainList(imageConfigRecord.domains),
@@ -224,9 +228,10 @@ export default function imagekit(
           ...getDefaultRemotePatterns(endpoint),
         ]);
 
-        const nextServiceConfig: Record<string, unknown> = {
-          ...(typeof existingServiceConfig === 'object' ? existingServiceConfig : {}),
-        };
+        // Only carry forward keys we recognize. Any leftover keys from a
+        // previous image service config (e.g. sharp's `limitInputPixels`)
+        // would not make sense for this service.
+        const nextServiceConfig: Record<string, unknown> = {};
 
         if (resolvedUrlEndpoint) {
           nextServiceConfig.urlEndpoint = resolvedUrlEndpoint;
@@ -248,7 +253,7 @@ export default function imagekit(
 
         if (!resolvedUrlEndpoint) {
           logger.warn(
-            'No ImageKit urlEndpoint found. Set PUBLIC_IMAGEKIT_URL_ENDPOINT or IMAGEKIT_URL_ENDPOINT, or pass urlEndpoint to imagekit().',
+            'No ImageKit urlEndpoint found. Set IMAGEKIT_URL_ENDPOINT, or pass urlEndpoint to imagekit().',
           );
         }
 

@@ -13,6 +13,19 @@ type UnresolvedSrcSetValue = {
   attributes?: Record<string, any>;
 };
 
+/**
+ * Astro `ImageTransform` augmented with the ImageKit-specific props
+ * declared on `Astro.CustomImageProps` via the integration's `injectTypes`.
+ */
+type IKImageTransform = ImageTransform & {
+  urlEndpoint?: string;
+  transformation?: Transformation[];
+  queryParameters?: Record<string, string | number>;
+  transformationPosition?: 'path' | 'query';
+  densities?: Array<number | `${number}x`>;
+  widths?: number[];
+};
+
 export interface ImageKitServiceConfig {
   /**
    * The URL endpoint for your ImageKit account.
@@ -30,32 +43,45 @@ export interface ImageKitServiceConfig {
 
 /**
  * Astro quality presets mapped to ImageKit quality (0-100).
- * https://imagekit.io/docs/image-resize-and-crop#quality-q
+ *
+ * Aligned with Astro's sharp service defaults
+ * (https://docs.astro.build/en/reference/image-service-reference/).
  */
 const QUALITY_PRESETS: Record<string, number> = {
-  low: 30,
-  mid: 80,
-  high: 90,
-  max: 95,
+  low: 25,
+  mid: 50,
+  high: 75,
+  max: 100,
 };
 
 /**
  * Resolves the ImageKit config from the service config and per-image overrides.
+ *
+ * Priority: per-image prop > integration service config > env vars.
+ *
+ * @throws {Error} If no urlEndpoint can be resolved.
  */
 function resolveConfig(
-  options: ImageTransform,
+  options: IKImageTransform,
   imageConfig: AstroConfig['image'],
 ): { urlEndpoint: string; transformationPosition: 'path' | 'query' } {
-  const config = (imageConfig.service.config ?? {}) as ImageKitServiceConfig;
+  const config = (imageConfig.service.config ?? {}) as Partial<ImageKitServiceConfig>;
   const urlEndpoint =
-    (options as any).urlEndpoint ??
-    config.urlEndpoint ??
-    import.meta.env?.PUBLIC_IMAGEKIT_URL_ENDPOINT ??
-    import.meta.env?.IMAGEKIT_URL_ENDPOINT ??
-    '';
-  const transformationPosition =
-    (options as any).transformationPosition ?? config.transformationPosition ?? 'query';
-  return { urlEndpoint, transformationPosition };
+    options.urlEndpoint ||
+    config.urlEndpoint ||
+    import.meta.env?.IMAGEKIT_URL_ENDPOINT;
+
+  if (!urlEndpoint) {
+    throw new Error(
+      '[@imagekit/astro] An ImageKit URL endpoint is required. Pass urlEndpoint to the imagekit() integration in astro.config.mjs, set IMAGEKIT_URL_ENDPOINT, or pass urlEndpoint as a prop on <Image>.',
+    );
+  }
+
+  return {
+    urlEndpoint,
+    transformationPosition:
+      options.transformationPosition ?? config.transformationPosition ?? 'query',
+  };
 }
 
 /**
@@ -87,13 +113,12 @@ function resolveQuality(quality: ImageTransform['quality']): number | undefined 
  * preserves aspect ratio and there's no crop/focus to apply on top of it.
  * Users who need cropping or focus should pass them via `transformation`.
  */
-function buildIKTransformations(options: ImageTransform): Transformation[] {
+function buildIKTransformations(options: IKImageTransform): Transformation[] {
   const result: Transformation[] = [];
 
   // 1. User-supplied transformations come first.
-  const userTransformation = (options as any).transformation as Transformation[] | undefined;
-  if (Array.isArray(userTransformation) && userTransformation.length > 0) {
-    result.push(...userTransformation);
+  if (Array.isArray(options.transformation) && options.transformation.length > 0) {
+    result.push(...options.transformation);
   }
 
   // 2. Final chain step: width / quality / at_max crop.
@@ -118,14 +143,15 @@ const service: ExternalImageService = {
   },
 
   getURL(options: ImageTransform, imageConfig: AstroConfig['image']) {
-    const { urlEndpoint, transformationPosition } = resolveConfig(options, imageConfig);
-    const src = typeof options.src === 'string' ? options.src : options.src.src;
+    const opts = options as IKImageTransform;
+    const { urlEndpoint, transformationPosition } = resolveConfig(opts, imageConfig);
+    const src = typeof opts.src === 'string' ? opts.src : opts.src.src;
 
     return buildSrc({
       src,
       urlEndpoint,
-      transformation: buildIKTransformations(options),
-      queryParameters: (options as any).queryParameters,
+      transformation: buildIKTransformations(opts),
+      queryParameters: opts.queryParameters,
       transformationPosition,
     });
   },
@@ -156,7 +182,14 @@ const service: ExternalImageService = {
       queryParameters,
       transformationPosition,
       ...nonIKAttributes
-    } = options as any;
+    } = options as IKImageTransform & {
+      format?: unknown;
+      fit?: unknown;
+      position?: unknown;
+      layout?: unknown;
+      background?: unknown;
+      inferSize?: unknown;
+    };
 
     return {
       ...nonIKAttributes,
@@ -173,10 +206,8 @@ const service: ExternalImageService = {
    * need handling here.
    */
   getSrcSet(options: ImageTransform): UnresolvedSrcSetValue[] {
-    const { width, height, densities, widths } = options as ImageTransform & {
-      densities?: Array<number | `${number}x`>;
-      widths?: number[];
-    };
+    const opts = options as IKImageTransform;
+    const { width, height, densities, widths } = opts;
 
     const targets: Array<{ w: number; descriptor: string }> = [];
 
@@ -193,7 +224,7 @@ const service: ExternalImageService = {
 
     return targets.map(({ w, descriptor }) => ({
       transform: {
-        ...options,
+        ...opts,
         width: Math.round(w),
         height: aspectRatio ? Math.round(w / aspectRatio) : height,
       },
@@ -204,3 +235,4 @@ const service: ExternalImageService = {
 };
 
 export default service;
+
