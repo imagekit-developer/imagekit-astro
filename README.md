@@ -14,7 +14,7 @@ ImageKit Astro SDK plugs ImageKit.io into Astro's built-in image pipeline. It al
 - Apply real-time transformations (resize, crop, focus, quality, format) using URL parameters.
 - Apply AI-powered transformations such as background removal, generative fill, and smart cropping via the `transformation` prop.
 - Render optimized `<Video />` tags backed by ImageKit.
-- Generate OpenGraph / Twitter Card meta tags pointing to ImageKit URLs with `getOgImageTags()`.
+- Generate OpenGraph / Twitter Card meta tags pointing to ImageKit URLs with the `<OgImage>` component (or the `getOgImageUrl()` helper for custom layouts).
 - Generate server-side upload authentication parameters with `getUploadAuthParams()`.
 
 ## How it works

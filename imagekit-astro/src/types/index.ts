@@ -37,7 +37,7 @@ export interface VideoProps extends Omit<HTMLAttributes<'video'>, 'src'> {
  * (it serves WebP/AVIF based on the requesting client's `Accept` header), so
  * there is no explicit `format` option here.
  */
-export interface OgImageTagOptions {
+export interface OgImageUrlOptions {
   /** Relative path or absolute URL of the image */
   src: string;
 
@@ -57,35 +57,44 @@ export interface OgImageTagOptions {
   /** Position of transformation string in URL */
   transformationPosition?: 'path' | 'query';
 
-  /** Alt text for og:image:alt meta tag */
-  alt?: string;
-
-  /** Shared title used for OG and Twitter when specific titles are not set */
-  title?: string;
-
-  /** OpenGraph title. Falls back to `title`, then `twitterTitle` for backward compatibility */
-  ogTitle?: string;
-
-  /** Twitter title. Falls back to `title`, then `ogTitle` */
-  twitterTitle?: string;
-
-  /** Shared description used for OG and Twitter when specific descriptions are not set */
-  description?: string;
-
-  /** OpenGraph description. Falls back to `description`, then `twitterDescription` for backward compatibility */
-  ogDescription?: string;
-
-  /** Twitter description. Falls back to `description`, then `ogDescription` */
-  twitterDescription?: string;
-
-  /** Twitter card type. Default: summary_large_image */
-  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
-
   /** OG image width. Default: 1200 */
   width?: number;
 
   /** OG image height. Default: 630 */
   height?: number;
+}
+
+/**
+ * Props for the `<OgImage>` component. Extends `OgImageUrlOptions` with the
+ * fields needed to render the full set of OG/Twitter `<meta>` tags.
+ */
+export interface OgImageProps extends OgImageUrlOptions {
+  /** Alt text. Emitted as both `og:image:alt` and `twitter:image:alt`. */
+  alt?: string;
+
+  /** OpenGraph object type. Default: `'website'` */
+  type?: 'website' | 'article' | 'book' | 'profile' | (string & {});
+
+  /** Shared title used for OG and Twitter when specific titles are not set */
+  title?: string;
+
+  /** OpenGraph title. Falls back to `title`. */
+  ogTitle?: string;
+
+  /** Twitter title. Falls back to `title`. */
+  twitterTitle?: string;
+
+  /** Shared description used for OG and Twitter when specific descriptions are not set */
+  description?: string;
+
+  /** OpenGraph description. Falls back to `description`. */
+  ogDescription?: string;
+
+  /** Twitter description. Falls back to `description`. */
+  twitterDescription?: string;
+
+  /** Twitter card type. Default: `'summary_large_image'` */
+  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
 }
 
 

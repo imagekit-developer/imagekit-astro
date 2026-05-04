@@ -1,24 +1,12 @@
 ---
-import { getOgImageTags } from '@imagekit/astro/helpers';
+import { OgImage, getOgImageUrl } from '@imagekit/astro';
 
-const tags = getOgImageTags({
+// Compute one URL via the helper to demonstrate the escape hatch
+const customUrl = getOgImageUrl({
   src: '/default-image.jpg',
-  title: 'Hello from @imagekit/astro',
-  description: 'A demo of getOgImageTags() — single image URL used for both OG and Twitter, format auto-selected by ImageKit.',
-  alt: 'Default ImageKit demo image',
-});
-
-const minimal = getOgImageTags({
-  src: '/default-image.jpg',
-  ogTitle: 'OG only title',
-});
-
-const customSize = getOgImageTags({
-  src: '/default-image.jpg',
-  title: 'Custom dimensions',
-  width: 800,
-  height: 418,
-  transformation: [{ blur: 3 }],
+  width: 1200,
+  height: 630,
+  transformation: [{ blur: 5 }],
 });
 ---
 
@@ -27,18 +15,33 @@ const customSize = getOgImageTags({
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OG Image Tags Test</title>
-  {tags.map((tag) => <meta property={tag.property} content={tag.content} />)}
+  <title>OG Image Test</title>
+
+  <!-- Case 1: full options (component) -->
+  <OgImage
+    src="/default-image.jpg"
+    title="Hello from @imagekit/astro"
+    description="A demo of <OgImage> — single image URL used for both OG and Twitter, format auto-selected by ImageKit."
+    alt="Default ImageKit demo image"
+    type="article"
+  />
+
+  <!-- Case 2: helper escape hatch (rendered by hand) -->
+  <meta property="og:image:secondary" content={customUrl} />
+</head>
+<body>
+  <h1>&lt;OgImage&gt; Output</h1>
+  <p class="note">View source to see the generated &lt;meta&gt; tags injected into the page &lt;head&gt;.</p>
+
+  <h2>Helper-built secondary URL</h2>
+  <pre>{customUrl}</pre>
+
   <style>
     body {
       font-family: system-ui, sans-serif;
       max-width: 900px;
       margin: 0 auto;
       padding: 40px 20px;
-    }
-    h2 {
-      margin-top: 40px;
-      color: #555;
     }
     pre {
       background: #f6f8fa;
@@ -53,18 +56,5 @@ const customSize = getOgImageTags({
       font-size: 14px;
     }
   </style>
-</head>
-<body>
-  <h1>getOgImageTags() Output</h1>
-  <p class="note">View source to see the generated &lt;meta&gt; tags injected into the page &lt;head&gt;.</p>
-
-  <h2>Default (full options)</h2>
-  <pre>{JSON.stringify(tags, null, 2)}</pre>
-
-  <h2>Minimal (ogTitle only)</h2>
-  <pre>{JSON.stringify(minimal, null, 2)}</pre>
-
-  <h2>Custom dimensions + extra transformation (blur)</h2>
-  <pre>{JSON.stringify(customSize, null, 2)}</pre>
 </body>
 </html>

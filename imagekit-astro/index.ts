@@ -1,9 +1,9 @@
 // Components
 export { default as Video } from './src/components/Video.astro';
+export { default as OgImage } from './src/components/OgImage.astro';
 
 // Helpers
-export { getOgImageTags } from './src/helpers';
-export type { OgMetaTag } from './src/helpers';
+export { getOgImageUrl } from './src/helpers';
 
 // Types - Astro SDK types
-export type { OgImageTagOptions, VideoProps } from './src/types/index';
+export type { OgImageProps, OgImageUrlOptions, VideoProps } from './src/types/index';
