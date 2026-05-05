@@ -55,7 +55,7 @@ This demo shows how to implement file uploading in an Astro application using `@
 ### Implementation Steps
 
 1. **Server-side**: Create an API endpoint (e.g., `src/pages/api/upload-auth.ts`) that uses `getUploadAuthParams` from `@imagekit/astro/server` to generate authentication parameters.
-2. **Client-side**: Use the `upload` function from `@imagekit/astro` to upload files. Fetch the authentication parameters from your API endpoint before calling `upload`.
+2. **Client-side**: Use the `upload` function from [`@imagekit/javascript`](https://www.npmjs.com/package/@imagekit/javascript) to upload files. Fetch the authentication parameters from your API endpoint before calling `upload`.
 
 See `/upload` for a live demo.
 
