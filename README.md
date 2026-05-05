@@ -61,8 +61,10 @@ Define a collection backed by `client.assets.list()`. The Node SDK returns an ar
 
 ```ts
 // src/content.config.ts
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import ImageKit from '@imagekit/nodejs';
+import type { Files } from '@imagekit/nodejs/resources/files/files';
 
 const client = new ImageKit({
   privateKey: import.meta.env.IMAGEKIT_PRIVATE_KEY,
@@ -78,10 +80,12 @@ const gallery = defineCollection({
     });
 
     return assets
-      .filter((asset) => asset.fileId && asset.url)
+      .filter((asset): asset is Files.File =>
+        asset.type === 'file' && !!asset.fileId && !!asset.url
+      )
       .map((asset) => ({
-        id: asset.fileId!,
-        url: asset.url!,
+        id: asset.fileId ?? '',
+        url: asset.url ?? '',
         width: asset.width ?? 0,
         height: asset.height ?? 0,
         name: asset.name ?? '',
