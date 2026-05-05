@@ -18,7 +18,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./index.ts"
+      "default": "./dist/index.js"
     },
     "./integration": {
       "types": "./dist/integration.d.ts",

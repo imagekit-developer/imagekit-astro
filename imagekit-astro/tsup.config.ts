@@ -21,4 +21,8 @@ export default defineConfig({
     'virtual:@imagekit/astro/config',
     /\.astro$/,
   ],
+  // Copy .astro source files into dist so the relative imports kept by
+  // tsup (e.g. `./src/components/Video.astro`) resolve correctly when the
+  // built `dist/index.js` is consumed from the published package.
+  onSuccess: 'rm -rf dist/src && cp -R src dist/src',
 })
