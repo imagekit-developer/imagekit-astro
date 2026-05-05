@@ -12,10 +12,10 @@ First stable release of the official ImageKit SDK for Astro. Drop-in components 
 ### Added
 
 - **Astro integration** — register ImageKit once in `astro.config.mjs` and use the components anywhere, including inside Markdown and MDX.
-- **`<Image />` component** — automatic responsive `srcset`/`sizes`, lazy loading, and full ImageKit transformation support (resize, crop, focus, AI transforms, overlays, etc.).
+- **Built-in image service** (`@imagekit/astro/image-service`) — opt-in Astro image service so the native `<Image />` from `astro:assets`, Markdown images, and MDX images all route through ImageKit automatically with responsive `srcset`/`sizes`, lazy loading, and full transformation support (resize, crop, focus, AI transforms, overlays, etc.).
 - **`<Video />` component** — adaptive video delivery with ImageKit transformations.
 - **`<OgImage />` component** — generate Open Graph / social share images on the fly using ImageKit transformations and overlays.
-- **Built-in image service** (`@imagekit/astro/image-service`) — opt-in Astro image service so `astro:assets` and Markdown images route through ImageKit automatically.
+- **`getOgImageUrl` helper** — build OG/social image URLs programmatically from layouts and endpoints.
 - **Server helpers** (`@imagekit/astro/server`) — `getUploadAuthParams` for issuing secure client-side upload tokens (HMAC-SHA1 signature, server-only, private API key never shipped to the browser).
 - **TypeScript-first** — full types for components, transformations, and helpers.
 - **Wide Astro compatibility** — tested against Astro 3, 4, 5, and 6 via end-to-end Playwright tests.
