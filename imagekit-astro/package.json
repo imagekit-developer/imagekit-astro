@@ -4,6 +4,15 @@
   "type": "module",
   "license": "MIT",
   "description": "Astro SDK for ImageKit.io - optimized image & video delivery with transformations",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imagekit-developer/imagekit-astro.git",
+    "directory": "imagekit-astro"
+  },
+  "homepage": "https://github.com/imagekit-developer/imagekit-astro#readme",
+  "bugs": {
+    "url": "https://github.com/imagekit-developer/imagekit-astro/issues"
+  },
   "types": "./dist/index.d.ts",
   "keywords": [
     "imagekit",
