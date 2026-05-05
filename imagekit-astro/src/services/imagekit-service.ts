@@ -110,7 +110,7 @@ function resolveQuality(quality: ImageTransform['quality']): number | undefined 
  * Builds the IK transformation chain from Astro `ImageTransform` options.
  *
  * Ordering matches imagekit-next:
- *   [ ...userTransformation, { width, quality, crop: 'at_max' } ]
+ *   [ ...userTransformation, { width, quality, format, crop: 'at_max' } ]
  *
  * The trailing chain step always uses `crop: at_max` so that:
  *   - srcset variants never upscale beyond the source image
@@ -123,6 +123,12 @@ function resolveQuality(quality: ImageTransform['quality']): number | undefined 
  * Astro's `fit` and `position` props are intentionally ignored — `at_max`
  * preserves aspect ratio and there's no crop/focus to apply on top of it.
  * Users who need cropping or focus should pass them via `transformation`.
+ *
+ * `format` is honored only when explicitly set (e.g. by `<Picture>` iterating
+ * its `formats` array, or by an explicit `format` prop on `<Image>`). When
+ * undefined, no `f-` param is emitted so ImageKit's default `f-auto`
+ * negotiation kicks in. Note: imported local assets cause Astro to auto-fill
+ * `format` from the file extension, which will override `f-auto`.
  */
 function buildIKTransformations(options: IKImageTransform): Transformation[] {
   const result: Transformation[] = [];
@@ -132,12 +138,14 @@ function buildIKTransformations(options: IKImageTransform): Transformation[] {
     result.push(...options.transformation);
   }
 
-  // 2. Final chain step: width / quality / at_max crop.
+  // 2. Final chain step: width / quality / format / at_max crop.
   const finalStep: Transformation = { crop: 'at_max' };
   if (options.width) finalStep.width = Math.round(options.width);
 
   const quality = resolveQuality(options.quality);
   if (quality !== undefined) finalStep.quality = quality;
+
+  if (options.format) finalStep.format = options.format as Transformation['format'];
 
   result.push(finalStep);
 
@@ -230,9 +238,8 @@ const service: LocalImageService = {
 
     // Strip props we consume or that would otherwise leak as invalid HTML attrs:
     // - src is replaced with our generated URL
-    // - quality/background are baked into the URL
+    // - quality/background/format are baked into the URL
     // - fit/position are intentionally ignored by the service
-    // - format is intentionally ignored (use `transformation: [{ format: ... }]` to force one)
     // - inferSize is intentionally ignored (external services don't fetch remote images for dimensions)
     // - densities/widths/layout are Astro-internal (would render as invalid HTML attrs)
     // - urlEndpoint/transformation/queryParameters/transformationPosition are IK config

@@ -1,0 +1,434 @@
+---
+import { Picture } from 'astro:assets';
+import heroImage from '../assets/hero.jpg';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Picture Tests</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Picture Component Tests</h1>
+    <p>Picture uses Astro's built-in Picture component for multi-format image delivery with ImageKit transformations. The <code>urlEndpoint</code> is configured globally in <code>astro.config.mjs</code>; cases below only pass it explicitly when overriding it.</p>
+
+    <!-- Basic picture (urlEndpoint comes from astro.config.mjs) -->
+    <div class="example">
+      <h3>Basic picture (urlEndpoint from integration config)</h3>
+      <Picture
+        src="default-image.jpg"
+        alt="Basic picture"
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- urlEndpoint prop override -->
+    <div class="example">
+      <h3>urlEndpoint prop override</h3>
+      <Picture
+        urlEndpoint="https://ik.imagekit.io/demo2/"
+        src="/default-image.jpg"
+        alt="Picture with urlEndpoint override"
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Picture with leading slash in src -->
+    <div class="example">
+      <h3>Leading slash in src</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with leading slash"
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Absolute URL src -->
+    <div class="example">
+      <h3>Absolute URL src (urlEndpoint ignored, transformations still applied)</h3>
+      <Picture
+        src="https://ik.imagekit.io/demo/default-image.jpg"
+        alt="Absolute URL src"
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Picture with transformation -->
+    <div class="example">
+      <h3>Transformation prop</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="With transformation"
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Picture with queryParameters -->
+    <div class="example">
+      <h3>queryParameters prop</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with queryParameters"
+        queryParameters={{
+          version: "v1",
+        }}
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Responsive picture with sizes -->
+    <div class="example">
+      <h3>Responsive picture with sizes</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Responsive picture with sizes"
+        sizes="(max-width: 600px) 100vw, 50vw"
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Picture with custom class -->
+    <div class="example">
+      <h3>Custom class</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with custom class"
+        class="custom-class"
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Loading eager -->
+    <div class="example">
+      <h3>loading="eager"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with loading eager"
+        loading="eager"
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Transformation position path -->
+    <div class="example">
+      <h3>transformationPosition="path"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with path transformation"
+        transformationPosition="path"
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Transformation position path with custom transformations -->
+    <div class="example">
+      <h3>transformationPosition="path" + custom transformations</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with path transformation + custom transformations"
+        transformationPosition="path"
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- Multiple chained transformations -->
+    <div class="example">
+      <h3>Multiple chained transformations</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with multiple chained transformations"
+        transformation={[
+          { width: 200, height: 200 },
+          { rotation: 90 },
+          { blur: 5 }
+        ]}
+        width={300}
+        height={300}
+        formats={['avif', 'webp']}
+      />
+    </div>
+
+    <!-- ASTRO PICTURE COMPONENT SPECIFIC PROPS -->
+    <h2>Astro Picture Component Props</h2>
+    <p>The following tests verify that Astro's built-in Picture component props work correctly with ImageKit.</p>
+
+    <!-- formats: single format -->
+    <div class="example">
+      <h3>formats=['webp'] (single format)</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with webp only"
+        formats={['webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- formats: avif, webp, jpeg -->
+    <div class="example">
+      <h3>formats=['avif', 'webp', 'jpeg']</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with multiple formats"
+        formats={['avif', 'webp', 'jpeg']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- fallbackFormat -->
+    <div class="example">
+      <h3>fallbackFormat="png"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with png fallback"
+        formats={['avif', 'webp']}
+        fallbackFormat="png"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- pictureAttributes -->
+    <div class="example">
+      <h3>pictureAttributes (class + data attribute on &lt;picture&gt;)</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with pictureAttributes"
+        formats={['avif', 'webp']}
+        pictureAttributes={{ class: 'wrapped-picture', 'data-testid': 'picture-wrapper' }}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- quality preset -->
+    <div class="example">
+      <h3>quality="high"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with high quality preset"
+        quality="high"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- quality numeric -->
+    <div class="example">
+      <h3>quality=50</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with numeric quality"
+        quality={50}
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- decoding -->
+    <div class="example">
+      <h3>decoding="sync"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with sync decoding"
+        decoding="sync"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- fetchpriority -->
+    <div class="example">
+      <h3>fetchpriority="high"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with high fetch priority"
+        fetchpriority="high"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- densities -->
+    <div class="example">
+      <h3>densities=[1.5, 2] (requires layout="none" to override config default)</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with density srcset"
+        densities={[1.5, 2]}
+        layout="none"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- widths -->
+    <div class="example">
+      <h3>widths=[240, 540, 720]</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with specific widths srcset"
+        widths={[240, 540, 720]}
+        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- layout constrained -->
+    <div class="example">
+      <h3>layout="constrained"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with constrained layout"
+        layout="constrained"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- layout full-width -->
+    <div class="example">
+      <h3>layout="full-width"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with full-width layout"
+        layout="full-width"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- layout fixed -->
+    <div class="example">
+      <h3>layout="fixed"</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with fixed layout"
+        layout="fixed"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- layout none -->
+    <div class="example">
+      <h3>layout="none" (responsive off)</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with responsive off"
+        layout="none"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- priority -->
+    <div class="example">
+      <h3>priority (eager loading shorthand)</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with priority flag"
+        priority
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- inline style -->
+    <div class="example">
+      <h3>Inline style</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with inline style"
+        style="border: 3px solid red; border-radius: 10px;"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- id attribute -->
+    <div class="example">
+      <h3>id attribute</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="Picture with id"
+        id="my-picture-id"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- SHARP DELEGATION -->
+    <h2>Sharp delegation (non-ImageKit srcs)</h2>
+    <p>The following cases use srcs that are not ImageKit URLs. The integration delegates them to Astro's default sharp service.</p>
+
+    <!-- Local imported asset -->
+    <div class="example" data-test-id="sharp-local-import">
+      <h3>Local imported asset (sharp)</h3>
+      <Picture
+        src={heroImage}
+        alt="Local hero image processed by sharp"
+        formats={['avif', 'webp']}
+        width={300}
+      />
+    </div>
+
+    <!-- Allow-listed external URL -->
+    <div class="example" data-test-id="sharp-external-allowed">
+      <h3>Allow-listed external URL (sharp)</h3>
+      <Picture
+        src="https://placehold.co/600x400"
+        alt="External URL on an allow-listed host, processed by sharp"
+        formats={['avif', 'webp']}
+        width={600}
+        height={400}
+        inferSize={false}
+      />
+    </div>
+
+  </div>
+</body>
+</html>

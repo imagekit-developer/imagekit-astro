@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# Lockfiles from other package managers (this repo uses pnpm)
+package-lock.json
+yarn.lock
+
 # Build output
 dist/
 

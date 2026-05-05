@@ -5,6 +5,16 @@ All notable changes to `@imagekit/astro` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-05-05
+
+### Fixed
+
+- **`<Picture />` now emits one URL per format.** The image service was discarding the `format` prop, so every `<source>` Astro generated for `<Picture />` resolved to the same URL — defeating the point of multi-format delivery. The service now appends `format` to the final transformation chain step as `f-<format>`, so each `<source>` correctly requests its own format from ImageKit (`f-avif`, `f-webp`, etc.).
+
+### Changed
+
+- **`format` prop on `<Image />` is now honored.** Previously ignored; now appended to the final transformation chain step as `f-<format>`. When unset, no `f-` parameter is emitted so ImageKit's default `f-auto` negotiation still applies. Note: imported local assets cause Astro to auto-fill `format` from the file extension — to force `f-auto` in that case, override via `transformation: [{ format: 'auto' }]`.
+
 ## [1.0.0] - 2026-05-05
 
 First stable release of the official ImageKit SDK for Astro. Drop-in components and an Astro integration for delivering optimized, transformed images and videos through ImageKit, plus server-side helpers for secure uploads.
@@ -27,3 +37,4 @@ First stable release of the official ImageKit SDK for Astro. Drop-in components 
 - Node.js `>= 18`
 
 [1.0.0]: https://github.com/imagekit-developer/imagekit-astro/releases/tag/v1.0.0
+[1.1.0]: https://github.com/imagekit-developer/imagekit-astro/releases/tag/v1.1.0
