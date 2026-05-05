@@ -1,0 +1,25 @@
+{
+  "name": "test-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "start": "npm run build && astro preview",
+    "preview": "astro preview",
+    "test:e2e": "playwright test",
+    "test:e2e-update": "playwright test --update-snapshots"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.5.5",
+    "@imagekit/astro": "workspace:*",
+    "@imagekit/javascript": "^5.1.0",
+    "astro": "^5.18.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@playwright/test": "^1.40.1",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.9.3"
+  }
+}

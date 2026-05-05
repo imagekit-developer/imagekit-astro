@@ -1,0 +1,60 @@
+---
+import { OgImage, getOgImageUrl } from '@imagekit/astro';
+
+// Compute one URL via the helper to demonstrate the escape hatch
+const customUrl = getOgImageUrl({
+  src: '/default-image.jpg',
+  width: 1200,
+  height: 630,
+  transformation: [{ blur: 5 }],
+});
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OG Image Test</title>
+
+  <!-- Case 1: full options (component) -->
+  <OgImage
+    src="/default-image.jpg"
+    title="Hello from @imagekit/astro"
+    description="A demo of <OgImage> — single image URL used for both OG and Twitter, format auto-selected by ImageKit."
+    alt="Default ImageKit demo image"
+    type="article"
+  />
+
+  <!-- Case 2: helper escape hatch (rendered by hand) -->
+  <meta property="og:image:secondary" content={customUrl} />
+</head>
+<body>
+  <h1>&lt;OgImage&gt; Output</h1>
+  <p class="note">View source to see the generated &lt;meta&gt; tags injected into the page &lt;head&gt;.</p>
+
+  <h2>Helper-built secondary URL</h2>
+  <pre>{customUrl}</pre>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    pre {
+      background: #f6f8fa;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px;
+      overflow-x: auto;
+      font-size: 13px;
+    }
+    .note {
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</body>
+</html>

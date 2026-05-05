@@ -1,0 +1,63 @@
+---
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@imagekit/astro Test App</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 15px;
+    }
+    a {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #0066cc;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    a:hover {
+      background: #0055aa;
+    }
+    p {
+      color: #666;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>@imagekit/astro Test App</h1>
+  <p>Select a test page:</p>
+  <ul>
+    <li><a href="/images">Image Component Tests</a></li>
+    <li><a href="/videos">Video Component Tests</a></li>
+    <li><a href="/og">OG Image Tags (&lt;OgImage&gt;)</a></li>
+    <li><a href="/md">Markdown Image Test</a></li>
+  </ul>
+
+  <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;" />
+
+  <h2>Demo Features</h2>
+  <ul>
+    <li><a href="/upload" style="background: #28a745;">File Upload Demo</a></li>
+  </ul>
+
+</body>
+</html>

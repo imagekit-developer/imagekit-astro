@@ -1,0 +1,68 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22.x]
+        astro-version: ["3", "4", "5", "6"]
+        include:
+          - astro-version: "3"
+            node-adapter: "@astrojs/node@^6"
+          - astro-version: "4"
+            node-adapter: "@astrojs/node@^8"
+          - astro-version: "5"
+            node-adapter: "@astrojs/node@^9"
+          - astro-version: "6"
+            node-adapter: "@astrojs/node@^10"
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Build
+      run: pnpm build
+
+    - name: Pack the package
+      run: |
+        cd imagekit-astro
+        pnpm pack
+
+    - name: Setup test-app with packed package and target Astro version
+      run: |
+        cd test-app
+        pnpm remove @imagekit/astro || true
+        pnpm add ../imagekit-astro/imagekit-astro-*.tgz
+        pnpm add astro@${{ matrix.astro-version }}
+        pnpm add ${{ matrix.node-adapter }}
+
+    - name: Install Playwright
+      run: |
+        cd test-app
+        pnpm exec playwright install --with-deps
+
+    - name: Run E2E tests
+      run: |
+        cd test-app
+        pnpm test:e2e
+      env:
+        CI: true
+        ASTRO_VERSION: ${{ matrix.astro-version }}

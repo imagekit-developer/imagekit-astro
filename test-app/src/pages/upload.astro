@@ -1,0 +1,170 @@
+---
+// src/pages/upload.astro
+---
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ImageKit Upload Demo</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      color: #333;
+    }
+    h1 {
+      color: #333;
+    }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #0066cc;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .upload-container {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    #file-input {
+      margin-right: 10px;
+    }
+    #upload-btn {
+      display: inline-block;
+      padding: 10px 24px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #upload-btn:hover {
+      background: #0055aa;
+    }
+    #upload-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: 500;
+    }
+    .status-success {
+      color: #28a745;
+    }
+    .status-error {
+      color: #dc3545;
+    }
+    #result {
+      margin-top: 20px;
+      background: #f4f4f4;
+      padding: 15px;
+      border-radius: 4px;
+      min-height: 50px;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .image-preview {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+    }
+    .image-preview img {
+      max-width: 20em;
+      height: auto;
+      border: 1px solid #eee;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="back-link">&larr; Back to Home</a>
+  <h1>ImageKit Upload Demo</h1>
+  
+  <div class="upload-container">
+    <input type="file" id="file-input" />
+    <button id="upload-btn">Upload</button>
+  </div>
+
+  <div id="status"></div>
+  <div id="result-container">
+    <p style="margin-bottom: 0;"> Upload result: </p>
+    <pre id="result"></pre>
+    <div id="image-preview"></div>
+  </div>
+
+  <script>
+    import { upload } from '@imagekit/javascript';
+
+    const fileInput = document.getElementById('file-input') as HTMLInputElement;
+    const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement;
+    const result = document.getElementById('result') as HTMLPreElement;
+    const status = document.getElementById('status') as HTMLDivElement;
+    const imagePreview = document.getElementById('image-preview') as HTMLDivElement;
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files?.[0];
+      if (!file) {
+        status.textContent = 'Please select a file first.';
+        status.className = 'status-error';
+        return;
+      }
+
+      status.textContent = 'Uploading...';
+      status.className = '';
+      result.textContent = '';
+
+      try {
+        // Fetch auth params from your server endpoint
+        const res = await fetch('/api/upload-auth');
+        if (!res.ok) {
+          throw new Error(`Failed to fetch auth params: ${res.statusText}`);
+        }
+        const authParams = await res.json();
+
+        // Note: In a real app, you'd use the actual public key from your env
+        // For this demo, we assume it's available or provided.
+        // Since we can't easily access import.meta.env on client in this specific way without config,
+        // we'll use a placeholder or assume it's passed.
+        // However, for the demo to work, we need the public key.
+        // Let's assume the user has configured it.
+        
+        const response = await upload({
+          file,
+          fileName: file.name,
+          publicKey: import.meta.env.PUBLIC_IMAGEKIT_PUBLIC_KEY,
+          ...authParams,
+        });
+
+        status.textContent = 'Upload successful!';
+        status.className = 'status-success';
+        result.textContent = JSON.stringify(response, null, 2);
+        const img = document.createElement('img');
+        img.src = `${response.url}?tr=orig-true`;
+        img.alt = 'Uploaded Image';
+        imagePreview.appendChild(img);
+      } catch (error) {
+        console.error(error);
+        status.textContent = 'Upload failed.';
+        status.className = 'status-error';
+        result.textContent = error instanceof Error ? error.message : String(error);
+      }
+    });
+  </script>
+</body>
+</html>

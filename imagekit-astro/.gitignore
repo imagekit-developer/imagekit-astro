@@ -1,0 +1,6 @@
+# Build output
+dist/
+
+# Staged at publish time from monorepo root
+README.md
+LICENSE

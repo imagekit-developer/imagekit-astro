@@ -1,0 +1,12 @@
+<div class="container">
+<h2 id="imagekit-url-primary-endpoint-host">ImageKit URL (primary endpoint host)</h2>
+<p><img src="https://ik.imagekit.io/demo/default-image.jpg?tr=c-at_max,w-1000" alt="Imagekit URL" width="1000" height="1000" loading="lazy" decoding="async" fetchpriority="auto" sizes="(min-width: 1000px) 1000px, 100vw" style="" data-astro-image="constrained" srcset="https://ik.imagekit.io/demo/default-image.jpg?tr=c-at_max,w-640 640w, https://ik.imagekit.io/demo/default-image.jpg?tr=c-at_max,w-750 750w, https://ik.imagekit.io/demo/default-image.jpg?tr=c-at_max,w-828 828w, https://ik.imagekit.io/demo/default-image.jpg?tr=c-at_max,w-1000 1000w"></p>
+<h2 id="custom-ik-domain-additionalendpoints-host">Custom IK domain (additionalEndpoints host)</h2>
+<p><img src="https://ik.imgkit.net/demo/default-image.jpg?tr=c-at_max,w-1000" alt="Another custom IK URL" width="1000" height="1000" loading="lazy" decoding="async" fetchpriority="auto" sizes="(min-width: 1000px) 1000px, 100vw" style="" data-astro-image="constrained" srcset="https://ik.imgkit.net/demo/default-image.jpg?tr=c-at_max,w-640 640w, https://ik.imgkit.net/demo/default-image.jpg?tr=c-at_max,w-750 750w, https://ik.imgkit.net/demo/default-image.jpg?tr=c-at_max,w-828 828w, https://ik.imgkit.net/demo/default-image.jpg?tr=c-at_max,w-1000 1000w"></p>
+<h2 id="local-imported-asset-delegated-to-sharp">Local imported asset (delegated to sharp)</h2>
+<p><img src="/_image?href=%2F_astro%2Fhero.CfX7EzL3.jpg&amp;w=640&amp;h=427&amp;f=webp" alt="Local hero asset" loading="lazy" decoding="async" fetchpriority="auto" sizes="(min-width: 640px) 640px, 100vw" style="" data-astro-image="constrained" width="640" height="427" srcset="/_image?href=%2F_astro%2Fhero.CfX7EzL3.jpg&amp;w=640&amp;h=427&amp;f=webp 640w"></p>
+<h2 id="allow-listed-external-url-delegated-to-sharp">Allow-listed external URL (delegated to sharp)</h2>
+<p><img src="/_image?href=https%3A%2F%2Fplacehold.co%2F600x400&amp;w=600&amp;h=400&amp;f=webp" alt="Allowed external URL" loading="lazy" decoding="async" fetchpriority="auto" sizes="(min-width: 600px) 600px, 100vw" style="" data-astro-image="constrained" width="600" height="400" srcset="/_image?href=https%3A%2F%2Fplacehold.co%2F600x400&amp;w=600&amp;h=400&amp;f=webp 600w"></p>
+<h2 id="non-allow-listed-external-url-rendered-as-is-by-astro">Non-allow-listed external URL (rendered as-is by Astro)</h2>
+<p><img src="https://not-allowed-external-as-is.com/creatives/4a3a37e5-f135-4fdd-877f-488570c9d4bb/default.jpg?tr=cm-pad_resize,w-900" alt="Not allowed external URL"></p>
+</div>

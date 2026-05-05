@@ -1,0 +1,45 @@
+---
+import { buildSrc } from '@imagekit/javascript';
+import { getImageKitConfig } from '../lib/imagekit';
+import type { VideoProps } from '../types/index';
+
+interface Props extends VideoProps {}
+
+const {
+  src,
+  urlEndpoint,
+  transformation = [],
+  queryParameters,
+  transformationPosition,
+  class: className,
+  ...restProps
+}: Props = Astro.props;
+
+// Resolve ImageKit configuration.
+// Priority: prop > integration config (astro.config.mjs) > env vars.
+const config = getImageKitConfig({ urlEndpoint, transformationPosition });
+
+// Build the video URL.
+// Note: width/height props are HTML attributes only; they are NOT applied as
+// ImageKit transformations. To resize the video, pass them via `transformation`.
+const videoSrc = buildSrc({
+  src,
+  urlEndpoint: config.urlEndpoint,
+  transformation,
+  queryParameters,
+  transformationPosition: config.transformationPosition,
+});
+
+// Build the class name
+let videoClassName = 'astro-imagekit-video';
+if (className) {
+  videoClassName = `${videoClassName} ${className}`;
+}
+---
+
+<video
+  src={videoSrc}
+  class={videoClassName}
+  {...restProps}
+/>
+

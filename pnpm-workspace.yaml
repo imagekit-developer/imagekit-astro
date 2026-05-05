@@ -1,0 +1,3 @@
+packages:
+  - "imagekit-astro"
+  - "test-app"

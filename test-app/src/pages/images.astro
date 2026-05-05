@@ -1,0 +1,540 @@
+---
+import { Image } from 'astro:assets';
+import heroImage from '../assets/hero.jpg';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Tests</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Component Tests</h1>
+    <p>Image uses Astro's built-in Image component for optimized image delivery with ImageKit transformations. The <code>urlEndpoint</code> is configured globally in <code>astro.config.mjs</code>; cases below only pass it explicitly when overriding it.</p>
+
+    <!-- Basic image (urlEndpoint comes from astro.config.mjs) -->
+    <div class="example">
+      <h3>Basic image (urlEndpoint from integration config)</h3>
+      <Image
+        src="default-image.jpg"
+        alt="Basic image"
+        width={10}
+        height={10}
+        fit="contain"
+        position='top left'
+      />
+    </div>
+
+    <!-- urlEndpoint prop override -->
+    <div class="example">
+      <h3>urlEndpoint prop override</h3>
+      <Image
+        urlEndpoint="https://ik.imagekit.io/demo2/"
+        src="/default-image.jpg"
+        alt="Image with urlEndpoint override"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with leading slash in src -->
+    <div class="example">
+      <h3>Leading slash in src</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with leading slash"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Absolute URL src -->
+    <div class="example">
+      <h3>Absolute URL src (urlEndpoint ignored, transformations still applied)</h3>
+      <Image
+        src="https://ik.imagekit.io/demo/default-image.jpg"
+        alt="Absolute URL src"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with transformation -->
+    <div class="example">
+      <h3>Transformation prop</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="With transformation"
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with queryParameters -->
+    <div class="example">
+      <h3>queryParameters prop</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with queryParameters"
+        queryParameters={{
+          version: "v1",
+        }}
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Responsive image with sizes -->
+    <div class="example">
+      <h3>Responsive image with sizes</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Responsive image with sizes"
+        sizes="(max-width: 600px) 100vw, 50vw"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Responsive image with fixed sizes -->
+    <div class="example">
+      <h3>Responsive image with fixed sizes (300px)</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Responsive image with fixed sizes"
+        sizes="300px"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with custom class -->
+    <div class="example">
+      <h3>Custom class</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with custom class"
+        class="custom-class"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Lazy loading eager -->
+    <div class="example">
+      <h3>loading="eager"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with loading eager"
+        loading="eager"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Transformation position path -->
+    <div class="example">
+      <h3>transformationPosition="path"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with path transformation"
+        transformationPosition="path"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Transformation position path with custom transformations -->
+    <div class="example">
+      <h3>transformationPosition="path" + custom transformations</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with path transformation + custom transformations"
+        transformationPosition="path"
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with data attributes -->
+    <div class="example">
+      <h3>Data attributes</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with data attributes"
+        data-testid="test-image"
+        data-custom="value"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with multiple transformations -->
+    <div class="example">
+      <h3>Multiple chained transformations</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with multiple chained transformations"
+        transformation={[
+          { width: 200, height: 200 },
+          { rotation: 90 },
+          { blur: 5 }
+        ]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- ASTRO IMAGE COMPONENT SPECIFIC PROPS -->
+    <h2>Astro Image Component Props</h2>
+    <p>The following tests verify that Astro's built-in Image component props work correctly with Image.</p>
+
+    <!-- Image with format prop -->
+    <div class="example">
+      <h3>format="avif" ignored</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with AVIF format"
+        format="avif"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with quality prop (preset) -->
+    <div class="example">
+      <h3>quality="high"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with high quality preset"
+        quality="high"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with quality prop (number) -->
+    <div class="example">
+      <h3>quality=50</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with numeric quality"
+        quality={50}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with decoding prop -->
+    <div class="example">
+      <h3>decoding="sync"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with sync decoding"
+        decoding="sync"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with fetchpriority prop -->
+    <div class="example">
+      <h3>fetchpriority="high"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with high fetch priority"
+        fetchpriority="high"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with densities prop -->
+    <div class="example">
+      <h3>densities=[1.5, 2] (requires layout="none" to override config default)</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with density srcset"
+        densities={[1.5, 2]}
+        layout="none"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with widths prop -->
+    <div class="example">
+      <h3>widths=[240, 540, 720]</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with specific widths srcset"
+        widths={[240, 540, 720]}
+        sizes="(max-width: 360px) 240px, (max-width: 720px) 540px, 720px"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with layout="constrained" -->
+    <div class="example">
+      <h3>layout="constrained"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with constrained layout"
+        layout="constrained"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with layout="full-width" -->
+    <div class="example">
+      <h3>layout="full-width"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with full-width layout"
+        layout="full-width"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with layout="fixed" -->
+    <div class="example">
+      <h3>layout="fixed"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with fixed layout"
+        layout="fixed"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with layout="none" (turns off responsive srcset) -->
+    <div class="example">
+      <h3>layout="none" (responsive off)</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with responsive off"
+        layout="none"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with priority prop -->
+    <div class="example">
+      <h3>priority (eager loading shorthand)</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with priority flag"
+        priority
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with style attribute -->
+    <div class="example">
+      <h3>Inline style</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with inline style"
+        style="border: 3px solid red; border-radius: 10px;"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Image with id attribute -->
+    <div class="example">
+      <h3>id attribute</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Image with id"
+        id="my-image-id"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Quality boundary: 0 -->
+    <div class="example" data-test-id="edge-quality-0">
+      <h3>Quality = 0 (minimum)</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="quality 0"
+        quality={0}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Quality boundary: 100 -->
+    <div class="example" data-test-id="edge-quality-100">
+      <h3>Quality = 100 (maximum)</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="quality 100"
+        quality={100}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Format: webp -->
+    <div class="example" data-test-id="edge-format-webp">
+      <h3>Format = webp</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="webp format"
+        format="webp"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Format: avif -->
+    <div class="example" data-test-id="edge-format-avif">
+      <h3>Format = avif</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="avif format"
+        format="avif"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Format: svg -->
+    <div class="example" data-test-id="edge-format-svg">
+      <h3>Format = svg</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="svg format"
+        format="svg"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Multiple complex transformations -->
+    <div class="example" data-test-id="edge-complex-transformations">
+      <h3>Multiple complex transformations</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="complex transformations"
+        transformation={[
+          { width: 200, height: 200 },
+          { rotation: 45 },
+          { blur: 10 },
+          { quality: 50 },
+          { overlayText: "WATERMARK" }
+        ]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- transformationPosition path with transformations -->
+    <div class="example" data-test-id="edge-transform-position-path">
+      <h3>transformationPosition="path" + transformations</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="transformation path position"
+        transformationPosition="path"
+        transformation={[{ width: 200, height: 200 }, { quality: 75 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- transformationPosition query with complex query params -->
+    <div class="example" data-test-id="edge-transform-position-query">
+      <h3>transformationPosition="query" + queryParameters</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="transformation query position"
+        transformationPosition="query"
+        transformation={[{ width: 200, height: 200 }]}
+        queryParameters={{
+          version: "v1",
+          custom: "param"
+        }}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Quality as string preset -->
+    <div class="example" data-test-id="edge-quality-preset-low">
+      <h3>Quality preset = "low"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="quality low preset"
+        quality="low"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Quality as string preset mid -->
+    <div class="example" data-test-id="edge-quality-preset-mid">
+      <h3>Quality preset = "mid"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="quality mid preset"
+        quality="mid"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Quality as string preset max -->
+    <div class="example" data-test-id="edge-quality-preset-max">
+      <h3>Quality preset = "max"</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="quality max preset"
+        quality="max"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- SHARP DELEGATION: non-IK srcs are routed through Astro's bundled sharp service. -->
+    <h2>Sharp delegation (non-ImageKit srcs)</h2>
+    <p>The following cases use srcs that are not ImageKit URLs. The integration delegates them to Astro's default sharp service, so they're served via Astro's <code>/_image</code> endpoint instead of being rewritten to <code>ik.imagekit.io</code>.</p>
+
+    <!-- Local imported asset (Vite-emitted /_astro/ path) -->
+    <div class="example" data-test-id="sharp-local-import">
+      <h3>Local imported asset (sharp)</h3>
+      <Image
+        src={heroImage}
+        alt="Local hero image processed by sharp"
+        width={300}
+      />
+    </div>
+
+    <!-- Allow-listed external URL (in image.domains) -->
+    <div class="example" data-test-id="sharp-external-allowed">
+      <h3>Allow-listed external URL (sharp)</h3>
+      <Image
+        src="https://placehold.co/600x400"
+        alt="External URL on an allow-listed host, processed by sharp"
+        width={600}
+        height={400}
+        inferSize={false}
+      />
+    </div>
+
+  </div>
+</body>
+</html>
