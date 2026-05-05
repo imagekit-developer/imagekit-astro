@@ -1,6 +1,6 @@
 {
   "name": "@imagekit/astro",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "type": "module",
   "license": "MIT",
   "description": "Astro SDK for ImageKit.io - optimized image & video delivery with transformations",
