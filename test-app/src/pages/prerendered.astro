@@ -1,0 +1,82 @@
+---
+// Prerendered route inside `output: 'server'`. This exercises Astro's
+// build-time static image pipeline (`addStaticImage`), which the image
+// service must bypass for ImageKit srcs while still letting local assets
+// through to sharp. Before the fix, building this page failed with
+// ENOENT for the bare ImageKit path and re-encoded the absolute URL locally.
+export const prerender = true;
+
+import { Image, Picture } from 'astro:assets';
+import heroImage from '../assets/hero.jpg';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prerendered Page Tests</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Prerendered Page Tests</h1>
+    <p>This page is prerendered at build time (<code>export const prerender = true</code>) in a server-output app. ImageKit srcs must resolve to CDN URLs; local imports must be processed by sharp.</p>
+
+    <!-- Bare ImageKit path -->
+    <div class="example" data-test-id="prerender-ik-bare-path">
+      <h3>Bare ImageKit path</h3>
+      <Image
+        src="/default-image.jpg"
+        alt="Bare ImageKit path"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Absolute ImageKit URL -->
+    <div class="example" data-test-id="prerender-ik-absolute-url">
+      <h3>Absolute ImageKit URL with transformation</h3>
+      <Image
+        src="https://ik.imagekit.io/demo/default-image.jpg"
+        alt="Absolute ImageKit URL"
+        transformation={[{ height: 100, width: 100 }]}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- additionalEndpoints host -->
+    <div class="example" data-test-id="prerender-ik-additional-endpoint">
+      <h3>additionalEndpoints host</h3>
+      <Image
+        src="https://ik.imgkit.net/demo/default-image.jpg"
+        alt="Additional endpoint host"
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Picture with multiple formats -->
+    <div class="example" data-test-id="prerender-ik-picture">
+      <h3>Picture with multiple formats</h3>
+      <Picture
+        src="/default-image.jpg"
+        alt="ImageKit picture"
+        formats={['avif', 'webp']}
+        width={300}
+        height={300}
+      />
+    </div>
+
+    <!-- Local imported asset (sharp) -->
+    <div class="example" data-test-id="prerender-sharp-local-import">
+      <h3>Local imported asset (sharp)</h3>
+      <Image
+        src={heroImage}
+        alt="Local hero image processed by sharp"
+        width={300}
+      />
+    </div>
+  </div>
+</body>
+</html>
