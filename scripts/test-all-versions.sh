@@ -33,7 +33,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     *)
       echo "Unknown option: $1"
-      echo "Usage: $0 [--update] [--versions 3 4 5 6]"
+      echo "Usage: $0 [--update] [--versions 3 4 5 6 7]"
       exit 1
       ;;
   esac
@@ -41,7 +41,7 @@ done
 
 # Default: all supported versions
 if [[ ${#VERSIONS[@]} -eq 0 ]]; then
-  VERSIONS=("3" "4" "5" "6")
+  VERSIONS=("3" "4" "5" "6" "7")
 fi
 
 # --- Adapter lookup ---
@@ -52,6 +52,7 @@ get_adapter() {
     4) echo "@astrojs/node@^8" ;;
     5) echo "@astrojs/node@^9" ;;
     6) echo "@astrojs/node@^10" ;;
+    7) echo "@astrojs/node@^11" ;;
     *) echo "@astrojs/node@latest" ;;
   esac
 }
@@ -85,7 +86,7 @@ trap restore_deps EXIT
 
 # --- Install Playwright browsers (once) ---
 echo "==> Installing Playwright browsers..."
-(cd "$TEST_APP_DIR" && pnpm exec playwright install --with-deps)
+(cd "$TEST_APP_DIR" && pnpm exec playwright install --with-deps chromium)
 
 # --- Run for each version ---
 FAILED_VERSIONS=()

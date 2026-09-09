@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [22.x]
-        astro-version: ["3", "4", "5", "6"]
+        astro-version: ["3", "4", "5", "6", "7"]
         include:
           - astro-version: "3"
             node-adapter: "@astrojs/node@^6"
@@ -23,6 +23,8 @@ jobs:
             node-adapter: "@astrojs/node@^9"
           - astro-version: "6"
             node-adapter: "@astrojs/node@^10"
+          - astro-version: "7"
+            node-adapter: "@astrojs/node@^11"
 
     steps:
     - uses: actions/checkout@v4

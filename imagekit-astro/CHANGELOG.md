@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Static builds and prerendered routes no longer fail for ImageKit images.** Because the image service delegates local assets to sharp (and therefore exposes sharp's `transform`), Astro classifies it as a *local* service. During `astro build` with `output: 'static'` — or for any prerendered route in `output: 'server'` — Astro handed every image to its static image pipeline, which rewrote the ImageKit URL to a `/_astro/<hash>` file and then tried to read the source from disk. Bare ImageKit paths (`src="/photo.jpg"`) crashed the build with `ENOENT: no such file or directory, open '<outDir>/photo.jpg'`, and absolute ImageKit URLs were silently fetched and re-encoded by sharp, dropping every transformation. The service now keeps ImageKit-eligible images out of that pipeline so they resolve to CDN URLs in every output mode, while local imports and allow-listed third-party hosts still go through sharp.
 
+### Changed
+
+- **Astro 7 is now part of the test matrix.** End-to-end tests run against Astro 3, 4, 5, 6, and 7.
+- **End-to-end coverage for prerendered routes.** The test app now includes a prerendered page in its server-output build, so the static image pipeline bypass is exercised on every Astro version in CI.
+
 ## [1.0.1] - 2026-05-05
 
 ### Fixed

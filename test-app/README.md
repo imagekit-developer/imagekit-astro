@@ -7,6 +7,7 @@ This is a demo Astro application for testing the `@imagekit/astro` package.
 - `/` - Home page with navigation links
 - `/videos` - Test cases for the `Video` component
 - `/images` - Test cases for the `Image` component
+- `/prerendered` - Prerendered route (`export const prerender = true`) inside the server-output app; verifies ImageKit srcs stay on the CDN and local imports go through sharp at build time
 
 ## Running the App
 
