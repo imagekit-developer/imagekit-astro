@@ -195,6 +195,76 @@ function getIKHosts(imageConfig: AstroConfig['image']): string[] {
   return Array.from(new Set([...hosts, 'ik.imagekit.io'].map((h) => h.toLowerCase())));
 }
 
+/**
+ * Builds the final ImageKit URL for an IK-eligible transform.
+ */
+function buildIKUrl(opts: IKImageTransform, imageConfig: AstroConfig['image']): string {
+  const src = typeof opts.src === 'string' ? opts.src : opts.src.src;
+  const { urlEndpoint, transformationPosition } = resolveConfig(opts, imageConfig);
+
+  return buildSrc({
+    src,
+    urlEndpoint,
+    transformation: buildIKTransformations(opts),
+    queryParameters: opts.queryParameters,
+    transformationPosition,
+  });
+}
+
+/**
+ * URLs we generated for IK-eligible transforms, keyed by the exact transform
+ * object Astro handed to `getURL`. Astro passes that same object to
+ * `addStaticImage`, which lets the wrapper below short-circuit it.
+ */
+const ikUrlByTransform = new WeakMap<object, string>();
+
+/** Last image config seen by the service; used as a fallback by the wrapper. */
+let lastImageConfig: AstroConfig['image'] | undefined;
+
+const WRAPPED_FLAG = '__imagekitAstroWrapped';
+
+/**
+ * Keep IK URLs out of Astro's static image pipeline.
+ *
+ * Because this service exposes sharp's `transform`, Astro classifies it as a
+ * *local* service. During `astro build` (static output, or any prerendered
+ * route in server output) Astro's `getImage()` therefore hands every result
+ * to `globalThis.astroAsset.addStaticImage`, which replaces the URL with a
+ * `/_astro/<hash>.<ext>` path and later tries to read the source from disk
+ * (bare IK paths → ENOENT) or fetch it and re-encode it with sharp (absolute
+ * IK URLs → transformations silently dropped).
+ *
+ * Astro only skips that step when the service returned the src unchanged,
+ * which is never the case for IK URLs carrying transformations. So we wrap
+ * `addStaticImage` and return our CDN URL for the transforms we own, letting
+ * everything else (local assets, allow-listed third-party hosts) flow through
+ * to sharp untouched. `addStaticImage` only exists at build time, so this is
+ * a no-op in dev and in on-demand SSR rendering.
+ */
+function bypassStaticImagePipeline(): void {
+  const astroAsset = (globalThis as any).astroAsset;
+  const original = astroAsset?.addStaticImage;
+  if (typeof original !== 'function' || original[WRAPPED_FLAG]) return;
+
+  const wrapped = function (this: unknown, options: IKImageTransform, ...rest: unknown[]) {
+    const known = ikUrlByTransform.get(options);
+    if (known !== undefined) return known;
+
+    // Fallback in case Astro passes a transform object we haven't seen.
+    if (lastImageConfig) {
+      const src = typeof options.src === 'string' ? options.src : options.src?.src;
+      if (typeof src === 'string' && isImageKitSrc(src, getIKHosts(lastImageConfig))) {
+        return buildIKUrl(options, lastImageConfig);
+      }
+    }
+
+    return original.call(this, options, ...rest);
+  } as ((...args: unknown[]) => unknown) & Record<string, unknown>;
+  wrapped[WRAPPED_FLAG] = true;
+
+  astroAsset.addStaticImage = wrapped;
+}
+
 const service: LocalImageService = {
   validateOptions(options: ImageTransform, imageConfig: AstroConfig['image']) {
     const src = typeof options.src === 'string' ? options.src : options.src.src;
@@ -217,15 +287,15 @@ const service: LocalImageService = {
       return sharpService.getURL!(options, imageConfig);
     }
 
-    const { urlEndpoint, transformationPosition } = resolveConfig(opts, imageConfig);
+    const url = buildIKUrl(opts, imageConfig);
 
-    return buildSrc({
-      src,
-      urlEndpoint,
-      transformation: buildIKTransformations(opts),
-      queryParameters: opts.queryParameters,
-      transformationPosition,
-    });
+    // Remember this transform so the build-time static image pipeline
+    // returns our CDN URL instead of trying to process the file with sharp.
+    ikUrlByTransform.set(opts, url);
+    lastImageConfig = imageConfig;
+    bypassStaticImagePipeline();
+
+    return url;
   },
 
   getHTMLAttributes(options: ImageTransform, imageConfig: AstroConfig['image']) {
@@ -320,11 +390,11 @@ const service: LocalImageService = {
   // --- Local-service hooks (delegated to sharp) ---
   //
   // We register as a `LocalImageService` so Astro's `/_image` endpoint
-  // accepts requests for non-IK srcs (local assets, foreign hosts in
-  // `image.domains`/`remotePatterns`). These hooks only fire when our
-  // `getURL` returned a `/_image?...` URL — which only happens for
-  // sharp-delegated srcs. IK URLs go straight to `ik.imagekit.io` and
-  // never hit `/_image`, so this is purely additive.
+  // (SSR) and static image generation (build) handle non-IK srcs: local
+  // assets and foreign hosts in `image.domains`/`remotePatterns`. These
+  // hooks only fire for sharp-delegated srcs. IK URLs go straight to the
+  // CDN — `bypassStaticImagePipeline()` keeps them out of Astro's build-time
+  // pipeline, and they never hit `/_image` at runtime.
   parseURL: sharpService.parseURL,
   transform: sharpService.transform,
   propertiesToHash: sharpService.propertiesToHash,

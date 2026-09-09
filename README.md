@@ -29,6 +29,8 @@ The service is **host-aware**. For each image, it inspects the `src` and routes 
 
 This means you can drop the integration into an existing Astro project without breaking any of its existing local-asset usage. Local assets keep working via sharp; ImageKit URLs get the full ImageKit treatment.
 
+Both paths work in every output mode — `static`, `server`, and prerendered routes inside a server build. At build time the sharp path emits optimized files into `dist/_astro/`, while the ImageKit path always emits CDN URLs and never writes files.
+
 ## Installation
 
 ```bash
