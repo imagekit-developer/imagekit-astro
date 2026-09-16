@@ -15,8 +15,8 @@ importers:
   imagekit-astro:
     dependencies:
       '@imagekit/javascript':
-        specifier: ^5.1.0
-        version: 5.3.0
+        specifier: ^5.5.0
+        version: 5.5.0
     devDependencies:
       '@types/node':
         specifier: ^20.19.39
@@ -37,8 +37,8 @@ importers:
         specifier: workspace:*
         version: link:../imagekit-astro
       '@imagekit/javascript':
-        specifier: ^5.1.0
-        version: 5.3.0
+        specifier: ^5.5.0
+        version: 5.5.0
       astro:
         specifier: ^5.18.1
         version: 5.18.1(@types/node@20.19.39)(rollup@4.60.1)(typescript@5.9.3)(yaml@2.8.3)
@@ -458,8 +458,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@imagekit/javascript@5.3.0':
-    resolution: {integrity: sha512-jMptcXxQlg7BfZxVS9E2azkjfVieaKZD851XJSQLlR6kzoCg1HTTDscwUwdpHDpmt2MkTdGazo+BrsnxHrlyzA==}
+  '@imagekit/javascript@5.5.0':
+    resolution: {integrity: sha512-eu2lLzSwTj4awP6CeB8NUHnKz+GZk4og3ztZsb7MDjoy1NcfCVqB1gBxH8Q9xzCkBrP50SvGuSrK/ZGNzrXXDA==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -1827,6 +1827,7 @@ packages:
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -2502,7 +2503,7 @@ snapshots:
   '@esbuild/win32-x64@0.27.7':
     optional: true
 
-  '@imagekit/javascript@5.3.0': {}
+  '@imagekit/javascript@5.5.0': {}
 
   '@img/colour@1.1.0':
     optional: true
