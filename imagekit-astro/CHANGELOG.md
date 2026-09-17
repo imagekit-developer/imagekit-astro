@@ -5,6 +5,14 @@ All notable changes to `@imagekit/astro` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3](https://github.com/imagekit-developer/imagekit-astro/compare/1.0.2...1.0.3) (2026-09-17)
+
+
+### Bug Fixes
+
+* **deps:** require @imagekit/javascript ^5.5.0 and set up Release Please ([202f720](https://github.com/imagekit-developer/imagekit-astro/commit/202f72028ccf18622b3a480c80fc077960436863))
+* **deps:** require @imagekit/javascript ^5.5.0 for density transformation support ([f8f8f87](https://github.com/imagekit-developer/imagekit-astro/commit/f8f8f87a274cbc0c56b94447d05d81d303dae96e))
+
 ## [1.0.2] - 2026-09-09
 
 ### Fixed
