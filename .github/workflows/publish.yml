@@ -3,26 +3,32 @@ name: Publish
 on:
   release:
     types: [published]
-
-permissions:
-  contents: read
-  id-token: write
+  # Manual re-run from the default branch, e.g. when a release publish failed.
+  workflow_dispatch:
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
-
       - name: Install pnpm
         run: npm install -g pnpm@9.5.0
 
-      - uses: actions/setup-node@v4
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24.x
           registry-url: https://registry.npmjs.org/
           cache: 'pnpm'
-
+      - name: Upgrade npm for OIDC trusted publishing
+        # Trusted publishing needs npm >= 11.5.1. Pin the 11 line: npm@latest
+        # is now 12.x, which refuses to install on older Node runners.
+        run: |
+          npm install -g npm@11
+          npm --version
       - name: Install
         run: pnpm install --frozen-lockfile
 
@@ -37,16 +43,14 @@ jobs:
       - name: NPM Publish
         working-directory: imagekit-astro
         run: |
-          npm whoami
           VERSION=$(node -p "require('./package.json').version")
-          # Stable versions go to "latest", pre-release versions go to "beta"
+          # Only publish stable versions to the latest tag
           if [[ "$VERSION" =~ ^[^-]+$ ]]; then
             NPM_TAG="latest"
           else
             NPM_TAG="beta"
           fi
           echo "Publishing $VERSION with $NPM_TAG tag."
-          npm publish --tag $NPM_TAG --access public --provenance
+          npm publish --tag $NPM_TAG --provenance --access public
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
           CI: true
